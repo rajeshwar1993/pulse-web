@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+:root {
+  /* Teal (Primary) */
+  --teal-50: #E6F7F6;
+  --teal-100: #B3E8E5;
+  --teal-200: #80D9D4;
+  --teal-300: #62B1AD;
+  --teal-400: #4D8E8A;
+  --teal-500: #3A6B68;
+
+  /* Rose (Accent) */
+  --rose-50: #FEF0F0;
+  --rose-100: #FDD5D5;
+  --rose-200: #FBABAB;
+  --rose-300: #F28C8C;
+  --rose-400: #E96B6B;
+  --rose-500: #E04A4A;
+
+  /* Neutral */
+  --off-white: #F8FAFC;
+  --slate-50: #F8FAFC;
+  --slate-100: #F1F5F9;
+  --slate-200: #E2E8F0;
+  --slate-300: #CBD5E1;
+  --slate-400: #94A3B8;
+  --slate-500: #64748B;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1E293B;
+  --slate-900: #0F172A;
+
+  /* Semantic */
+  --success: #10B981;
+  --warning: #F59E0B;
+  --error: #EF4444;
+  --info: #3B82F6;
+}
+
+@theme inline {
+  /* Colors */
+  --color-teal-50: var(--teal-50);
+  --color-teal-100: var(--teal-100);
+  --color-teal-200: var(--teal-200);
+  --color-teal-300: var(--teal-300);
+  --color-teal-400: var(--teal-400);
+  --color-teal-500: var(--teal-500);
+
+  --color-rose-50: var(--rose-50);
+  --color-rose-100: var(--rose-100);
+  --color-rose-200: var(--rose-200);
+  --color-rose-300: var(--rose-300);
+  --color-rose-400: var(--rose-400);
+  --color-rose-500: var(--rose-500);
+
+  --color-offWhite: var(--off-white);
+  --color-slate-50: var(--slate-50);
+  --color-slate-100: var(--slate-100);
+  --color-slate-200: var(--slate-200);
+  --color-slate-300: var(--slate-300);
+  --color-slate-400: var(--slate-400);
+  --color-slate-500: var(--slate-500);
+  --color-slate-600: var(--slate-600);
+  --color-slate-700: var(--slate-700);
+  --color-slate-800: var(--slate-800);
+  --color-slate-900: var(--slate-900);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-info: var(--info);
+
+  /* Typography */
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-secondary: var(--font-instrument-sans), sans-serif;
+}
+
+body {
+  background: var(--off-white);
+  color: var(--slate-900);
+  font-family: var(--font-sans);
+}
