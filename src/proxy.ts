@@ -35,8 +35,9 @@ export async function proxy(request: NextRequest) {
 
   await supabase.auth.getUser();
 
-  // Refresh the session if expired
-  await supabase.auth.refreshSession();
+  // Note: DO NOT call refreshSession() here - Supabase handles token refresh
+  // automatically when getUser() is called. Calling refreshSession() explicitly
+  // can cause "Invalid Refresh Token: Already Used" errors.
 
   return supabaseResponse;
 }

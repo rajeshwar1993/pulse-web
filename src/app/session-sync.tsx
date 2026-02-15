@@ -27,8 +27,9 @@ export function SessionSync() {
           document.cookie = `sb-refresh-token=${encodeURIComponent(session.refresh_token)}; path=/; max-age=${60 * 60 * 24 * 30}; SameSite=Lax`;
         }
 
-        // Force session refresh to sync to cookies
-        await supabase.auth.refreshSession();
+        // Note: DO NOT call refreshSession() here - it causes "Invalid Refresh Token: Already Used"
+        // errors because the token is already being used by the proxy/middleware.
+        // Supabase handles token refresh automatically.
       }
     }
 
