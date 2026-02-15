@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Instrument_Sans } from "next/font/google";
 import "./globals.css";
+import { SessionSync } from "./session-sync";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${instrumentSans.variable} antialiased`}
       >
+        <SessionSync />
         {children}
       </body>
     </html>

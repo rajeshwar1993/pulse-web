@@ -5,10 +5,10 @@ import Link from 'next/link';
 
 export default async function Home() {
   const supabase = await createClient();
-  
+
   // Check if user is authenticated
   const { data: { user } } = await supabase.auth.getUser();
-  
+
   if (user) {
     // User is authenticated, check if they have a profile
     const { data: profile } = await supabase
@@ -16,7 +16,7 @@ export default async function Home() {
       .select()
       .eq('id', user.id)
       .single();
-    
+
     if (profile) {
       // Has profile, redirect to dashboard
       redirect('/dashboard');
