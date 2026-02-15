@@ -40,6 +40,12 @@
   --teal: var(--teal-300);
   --green: var(--success);
   --blue: var(--info);
+
+  /* iOS Safe Area Insets */
+  --safe-area-inset-top: env(safe-area-inset-top);
+  --safe-area-inset-right: env(safe-area-inset-right);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom);
+  --safe-area-inset-left: env(safe-area-inset-left);
 }
 
 @theme inline {
@@ -84,4 +90,38 @@ body {
   background: var(--off-white);
   color: var(--slate-900);
   font-family: var(--font-sans);
+}
+
+/* Safe area utilities for iOS WebView */
+.safe-area-inset-top {
+  padding-top: max(var(--safe-area-inset-top), 1rem);
+}
+
+.safe-area-inset-bottom {
+  padding-bottom: max(var(--safe-area-inset-bottom), 1rem);
+}
+
+.safe-area-inset-left {
+  padding-left: max(var(--safe-area-inset-left), 1rem);
+}
+
+.safe-area-inset-right {
+  padding-right: max(var(--safe-area-inset-right), 1rem);
+}
+
+.safe-area-inset-x {
+  padding-left: max(var(--safe-area-inset-left), 1rem);
+  padding-right: max(var(--safe-area-inset-right), 1rem);
+}
+
+.safe-area-inset-y {
+  padding-top: max(var(--safe-area-inset-top), 1rem);
+  padding-bottom: max(var(--safe-area-inset-bottom), 1rem);
+}
+
+.safe-area-inset {
+  padding-top: max(var(--safe-area-inset-top), 1rem);
+  padding-right: max(var(--safe-area-inset-right), 1rem);
+  padding-bottom: max(var(--safe-area-inset-bottom), 1rem);
+  padding-left: max(var(--safe-area-inset-left), 1rem);
 }
