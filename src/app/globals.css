@@ -35,6 +35,11 @@
   --warning: #F59E0B;
   --error: #EF4444;
   --info: #3B82F6;
+
+  /* Convenience aliases */
+  --teal: var(--teal-300);
+  --green: var(--success);
+  --blue: var(--info);
 }
 
 @theme inline {
