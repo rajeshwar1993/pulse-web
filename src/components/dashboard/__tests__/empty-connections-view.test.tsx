@@ -1,6 +1,19 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { EmptyConnectionsView } from '../empty-connections-view';
+
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => {
+    const translations: Record<string, string> = {
+      title: 'No connections yet',
+      message:
+        "You haven't added any connections to your Pulse network. Start connecting with family and friends to share your daily check-ins.",
+      inviteButton: 'Invite someone',
+      comingSoonNote: 'Coming soon in Unit 3: Connections',
+    };
+    return translations[key] || key;
+  },
+}));
 
 describe('EmptyConnectionsView', () => {
   it('should render empty state message', () => {
@@ -29,7 +42,7 @@ describe('EmptyConnectionsView', () => {
   it('should show "Coming soon" notice', () => {
     render(<EmptyConnectionsView />);
 
-    expect(screen.getByText('Coming soon in Unit 3: Connections')).toBeInTheDocument();
+    expect(screen.getByText(/Coming soon in Unit 3/)).toBeInTheDocument();
   });
 
   it('should render icon/illustration', () => {
@@ -79,6 +92,6 @@ describe('EmptyConnectionsView', () => {
     render(<EmptyConnectionsView />);
 
     const inviteButton = screen.getByRole('button', { name: /invite someone/i });
-    expect(inviteButton).toHaveAttribute('title', 'Coming soon in Unit 3');
+    expect(inviteButton).toHaveAttribute('title', 'Coming soon in Unit 3: Connections');
   });
 });

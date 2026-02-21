@@ -7,6 +7,17 @@ vi.mock('@/lib/services/wisdom-service', () => ({
   getRandomWisdom: () => 'Test wisdom phrase for testing',
 }));
 
+// Mock next-intl
+vi.mock('next-intl', () => ({
+  useTranslations: (namespace: string) => (key: string) => {
+    const translations: Record<string, Record<string, string>> = {
+      common: { tapToDismiss: 'Tap to dismiss' },
+      'dashboard.wisdomCard': { ariaLabel: 'Wisdom card - click to dismiss' },
+    };
+    return translations[namespace]?.[key] || key;
+  },
+}));
+
 describe('WisdomCard', () => {
   it('should render wisdom text', () => {
     render(<WisdomCard autoDismiss={false} />);

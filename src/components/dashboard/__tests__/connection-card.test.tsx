@@ -1,6 +1,16 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ConnectionCard } from '../connection-card';
+
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => {
+    const translations: Record<string, string> = {
+      active: 'Active',
+      waiting: 'Waiting...',
+    };
+    return translations[key] || key;
+  },
+}));
 
 describe('ConnectionCard', () => {
   const mockAvatar = 'https://example.com/avatar.jpg';

@@ -1,6 +1,25 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { StatusCard } from '../status-card';
+
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string, params?: Record<string, unknown>) => {
+    const translations: Record<string, string> = {
+      title: 'Your Status',
+      active: 'You are active today',
+      pulsedTime: 'Pulsed {time}',
+      notPulsedYet: "You haven't pulsed yet today",
+      autoPulseSent: 'Your pulse was sent automatically',
+    };
+    let result = translations[key] || key;
+    if (params) {
+      for (const [k, v] of Object.entries(params)) {
+        result = result.replace(`{${k}}`, String(v));
+      }
+    }
+    return result;
+  },
+}));
 
 describe('StatusCard', () => {
   describe('Active state', () => {
