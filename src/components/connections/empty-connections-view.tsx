@@ -1,3 +1,7 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
+
 interface EmptyConnectionsViewProps {
   onAddConnection: () => void;
 }
@@ -5,6 +9,8 @@ interface EmptyConnectionsViewProps {
 export function EmptyConnectionsView({
   onAddConnection,
 }: EmptyConnectionsViewProps) {
+  const t = useTranslations('connections.emptyState');
+
   return (
     <div className="text-center py-16">
       <div className="mb-6">
@@ -25,16 +31,16 @@ export function EmptyConnectionsView({
         </div>
       </div>
       <h2 className="text-2xl font-bold text-slate-900 mb-2">
-        No connections yet
+        {t('title')}
       </h2>
       <p className="text-slate-600 mb-8">
-        Add your first connection to start sharing your daily pulse
+        {t('message')}
       </p>
       <button
         onClick={onAddConnection}
         className="bg-teal-300 text-white px-8 py-3 rounded-lg font-semibold hover:bg-teal-400 transition-colors"
       >
-        Add Your First Connection
+        {t('addFirstButton')}
       </button>
     </div>
   );

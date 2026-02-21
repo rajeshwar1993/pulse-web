@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { ConnectionService } from '@/lib/services/connection-service';
 import type { ConnectionWithProfile } from '@/lib/types/connection';
 import { ConnectionGrid } from '@/components/connections/connection-grid';
@@ -8,6 +9,7 @@ import { EmptyConnectionsView } from '@/components/connections/empty-connections
 import { InviteModal } from '@/components/connections/invite-modal';
 
 export default function ConnectionsPage() {
+  const t = useTranslations('connections');
   const [connections, setConnections] = useState<ConnectionWithProfile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -29,7 +31,7 @@ export default function ConnectionsPage() {
   };
 
   const handleRemoveConnection = async (connectionId: string) => {
-    if (!confirm('Remove this connection? You can restore it within 30 days.')) {
+    if (!confirm(t('removeConfirm'))) {
       return;
     }
 
@@ -38,7 +40,7 @@ export default function ConnectionsPage() {
       await loadConnections();
     } catch (error) {
       console.error('Failed to remove connection:', error);
-      alert('Failed to remove connection');
+      alert(t('removeError'));
     }
   };
 
@@ -57,17 +59,17 @@ export default function ConnectionsPage() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-teal-300 mb-2">
-              Connections
+              {t('title')}
             </h1>
             <p className="text-slate-600">
-              {connections.length} {connections.length === 1 ? 'connection' : 'connections'}
+              {t('connectionCount', { count: connections.length })}
             </p>
           </div>
           <button
             onClick={() => setShowInviteModal(true)}
             className="bg-teal-300 text-white px-6 py-3 rounded-lg font-semibold hover:bg-teal-400 transition-colors"
           >
-            + Add Connection
+            {t('addConnection')}
           </button>
         </div>
 

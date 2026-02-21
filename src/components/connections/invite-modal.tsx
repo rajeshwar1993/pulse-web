@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { QRCodeSVG } from 'qrcode.react';
 import { ConnectionService } from '@/lib/services/connection-service';
 import type { InviteCode } from '@/lib/types/connection';
@@ -10,6 +11,7 @@ interface InviteModalProps {
 }
 
 export function InviteModal({ onClose }: InviteModalProps) {
+  const t = useTranslations('connections.invite');
   const [inviteCode, setInviteCode] = useState<InviteCode | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -25,7 +27,7 @@ export function InviteModal({ onClose }: InviteModalProps) {
       setInviteCode(code);
     } catch (error) {
       console.error('Failed to generate invite code:', error);
-      alert('Failed to generate invite code');
+      alert(t('generateError'));
       onClose();
     } finally {
       setIsLoading(false);
@@ -45,12 +47,12 @@ export function InviteModal({ onClose }: InviteModalProps) {
     if (!inviteCode) return;
 
     const inviteUrl = `pulse://invite?code=${inviteCode.code}`;
-    const shareText = `Join me on Pulse! Use code: ${inviteCode.code}\nOr click: ${inviteUrl}`;
+    const shareText = t('shareText', { code: inviteCode.code, url: inviteUrl });
 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'Join Pulse',
+          title: t('shareTitle'),
           text: shareText,
         });
       } catch (error) {
@@ -69,7 +71,7 @@ export function InviteModal({ onClose }: InviteModalProps) {
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-slate-900">
-            Invite Connection
+            {t('title')}
           </h2>
           <button
             onClick={onClose}
@@ -110,7 +112,7 @@ export function InviteModal({ onClose }: InviteModalProps) {
             {/* Invite Code */}
             <div className="mb-6">
               <label className="block text-sm text-slate-600 mb-2">
-                Invite Code
+                {t('codeLabel')}
               </label>
               <div className="flex gap-2">
                 <input
@@ -124,14 +126,14 @@ export function InviteModal({ onClose }: InviteModalProps) {
                   className="px-4 py-3 bg-slate-200 hover:bg-slate-300 rounded-lg"
                   title="Copy code"
                 >
-                  {copied ? '✓' : '📋'}
+                  {copied ? '\u2713' : '\uD83D\uDCCB'}
                 </button>
               </div>
             </div>
 
             {/* Expiry Info */}
             <p className="text-sm text-slate-500 text-center mb-6">
-              Expires in 30 days • One-time use
+              {t('expiryInfo')}
             </p>
 
             {/* Share Button */}
@@ -139,7 +141,7 @@ export function InviteModal({ onClose }: InviteModalProps) {
               onClick={shareInvite}
               className="w-full bg-teal-300 text-white py-4 rounded-lg font-semibold hover:bg-teal-400 transition-colors"
             >
-              Share Invite
+              {t('shareButton')}
             </button>
           </>
         ) : null}

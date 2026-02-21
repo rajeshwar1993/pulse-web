@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
 import { ConnectionCard } from './connection-card';
 
 export interface Connection {
@@ -25,6 +28,8 @@ interface ConnectionGridProps {
  * - Desktop: 2-3 columns
  */
 export function ConnectionGrid({ connections }: ConnectionGridProps) {
+  const t = useTranslations('dashboard.connectionGrid');
+
   if (connections.length === 0) {
     return null;
   }
@@ -32,7 +37,7 @@ export function ConnectionGrid({ connections }: ConnectionGridProps) {
   return (
     <div className="space-y-3">
       <h2 className="text-lg font-semibold text-[var(--slate-900)]">
-        Your Connections ({connections.length})
+        {t('title', { count: connections.length })}
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">

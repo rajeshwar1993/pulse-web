@@ -1,0 +1,105 @@
+{
+  "common": {
+    "appName": "Pulse",
+    "tagline": "Effortless peace of mind",
+    "loading": "Loading...",
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "save": "Save",
+    "backToHome": "Back to Home",
+    "comingSoon": "Coming soon",
+    "tapToDismiss": "Tap to dismiss"
+  },
+  "auth": {
+    "signInPrompt": "Sign in to get started",
+    "mobileSignInNote": "Use the mobile app to sign in and create your profile. Then access your dashboard here.",
+    "error": {
+      "title": "Authentication Error",
+      "message": "Sorry, we couldn't sign you in. Please try again."
+    }
+  },
+  "dashboard": {
+    "greetingMorning": "Good morning",
+    "greetingAfternoon": "Good afternoon",
+    "greetingEvening": "Good evening",
+    "activeSubtitle": "You're all set for today. Check on your connections below.",
+    "inactiveSubtitle": "Welcome back! Here's your dashboard.",
+    "status": {
+      "title": "Your Status",
+      "active": "You are active today",
+      "pulsedTime": "Pulsed {time}",
+      "notPulsedYet": "You haven't pulsed yet today",
+      "autoPulseSent": "Your pulse was sent automatically"
+    },
+    "connectionGrid": {
+      "title": "Your Connections ({count})"
+    },
+    "connectionCard": {
+      "active": "Active",
+      "waiting": "Waiting..."
+    },
+    "emptyConnections": {
+      "title": "No connections yet",
+      "message": "You haven't added any connections to your Pulse network. Start connecting with family and friends to share your daily check-ins.",
+      "inviteButton": "Invite someone",
+      "comingSoonNote": "Coming soon in Unit 3: Connections"
+    },
+    "wisdomCard": {
+      "ariaLabel": "Wisdom card - click to dismiss"
+    }
+  },
+  "connections": {
+    "title": "Connections",
+    "connectionCount": "{count, plural, =1 {# connection} other {# connections}}",
+    "addConnection": "+ Add Connection",
+    "activeToday": "Active today",
+    "inactive": "Inactive",
+    "removeConnection": "Remove Connection",
+    "removeConfirm": "Remove this connection? You can restore it within 30 days.",
+    "removeError": "Failed to remove connection",
+    "emptyState": {
+      "title": "No connections yet",
+      "message": "Add your first connection to start sharing your daily pulse",
+      "addFirstButton": "Add Your First Connection"
+    },
+    "invite": {
+      "title": "Invite Connection",
+      "codeLabel": "Invite Code",
+      "expiryInfo": "Expires in 30 days \u2022 One-time use",
+      "shareButton": "Share Invite",
+      "shareTitle": "Join Pulse",
+      "shareText": "Join me on Pulse! Use code: {code}\nOr click: {url}",
+      "generateError": "Failed to generate invite code"
+    }
+  },
+  "profileSetup": {
+    "title": "Set up your profile",
+    "displayNameLabel": "Display Name",
+    "displayNamePlaceholder": "Enter your name",
+    "displayNameCount": "{count}/50",
+    "chooseAvatar": "Choose your avatar",
+    "selectedAvatar": "Selected Avatar",
+    "avatarAlt": "Avatar",
+    "selectedAlt": "Selected",
+    "creating": "Creating...",
+    "continue": "Continue",
+    "error": {
+      "noUser": "No user",
+      "createFailed": "Failed to create profile"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "backToDashboard": "Back to Dashboard",
+    "notifications": "Notifications",
+    "account": "Account",
+    "signOut": "Sign Out"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "networkError": "Network error. Please check your connection.",
+    "notFound": "Page not found",
+    "unauthorized": "You are not authorized to view this page."
+  }
+}

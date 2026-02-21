@@ -1,4 +1,7 @@
+'use client';
+
 import { formatDistanceToNow } from 'date-fns';
+import { useTranslations } from 'next-intl';
 
 interface ConnectionCardProps {
   /**
@@ -33,6 +36,7 @@ export function ConnectionCard({
   status,
   pulseTime,
 }: ConnectionCardProps) {
+  const t = useTranslations('dashboard.connectionCard');
   const isActive = status === 'active';
 
   // Format the pulse time for display
@@ -97,7 +101,7 @@ export function ConnectionCard({
           >
             {isActive ? (
               <>
-                <span className="text-[var(--green)] font-medium">Active</span>
+                <span className="text-[var(--green)] font-medium">{t('active')}</span>
                 {formattedTime && (
                   <>
                     {' '}
@@ -106,7 +110,7 @@ export function ConnectionCard({
                 )}
               </>
             ) : (
-              <span className="text-[var(--slate-500)]">Waiting...</span>
+              <span className="text-[var(--slate-500)]">{t('waiting')}</span>
             )}
           </p>
         </div>

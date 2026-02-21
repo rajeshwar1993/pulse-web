@@ -1,3 +1,7 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
+
 /**
  * EmptyConnectionsView Component
  *
@@ -5,6 +9,8 @@
  * Shows a friendly message and placeholder action button.
  */
 export function EmptyConnectionsView() {
+  const t = useTranslations('dashboard.emptyConnections');
+
   return (
     <div className="bg-white rounded-xl shadow-sm p-8 border border-[var(--slate-200)]">
       <div className="text-center max-w-md mx-auto">
@@ -30,11 +36,10 @@ export function EmptyConnectionsView() {
 
         {/* Message */}
         <h3 className="text-xl font-semibold text-[var(--slate-900)] mb-2">
-          No connections yet
+          {t('title')}
         </h3>
         <p className="text-[var(--slate-600)] mb-6">
-          You haven't added any connections to your Pulse network. Start
-          connecting with family and friends to share your daily check-ins.
+          {t('message')}
         </p>
 
         {/* Action button (placeholder for Unit 3) */}
@@ -48,7 +53,7 @@ export function EmptyConnectionsView() {
             cursor-not-allowed
             flex items-center gap-2 mx-auto
           "
-          title="Coming soon in Unit 3"
+          title={t('comingSoonNote')}
         >
           <svg
             className="w-5 h-5"
@@ -64,11 +69,11 @@ export function EmptyConnectionsView() {
               d="M12 6v6m0 0v6m0-6h6m-6 0H6"
             />
           </svg>
-          Invite someone
+          {t('inviteButton')}
         </button>
 
         <p className="text-[var(--slate-400)] text-xs mt-3">
-          Coming soon in Unit 3: Connections
+          {t('comingSoonNote')}
         </p>
       </div>
     </div>

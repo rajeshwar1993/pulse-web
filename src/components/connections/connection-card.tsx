@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslations } from 'next-intl';
 import type { ConnectionWithProfile } from '@/lib/types/connection';
 
 interface ConnectionCardProps {
@@ -6,6 +9,7 @@ interface ConnectionCardProps {
 }
 
 export function ConnectionCard({ connection, onRemove }: ConnectionCardProps) {
+  const t = useTranslations('connections');
   const statusColor =
     connection.status === 'active' ? 'bg-green-500' : 'bg-slate-300';
 
@@ -28,7 +32,7 @@ export function ConnectionCard({ connection, onRemove }: ConnectionCardProps) {
             {connection.display_name}
           </h3>
           <p className="text-sm text-slate-500">
-            {connection.status === 'active' ? 'Active today' : 'Inactive'}
+            {connection.status === 'active' ? t('activeToday') : t('inactive')}
           </p>
         </div>
       </div>
@@ -38,7 +42,7 @@ export function ConnectionCard({ connection, onRemove }: ConnectionCardProps) {
         onClick={() => onRemove(connection.id)}
         className="w-full text-sm text-red-600 hover:text-red-700 py-2"
       >
-        Remove Connection
+        {t('removeConnection')}
       </button>
     </div>
   );

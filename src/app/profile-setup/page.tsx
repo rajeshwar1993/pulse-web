@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { supabase } from '@/lib/supabase/client';
 
 const AVATAR_SEEDS = [
@@ -12,6 +13,7 @@ const AVATAR_SEEDS = [
 
 export default function ProfileSetup() {
   const router = useRouter();
+  const t = useTranslations('profileSetup');
   const [displayName, setDisplayName] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,7 +34,7 @@ export default function ProfileSetup() {
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('No user');
+      if (!user) throw new Error(t('error.noUser'));
 
       const { error: insertError } = await supabase.from('profiles').insert({
         id: user.id,
@@ -47,7 +49,7 @@ export default function ProfileSetup() {
       router.push('/dashboard');
     } catch (err) {
       console.error('Error creating profile:', err);
-      setError(err instanceof Error ? err.message : 'Failed to create profile');
+      setError(err instanceof Error ? err.message : t('error.createFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -57,7 +59,7 @@ export default function ProfileSetup() {
     <div className="min-h-screen bg-[var(--off-white)] p-6">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold text-[var(--teal)] mb-8">
-          Set up your profile
+          {t('title')}
         </h1>
 
         <form onSubmit={handleSubmit}>
@@ -84,7 +86,7 @@ export default function ProfileSetup() {
           {/* Display Name */}
           <div className="mb-6">
             <label className="block text-[var(--slate-700)] font-semibold mb-2">
-              Display Name
+              {t('displayNameLabel')}
             </label>
             <input
               type="text"
@@ -92,18 +94,18 @@ export default function ProfileSetup() {
               onChange={(e) => setDisplayName(e.target.value)}
               maxLength={50}
               className="w-full px-4 py-3 border border-[var(--slate-300)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--teal)] focus:border-transparent"
-              placeholder="Enter your name"
+              placeholder={t('displayNamePlaceholder')}
               disabled={isLoading}
             />
             <div className="text-sm text-[var(--slate-500)] mt-1">
-              {displayName.length}/50
+              {t('displayNameCount', { count: displayName.length })}
             </div>
           </div>
 
           {/* Avatar Gallery */}
           <div className="mb-6">
             <label className="block text-[var(--slate-700)] font-semibold mb-2">
-              Choose your avatar
+              {t('chooseAvatar')}
             </label>
             <div className="grid grid-cols-5 gap-3">
               {avatarUrls.map((url) => (
@@ -120,7 +122,7 @@ export default function ProfileSetup() {
                 >
                   <img
                     src={url}
-                    alt="Avatar"
+                    alt={t('avatarAlt')}
                     className="w-full h-full object-cover"
                   />
                 </button>
@@ -132,12 +134,12 @@ export default function ProfileSetup() {
           {selectedAvatar && (
             <div className="mb-6">
               <label className="block text-[var(--slate-700)] font-semibold mb-2">
-                Selected Avatar
+                {t('selectedAvatar')}
               </label>
               <div className="w-32 h-32 mx-auto border-4 border-[var(--teal)] rounded-xl overflow-hidden">
                 <img
                   src={selectedAvatar}
-                  alt="Selected"
+                  alt={t('selectedAlt')}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -171,10 +173,10 @@ export default function ProfileSetup() {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   />
                 </svg>
-                Creating...
+                {t('creating')}
               </span>
             ) : (
-              'Continue'
+              t('continue')
             )}
           </button>
         </form>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { getRandomWisdom } from '@/lib/services/wisdom-service';
 import type { WisdomPhrase } from '@/lib/data/wisdom-library';
 
@@ -36,6 +37,8 @@ export function WisdomCard({
   dismissDelay = 3000,
   onDismiss,
 }: WisdomCardProps) {
+  const t = useTranslations('common');
+  const tWisdom = useTranslations('dashboard.wisdomCard');
   const [wisdom, setWisdom] = useState<WisdomPhrase | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [shouldRender, setShouldRender] = useState(true);
@@ -95,7 +98,7 @@ export function WisdomCard({
           handleDismiss();
         }
       }}
-      aria-label="Wisdom card - click to dismiss"
+      aria-label={tWisdom('ariaLabel')}
     >
       {/* Gradient accent bar */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--teal)] to-[var(--blue)]" />
@@ -107,7 +110,7 @@ export function WisdomCard({
 
       {/* Dismiss hint */}
       <p className="text-center text-[var(--slate-400)] text-xs mt-3">
-        Tap to dismiss
+        {t('tapToDismiss')}
       </p>
     </div>
   );

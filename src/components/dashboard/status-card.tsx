@@ -1,4 +1,7 @@
+'use client';
+
 import { formatDistanceToNow } from 'date-fns';
+import { useTranslations } from 'next-intl';
 
 interface StatusCardProps {
   /**
@@ -20,6 +23,8 @@ interface StatusCardProps {
  * - Inactive state: Grey indicator with "not pulsed yet" message
  */
 export function StatusCard({ isActive, pulseTime }: StatusCardProps) {
+  const t = useTranslations('dashboard.status');
+
   // Format the pulse time for display
   const formattedTime = pulseTime
     ? formatDistanceToNow(pulseTime, { addSuffix: true })
@@ -28,7 +33,7 @@ export function StatusCard({ isActive, pulseTime }: StatusCardProps) {
   return (
     <div className="bg-white rounded-xl shadow-sm p-6 border border-[var(--slate-200)]">
       <h2 className="text-lg font-semibold text-[var(--slate-900)] mb-4">
-        Your Status
+        {t('title')}
       </h2>
 
       <div className="flex items-center gap-3">
@@ -79,21 +84,21 @@ export function StatusCard({ isActive, pulseTime }: StatusCardProps) {
           {isActive ? (
             <>
               <p className="text-[var(--slate-900)] font-semibold">
-                You are active today
+                {t('active')}
               </p>
               {formattedTime && (
                 <p className="text-[var(--slate-600)] text-sm">
-                  Pulsed {formattedTime}
+                  {t('pulsedTime', { time: formattedTime })}
                 </p>
               )}
             </>
           ) : (
             <>
               <p className="text-[var(--slate-700)] font-semibold">
-                You haven't pulsed yet today
+                {t('notPulsedYet')}
               </p>
               <p className="text-[var(--slate-500)] text-sm">
-                Your pulse was sent automatically
+                {t('autoPulseSent')}
               </p>
             </>
           )}

@@ -1,5 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Instrument_Sans } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
+import { FlutterBridgeListener } from "@/components/providers/flutter-bridge-listener";
 import "./globals.css";
 
 const inter = Inter({
@@ -27,17 +30,23 @@ export const viewport: Viewport = {
   viewportFit: "cover", // Important for iOS safe areas
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body
         className={`${inter.variable} ${instrumentSans.variable} antialiased safe-area-inset`}
       >
-        {children}
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <FlutterBridgeListener />
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   );

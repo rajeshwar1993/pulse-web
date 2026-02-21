@@ -1,6 +1,10 @@
 import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
 
-export default function AuthError() {
+export default async function AuthError() {
+  const t = await getTranslations('auth');
+  const tCommon = await getTranslations('common');
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--off-white)] px-4">
       <div className="max-w-md w-full text-center">
@@ -21,10 +25,10 @@ export default function AuthError() {
             </svg>
           </div>
           <h1 className="text-3xl font-bold text-[var(--slate-900)] mb-2">
-            Authentication Error
+            {t('error.title')}
           </h1>
           <p className="text-[var(--slate-600)]">
-            Sorry, we couldn't sign you in. Please try again.
+            {t('error.message')}
           </p>
         </div>
 
@@ -32,7 +36,7 @@ export default function AuthError() {
           href="/"
           className="inline-block px-6 py-3 bg-[var(--teal)] text-white font-semibold rounded-lg hover:opacity-90 transition-opacity"
         >
-          Back to Home
+          {tCommon('backToHome')}
         </Link>
       </div>
     </div>
