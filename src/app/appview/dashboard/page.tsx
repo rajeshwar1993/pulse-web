@@ -72,7 +72,7 @@ export default async function Dashboard({
     .single();
 
   if (!profile) {
-    redirect('/profile-setup');
+    redirect('/appview/profile-setup');
   }
 
   // Check if user has pulsed today

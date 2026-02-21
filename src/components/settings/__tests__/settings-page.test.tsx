@@ -59,7 +59,7 @@ describe('SettingsPage', () => {
 
     const backLink = screen.getByRole('link', { name: /back to dashboard/i });
     expect(backLink).toBeInTheDocument();
-    expect(backLink).toHaveAttribute('href', '/dashboard');
+    expect(backLink).toHaveAttribute('href', '/appview/dashboard');
   });
 
   it('should render the LanguageSelector component', () => {

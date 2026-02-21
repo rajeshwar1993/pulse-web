@@ -1,6 +1,6 @@
 # pulse-web Technical Reference
 
-Next.js web application providing dashboard screens rendered in pulse-app's WebView.
+Next.js web application. Pages under `/appview/*` are rendered inside pulse-app's WebView; root-level pages are for standalone browser access.
 
 ## Project Type & Technology Stack
 
@@ -20,16 +20,22 @@ Next.js web application providing dashboard screens rendered in pulse-app's WebV
 ```
 src/
 ├── app/                      # Next.js App Router pages
-│   ├── layout.tsx            # Root layout (metadata, fonts)
-│   ├── page.tsx              # Landing/auth page
-│   ├── dashboard/            # Dashboard screens (Server Component)
-│   ├── profile-setup/        # Profile setup flow
-│   ├── connections/          # Connection management
-│   └── auth/
-│       └── error/            # Auth error handling
-├── components/
+│   ├── layout.tsx            # Root layout (browser-optimized: metadata, fonts, i18n)
+│   ├── page.tsx              # Landing/auth page (redirects to /appview/dashboard)
+│   └── appview/              # Flutter WebView pages (mobile-optimized)
+│       ├── layout.tsx        # AppView layout (FlutterBridge, safe-area, viewport-fit)
+│       ├── dashboard/        # Dashboard (Server Component)
+│       ├── profile-setup/    # Profile setup flow
+│       ├── connections/      # Connection management
+│       ├── settings/         # Settings page
+│       └── auth/
+│           ├── callback/     # OAuth callback handler
+│           └── error/        # Auth error page
+├── components/               # Shared components (used by both appview and browser pages)
 │   ├── dashboard/            # Dashboard-specific components
 │   ├── connections/          # Connection management components
+│   ├── settings/             # Settings components
+│   ├── providers/            # FlutterBridgeListener
 │   └── ui/                   # Shared UI components
 ├── lib/
 │   ├── supabase/
@@ -46,10 +52,12 @@ src/
 - `/Users/rajeshwarrudra/Documents/DevWork/Pulse-workspace/pulse-web/src/app/layout.tsx` - Root layout, global metadata
 - `/Users/rajeshwarrudra/Documents/DevWork/Pulse-workspace/pulse-web/src/app/page.tsx` - Landing page (redirects to auth/dashboard)
 
-**Core Pages**
-- `/Users/rajeshwarrudra/Documents/DevWork/Pulse-workspace/pulse-web/src/app/dashboard/page.tsx` - Main dashboard (Server Component, fetches pulse status & connections)
-- `/Users/rajeshwarrudra/Documents/DevWork/Pulse-workspace/pulse-web/src/app/profile-setup/page.tsx` - Profile setup flow
-- `/Users/rajeshwarrudra/Documents/DevWork/Pulse-workspace/pulse-web/src/app/connections/page.tsx` - Connection management screen
+**Core Pages (under /appview/)**
+- `/Users/rajeshwarrudra/Documents/DevWork/Pulse-workspace/pulse-web/src/app/appview/layout.tsx` - AppView layout (FlutterBridge, safe-area, viewport-fit)
+- `/Users/rajeshwarrudra/Documents/DevWork/Pulse-workspace/pulse-web/src/app/appview/dashboard/page.tsx` - Main dashboard (Server Component, fetches pulse status & connections)
+- `/Users/rajeshwarrudra/Documents/DevWork/Pulse-workspace/pulse-web/src/app/appview/profile-setup/page.tsx` - Profile setup flow
+- `/Users/rajeshwarrudra/Documents/DevWork/Pulse-workspace/pulse-web/src/app/appview/connections/page.tsx` - Connection management screen
+- `/Users/rajeshwarrudra/Documents/DevWork/Pulse-workspace/pulse-web/src/app/appview/settings/page.tsx` - Settings page
 
 **Supabase Clients**
 - `/Users/rajeshwarrudra/Documents/DevWork/Pulse-workspace/pulse-web/src/lib/supabase/client.ts` - Browser client (reads from cookies)
@@ -106,7 +114,7 @@ npm run dev
 
 **Server Component Pattern (Dashboard Example)**
 ```typescript
-// app/dashboard/page.tsx - Server Component (no 'use client')
+// app/appview/dashboard/page.tsx - Server Component (no 'use client')
 export default async function Dashboard() {
   const supabase = await createClient(); // Server client
   const { data: { user } } = await supabase.auth.getUser();
@@ -286,10 +294,11 @@ npx tsc --noEmit         # TypeScript type checking (no Biome equivalent)
 - Tables: `profiles`, `daily_pulses`, `connections`, `invite_codes`
 
 **pulse-web ← pulse-app (WebView Bridge)**
-- Loaded in pulse-app's WebView at `/dashboard` or other routes
+- Loaded in pulse-app's WebView at `/appview/dashboard` (all WebView pages under `/appview/*`)
+- FlutterBridgeListener is scoped to `/appview` layout only (not root layout)
 - Receives session cookies from Flutter (injected via webview_flutter)
 - JavaScript Bridge: `window.FlutterBridge.postMessage({ type, payload })`
-- Example: `window.FlutterBridge?.postMessage({ type: 'NAVIGATE', payload: '/connections' })`
+- Example: `window.FlutterBridge?.postMessage({ type: 'NAVIGATE', payload: '/appview/connections' })`
 - Bridge checks: `if (typeof window !== 'undefined' && window.FlutterBridge)`
 
 **Environment Variables**
@@ -301,7 +310,7 @@ npx tsc --noEmit         # TypeScript type checking (no Biome equivalent)
 
 **Server Component Data Fetching**
 ```typescript
-// app/dashboard/page.tsx
+// app/appview/dashboard/page.tsx
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 
@@ -317,7 +326,7 @@ export default async function Dashboard() {
     .eq('id', user.id)
     .single();
 
-  if (!profile) redirect('/profile-setup');
+  if (!profile) redirect('/appview/profile-setup');
 
   return <DashboardContent profile={profile} />;
 }
@@ -410,11 +419,11 @@ export function NavigateButton() {
     if (typeof window !== 'undefined' && window.FlutterBridge) {
       window.FlutterBridge.postMessage({
         type: 'NAVIGATE',
-        payload: '/connections',
+        payload: '/appview/connections',
       });
     } else {
       // Fallback for web browser
-      window.location.href = '/connections';
+      window.location.href = '/appview/connections';
     }
   };
 

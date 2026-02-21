@@ -91,7 +91,7 @@ export function DashboardContent({
           </p>
         </div>
         <Link
-          href="/settings"
+          href="/appview/settings"
           className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-[var(--slate-100)] transition-colors shrink-0"
           aria-label="Settings"
         >

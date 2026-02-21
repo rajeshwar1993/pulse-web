@@ -38,7 +38,7 @@ export function SettingsPage({ currentLocale }: SettingsPageProps) {
       {/* Header */}
       <div className="flex items-center gap-3">
         <Link
-          href="/dashboard"
+          href="/appview/dashboard"
           className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-[var(--slate-100)] transition-colors"
           aria-label={t('backToDashboard')}
         >
