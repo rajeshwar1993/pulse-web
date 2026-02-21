@@ -1,8 +1,7 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import { Inter, Instrument_Sans } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
-import { FlutterBridgeListener } from "@/components/providers/flutter-bridge-listener";
 import "./globals.css";
 
 const inter = Inter({
@@ -22,14 +21,6 @@ export const metadata: Metadata = {
   description: "Mutual reassurance through simple check-ins",
 };
 
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-  viewportFit: "cover", // Important for iOS safe areas
-};
-
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -41,10 +32,9 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body
-        className={`${inter.variable} ${instrumentSans.variable} antialiased safe-area-inset`}
+        className={`${inter.variable} ${instrumentSans.variable} antialiased`}
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <FlutterBridgeListener />
           {children}
         </NextIntlClientProvider>
       </body>

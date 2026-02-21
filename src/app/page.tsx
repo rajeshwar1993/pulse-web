@@ -20,10 +20,10 @@ export default async function Home() {
 
     if (profile) {
       // Has profile, redirect to dashboard
-      redirect('/dashboard');
+      redirect('/appview/dashboard');
     } else {
       // No profile, redirect to profile setup
-      redirect('/profile-setup');
+      redirect('/appview/profile-setup');
     }
   }
 

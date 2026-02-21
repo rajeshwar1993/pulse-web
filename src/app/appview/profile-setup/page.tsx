@@ -46,7 +46,7 @@ export default function ProfileSetup() {
 
       if (insertError) throw insertError;
 
-      router.push('/dashboard');
+      router.push('/appview/dashboard');
     } catch (err) {
       console.error('Error creating profile:', err);
       setError(err instanceof Error ? err.message : t('error.createFailed'));
