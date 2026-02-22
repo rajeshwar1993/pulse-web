@@ -244,6 +244,64 @@ describe("ConnectionCard", () => {
     });
   });
 
+  describe("Streak display", () => {
+    it("should show streak indicator when currentStreak > 0", () => {
+      render(
+        <ConnectionCard
+          avatar={mockAvatar}
+          name={mockName}
+          status="active"
+          pulseTime={new Date()}
+          currentStreak={7}
+        />,
+      );
+
+      expect(screen.getByTitle("7 day streak")).toBeInTheDocument();
+      expect(screen.getByText("7", { exact: false })).toBeInTheDocument();
+    });
+
+    it("should not show streak indicator when currentStreak is 0", () => {
+      render(
+        <ConnectionCard
+          avatar={mockAvatar}
+          name={mockName}
+          status="active"
+          pulseTime={new Date()}
+          currentStreak={0}
+        />,
+      );
+
+      expect(screen.queryByTitle(/streak/)).not.toBeInTheDocument();
+    });
+
+    it("should not show streak indicator by default", () => {
+      render(
+        <ConnectionCard
+          avatar={mockAvatar}
+          name={mockName}
+          status="active"
+          pulseTime={new Date()}
+        />,
+      );
+
+      expect(screen.queryByTitle(/streak/)).not.toBeInTheDocument();
+    });
+
+    it("should show streak for waiting state if streak exists", () => {
+      render(
+        <ConnectionCard
+          avatar={mockAvatar}
+          name={mockName}
+          status="waiting"
+          pulseTime={null}
+          currentStreak={3}
+        />,
+      );
+
+      expect(screen.getByTitle("3 day streak")).toBeInTheDocument();
+    });
+  });
+
   describe("Component structure", () => {
     it("should render avatar image", () => {
       render(

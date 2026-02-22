@@ -21,6 +21,8 @@ export const mockConnections: DashboardConnection[] = [
     name: "Mom",
     status: "active",
     pulseTime: new Date(Date.now() - 2 * 60 * 60 * 1000),
+    currentStreak: 7,
+    longestStreak: 14,
   },
   {
     id: "conn-2",
@@ -28,6 +30,8 @@ export const mockConnections: DashboardConnection[] = [
     name: "Dad",
     status: "waiting",
     pulseTime: null,
+    currentStreak: 0,
+    longestStreak: 3,
   },
   {
     id: "conn-3",
@@ -35,6 +39,8 @@ export const mockConnections: DashboardConnection[] = [
     name: "Sibling",
     status: "active",
     pulseTime: new Date(Date.now() - 30 * 60 * 1000),
+    currentStreak: 21,
+    longestStreak: 21,
   },
 ];
 
@@ -47,6 +53,8 @@ export const mockConnectionsWithProfile: ConnectionWithProfile[] = [
     status: "active",
     last_pulse: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
     created_at: "2025-01-01T00:00:00Z",
+    current_streak: 7,
+    longest_streak: 14,
   },
   {
     id: "conn-2",
@@ -55,6 +63,8 @@ export const mockConnectionsWithProfile: ConnectionWithProfile[] = [
     avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=sam",
     status: "waiting",
     created_at: "2025-01-02T00:00:00Z",
+    current_streak: 0,
+    longest_streak: 3,
   },
   {
     id: "conn-3",
@@ -64,5 +74,7 @@ export const mockConnectionsWithProfile: ConnectionWithProfile[] = [
     status: "active",
     last_pulse: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
     created_at: "2025-01-03T00:00:00Z",
+    current_streak: 21,
+    longest_streak: 21,
   },
 ];

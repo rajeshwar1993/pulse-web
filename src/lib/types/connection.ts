@@ -33,6 +33,8 @@ export interface ConnectionWithProfile {
   status: "active" | "waiting";
   last_pulse?: string;
   created_at: string;
+  current_streak: number;
+  longest_streak: number;
 }
 
 /** Display-oriented connection used in the dashboard view */
@@ -42,4 +44,6 @@ export interface DashboardConnection {
   name: string;
   status: "active" | "waiting";
   pulseTime?: Date | null;
+  currentStreak: number;
+  longestStreak: number;
 }

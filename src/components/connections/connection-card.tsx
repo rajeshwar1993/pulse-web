@@ -29,7 +29,14 @@ export function ConnectionCard({ connection, onRemove }: ConnectionCardProps) {
           <h3 className="font-semibold text-slate-900">
             {connection.display_name}
           </h3>
-          <p className="text-sm text-slate-500">{statusLabel}</p>
+          <div className="flex items-center gap-2">
+            <p className="text-sm text-slate-500">{statusLabel}</p>
+            {connection.current_streak > 0 && (
+              <span className="text-xs font-semibold text-orange-500 flex items-center gap-0.5">
+                🔥 {connection.current_streak}
+              </span>
+            )}
+          </div>
         </div>
       </div>
 

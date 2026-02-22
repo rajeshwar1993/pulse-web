@@ -10,6 +10,7 @@ import { logger } from "@/lib/utils/logger";
 import { type Connection, ConnectionGrid } from "./connection-grid";
 import { PulseButton } from "./pulse-button";
 import { StatusCard } from "./status-card";
+import { StreakBadge } from "./streak-badge";
 import { WisdomCard } from "./wisdom-card";
 
 interface DashboardContentProps {
@@ -20,6 +21,8 @@ interface DashboardContentProps {
   showWisdom?: boolean;
   settingsHref?: string;
   onPulse?: () => Promise<void>;
+  currentStreak?: number;
+  longestStreak?: number;
 }
 
 /**
@@ -39,6 +42,8 @@ export function DashboardContent({
   showWisdom = true,
   settingsHref = "/appview/settings",
   onPulse,
+  currentStreak = 0,
+  longestStreak = 0,
 }: DashboardContentProps) {
   const t = useTranslations("dashboard");
   const [showWisdomCard, setShowWisdomCard] = useState(showWisdom);
@@ -135,6 +140,12 @@ export function DashboardContent({
 
       {/* Status Card */}
       <StatusCard isActive={isActive} pulseTime={pulseTime} />
+
+      {/* Streak Badge */}
+      <StreakBadge
+        currentStreak={currentStreak}
+        longestStreak={longestStreak}
+      />
 
       {/* Connections Section */}
       <div>

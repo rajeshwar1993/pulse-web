@@ -3,6 +3,7 @@ import type { Connection } from "@/components/dashboard/connection-grid";
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { PULSE_DAY_RESET_HOUR } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/server";
+import { getEffectiveStreak } from "@/lib/utils/streak";
 
 /**
  * Get the start of the current Pulse Day (4:00 AM local time)
@@ -66,6 +67,13 @@ export default async function Dashboard() {
     ? new Date(todayPulse.created_at)
     : null;
 
+  // Compute effective streak (handles staleness)
+  const currentStreak = getEffectiveStreak(
+    profile.current_streak,
+    profile.last_pulse_date,
+  );
+  const longestStreak: number = profile.longest_streak;
+
   // Connections will be fetched from real data in a future unit
   const connections: Connection[] = [];
 
@@ -78,6 +86,8 @@ export default async function Dashboard() {
           pulseTime={pulseTime}
           connections={connections}
           showWisdom={isActive}
+          currentStreak={currentStreak}
+          longestStreak={longestStreak}
         />
       </div>
     </div>

@@ -44,6 +44,7 @@ export function ConnectionGrid({ connections }: ConnectionGridProps) {
             name={connection.name}
             status={connection.status}
             pulseTime={connection.pulseTime}
+            currentStreak={connection.currentStreak}
           />
         ))}
       </div>

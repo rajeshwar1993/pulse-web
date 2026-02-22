@@ -22,6 +22,10 @@ interface ConnectionCardProps {
    * The timestamp when the connection pulsed (if active)
    */
   pulseTime?: Date | null;
+  /**
+   * Current consecutive pulse-day streak
+   */
+  currentStreak?: number;
 }
 
 /**
@@ -37,6 +41,7 @@ export function ConnectionCard({
   name,
   status,
   pulseTime,
+  currentStreak = 0,
 }: ConnectionCardProps) {
   const t = useTranslations("dashboard.connectionCard");
   const locale = useLocale();
@@ -104,42 +109,52 @@ export function ConnectionCard({
           </p>
         </div>
 
-        {/* Status icon */}
-        {isActive ? (
-          <IconBadge size="xs" color="green" className="flex-shrink-0">
-            <svg
-              className="w-4 h-4 text-[var(--green)]"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
+        {/* Streak + Status icon */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {currentStreak > 0 && (
+            <span
+              className="text-xs font-semibold text-orange-500 flex items-center gap-0.5"
+              title={`${currentStreak} day streak`}
             >
-              <path
-                fillRule="evenodd"
-                d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </IconBadge>
-        ) : (
-          <IconBadge size="xs" color="slate" className="flex-shrink-0">
-            <svg
-              className="w-4 h-4 text-[var(--slate-400)]"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-          </IconBadge>
-        )}
+              🔥 {currentStreak}
+            </span>
+          )}
+          {isActive ? (
+            <IconBadge size="xs" color="green">
+              <svg
+                className="w-4 h-4 text-[var(--green)]"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </IconBadge>
+          ) : (
+            <IconBadge size="xs" color="slate">
+              <svg
+                className="w-4 h-4 text-[var(--slate-400)]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </IconBadge>
+          )}
+        </div>
       </div>
     </div>
   );

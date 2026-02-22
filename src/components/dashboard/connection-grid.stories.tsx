@@ -24,12 +24,16 @@ const mockConnections: DashboardConnection[] = [
     name: "Mom",
     status: "active",
     pulseTime: new Date(Date.now() - 30 * 60 * 1000),
+    currentStreak: 12,
+    longestStreak: 15,
   },
   {
     id: "2",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Dad",
     name: "Dad",
     status: "waiting",
+    currentStreak: 0,
+    longestStreak: 3,
   },
   {
     id: "3",
@@ -37,12 +41,16 @@ const mockConnections: DashboardConnection[] = [
     name: "Sister",
     status: "active",
     pulseTime: new Date(Date.now() - 2 * 60 * 60 * 1000),
+    currentStreak: 5,
+    longestStreak: 5,
   },
   {
     id: "4",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Grandma",
     name: "Grandma",
     status: "waiting",
+    currentStreak: 0,
+    longestStreak: 0,
   },
 ];
 

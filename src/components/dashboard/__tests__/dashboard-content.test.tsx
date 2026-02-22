@@ -24,6 +24,17 @@ vi.mock("../connection-grid", () => ({
   ),
 }));
 
+vi.mock("../streak-badge", () => ({
+  // biome-ignore lint/suspicious/noExplicitAny: test mock props
+  StreakBadge: (props: any) => (
+    <div
+      data-testid="streak-badge"
+      data-current={props.currentStreak}
+      data-longest={props.longestStreak}
+    />
+  ),
+}));
+
 vi.mock("@/components/shared/empty-connections-view", () => ({
   EmptyConnectionsView: () => <div data-testid="empty-connections" />,
 }));
@@ -128,6 +139,31 @@ describe("DashboardContent", () => {
     expect(screen.getByTestId("status-card")).toBeInTheDocument();
   });
 
+  it("should render StreakBadge with default values", () => {
+    vi.setSystemTime(new Date(2026, 1, 22, 9, 0));
+    render(<DashboardContent {...baseProps} />);
+
+    const badge = screen.getByTestId("streak-badge");
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveAttribute("data-current", "0");
+    expect(badge).toHaveAttribute("data-longest", "0");
+  });
+
+  it("should pass streak values to StreakBadge", () => {
+    vi.setSystemTime(new Date(2026, 1, 22, 9, 0));
+    render(
+      <DashboardContent
+        {...baseProps}
+        currentStreak={7}
+        longestStreak={14}
+      />,
+    );
+
+    const badge = screen.getByTestId("streak-badge");
+    expect(badge).toHaveAttribute("data-current", "7");
+    expect(badge).toHaveAttribute("data-longest", "14");
+  });
+
   it("should render EmptyConnectionsView when no connections", () => {
     vi.setSystemTime(new Date(2026, 1, 22, 9, 0));
     render(<DashboardContent {...baseProps} connections={[]} />);
@@ -145,6 +181,8 @@ describe("DashboardContent", () => {
         name: "Bob",
         status: "active" as const,
         pulseTime: null,
+        currentStreak: 3,
+        longestStreak: 5,
       },
     ];
     render(<DashboardContent {...baseProps} connections={connections} />);

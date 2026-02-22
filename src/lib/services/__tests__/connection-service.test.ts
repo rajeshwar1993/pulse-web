@@ -113,6 +113,8 @@ describe("ConnectionService", () => {
         avatar_url: "/bob.png",
         status: "active",
         created_at: "2026-01-01",
+        current_streak: 0,
+        longest_streak: 0,
       });
     });
 

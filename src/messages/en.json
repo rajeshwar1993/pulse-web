@@ -91,6 +91,12 @@
       "inviteButton": "Invite someone",
       "comingSoonNote": "Coming soon in Unit 3: Connections"
     },
+    "streak": {
+      "days": "{count, plural, =0 {days} =1 {day} other {days}}",
+      "keepGoing": "Keep the streak alive!",
+      "startStreak": "Pulse daily to start a streak",
+      "best": "Best"
+    },
     "settingsAriaLabel": "Settings",
     "wisdomCard": {
       "ariaLabel": "Wisdom card - click to dismiss"

@@ -19,6 +19,10 @@ const meta = {
       options: ["active", "waiting"],
       description: "Current pulse status of the connection",
     },
+    currentStreak: {
+      control: { type: "number", min: 0 },
+      description: "Current consecutive pulse-day streak",
+    },
   },
 } satisfies Meta<typeof ConnectionCard>;
 
@@ -30,7 +34,18 @@ export const Active: Story = {
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mom",
     name: "Mom",
     status: "active",
-    pulseTime: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
+    pulseTime: new Date(Date.now() - 30 * 60 * 1000),
+    currentStreak: 12,
+  },
+};
+
+export const ActiveNoStreak: Story = {
+  args: {
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mom",
+    name: "Mom",
+    status: "active",
+    pulseTime: new Date(Date.now() - 30 * 60 * 1000),
+    currentStreak: 0,
   },
 };
 
@@ -39,6 +54,7 @@ export const Waiting: Story = {
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Dad",
     name: "Dad",
     status: "waiting",
+    currentStreak: 0,
   },
 };
 
@@ -48,5 +64,6 @@ export const LongName: Story = {
     name: "Alexandra Konstantinova-Petrovskaya",
     status: "active",
     pulseTime: new Date(Date.now() - 60 * 60 * 1000),
+    currentStreak: 5,
   },
 };

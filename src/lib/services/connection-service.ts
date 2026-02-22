@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase/client";
 import type { ConnectionWithProfile, InviteCode } from "@/lib/types/connection";
+import { getEffectiveStreak } from "@/lib/utils/streak";
 
 // biome-ignore lint/complexity/noStaticOnlyClass: service pattern groups related methods under a namespace
 export class ConnectionService {
@@ -21,8 +22,8 @@ export class ConnectionService {
         from_user_id,
         to_user_id,
         created_at,
-        from_profile:profiles!connections_from_user_id_fkey(id, display_name, avatar_url),
-        to_profile:profiles!connections_to_user_id_fkey(id, display_name, avatar_url)
+        from_profile:profiles!connections_from_user_id_fkey(id, display_name, avatar_url, current_streak, longest_streak, last_pulse_date),
+        to_profile:profiles!connections_to_user_id_fkey(id, display_name, avatar_url, current_streak, longest_streak, last_pulse_date)
       `,
       )
       .or(`from_user_id.eq.${user.id},to_user_id.eq.${user.id}`)
@@ -44,6 +45,11 @@ export class ConnectionService {
         avatar_url: otherProfile.avatar_url,
         status: "active", // Will be enhanced with pulse status in Unit 4
         created_at: conn.created_at,
+        current_streak: getEffectiveStreak(
+          otherProfile.current_streak ?? 0,
+          otherProfile.last_pulse_date ?? null,
+        ),
+        longest_streak: otherProfile.longest_streak ?? 0,
       };
     });
   }
