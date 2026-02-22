@@ -1,5 +1,16 @@
 import '@testing-library/jest-dom';
-import { beforeAll, afterEach, afterAll } from 'vitest';
+import { beforeAll, afterEach, afterAll, vi } from 'vitest';
+
+// Mock next/image to render a plain <img> tag in tests
+vi.mock('next/image', () => {
+  const { createElement } = require('react');
+  return {
+    default: (props: Record<string, unknown>) => {
+      const { fill, priority, quality, loader, placeholder, blurDataURL, ...rest } = props;
+      return createElement('img', rest);
+    },
+  };
+});
 
 // Mock sessionStorage for tests
 const sessionStorageMock = (() => {

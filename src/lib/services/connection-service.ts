@@ -1,10 +1,7 @@
-import { supabase } from '@/lib/supabase/client';
-import type {
-  Connection,
-  InviteCode,
-  ConnectionWithProfile,
-} from '@/lib/types/connection';
+import { supabase } from "@/lib/supabase/client";
+import type { ConnectionWithProfile, InviteCode } from "@/lib/types/connection";
 
+// biome-ignore lint/complexity/noStaticOnlyClass: service pattern groups related methods under a namespace
 export class ConnectionService {
   /**
    * Get all active connections for the current user
@@ -14,10 +11,10 @@ export class ConnectionService {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    if (!user) throw new Error("Not authenticated");
 
     const { data, error } = await supabase
-      .from('connections')
+      .from("connections")
       .select(
         `
         id,
@@ -26,15 +23,16 @@ export class ConnectionService {
         created_at,
         from_profile:profiles!connections_from_user_id_fkey(id, display_name, avatar_url),
         to_profile:profiles!connections_to_user_id_fkey(id, display_name, avatar_url)
-      `
+      `,
       )
       .or(`from_user_id.eq.${user.id},to_user_id.eq.${user.id}`)
-      .is('removed_at', null)
-      .order('created_at', { ascending: false });
+      .is("removed_at", null)
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
 
     // Normalize connections to show the "other" user
+    // biome-ignore lint/suspicious/noExplicitAny: Supabase join query returns dynamic shape
     return data.map((conn: any) => {
       const isFromUser = conn.from_user_id === user.id;
       const otherProfile = isFromUser ? conn.to_profile : conn.from_profile;
@@ -44,7 +42,7 @@ export class ConnectionService {
         user_id: otherProfile.id,
         display_name: otherProfile.display_name,
         avatar_url: otherProfile.avatar_url,
-        status: 'active', // Will be enhanced with pulse status in Unit 4
+        status: "active", // Will be enhanced with pulse status in Unit 4
         created_at: conn.created_at,
       };
     });
@@ -60,10 +58,10 @@ export class ConnectionService {
     if (!user) return 0;
 
     const { count, error } = await supabase
-      .from('connections')
-      .select('*', { count: 'exact', head: true })
+      .from("connections")
+      .select("*", { count: "exact", head: true })
       .or(`from_user_id.eq.${user.id},to_user_id.eq.${user.id}`)
-      .is('removed_at', null);
+      .is("removed_at", null);
 
     if (error) throw error;
     return count || 0;
@@ -79,13 +77,13 @@ export class ConnectionService {
     if (!user) return false;
 
     const { count, error } = await supabase
-      .from('connections')
-      .select('*', { count: 'exact', head: true })
+      .from("connections")
+      .select("*", { count: "exact", head: true })
       .or(
         `and(from_user_id.eq.${user.id},to_user_id.eq.${otherUserId}),` +
-          `and(from_user_id.eq.${otherUserId},to_user_id.eq.${user.id})`
+          `and(from_user_id.eq.${otherUserId},to_user_id.eq.${user.id})`,
       )
-      .is('removed_at', null);
+      .is("removed_at", null);
 
     if (error) throw error;
     return (count || 0) > 0;
@@ -98,15 +96,15 @@ export class ConnectionService {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    if (!user) throw new Error("Not authenticated");
 
     const { error } = await supabase
-      .from('connections')
+      .from("connections")
       .update({
         removed_at: new Date().toISOString(),
         removed_by: user.id,
       })
-      .eq('id', connectionId);
+      .eq("id", connectionId);
 
     if (error) throw error;
   }
@@ -118,11 +116,12 @@ export class ConnectionService {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    if (!user) throw new Error("Not authenticated");
 
     // Call database function to generate unique code
-    const { data: code, error: codeError } =
-      await supabase.rpc('generate_invite_code');
+    const { data: code, error: codeError } = await supabase.rpc(
+      "generate_invite_code",
+    );
 
     if (codeError) throw codeError;
 
@@ -131,7 +130,7 @@ export class ConnectionService {
     expiresAt.setDate(expiresAt.getDate() + 30);
 
     const { data, error } = await supabase
-      .from('invite_codes')
+      .from("invite_codes")
       .insert({
         code,
         creator_id: user.id,
@@ -149,11 +148,11 @@ export class ConnectionService {
    */
   static async validateInviteCode(code: string): Promise<InviteCode | null> {
     const { data, error } = await supabase
-      .from('invite_codes')
+      .from("invite_codes")
       .select()
-      .eq('code', code)
-      .is('accepted_by', null)
-      .gte('expires_at', new Date().toISOString())
+      .eq("code", code)
+      .is("accepted_by", null)
+      .gte("expires_at", new Date().toISOString())
       .maybeSingle();
 
     if (error) throw error;
@@ -161,58 +160,13 @@ export class ConnectionService {
   }
 
   /**
-   * Accept an invite code and create bidirectional connection
+   * Accept an invite code and create bidirectional connection.
+   * Uses a database RPC for atomic execution — all operations
+   * succeed or fail together within a single transaction.
    */
   static async acceptInviteCode(code: string): Promise<void> {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
-
-    // Validate code
-    const inviteCode = await this.validateInviteCode(code);
-    if (!inviteCode) {
-      throw new Error('Invalid or expired invite code');
-    }
-
-    // Prevent self-connection
-    if (inviteCode.creator_id === user.id) {
-      throw new Error('Cannot connect to yourself');
-    }
-
-    // Check if connection already exists
-    if (await this.connectionExists(inviteCode.creator_id)) {
-      throw new Error('Connection already exists');
-    }
-
-    // Create bidirectional connections (TWO records)
-    const now = new Date().toISOString();
-
-    const { error: connError } = await supabase.from('connections').insert([
-      {
-        from_user_id: inviteCode.creator_id,
-        to_user_id: user.id,
-        created_at: now,
-      },
-      {
-        from_user_id: user.id,
-        to_user_id: inviteCode.creator_id,
-        created_at: now,
-      },
-    ]);
-
-    if (connError) throw connError;
-
-    // Mark invite as accepted
-    const { error: inviteError } = await supabase
-      .from('invite_codes')
-      .update({
-        accepted_by: user.id,
-        accepted_at: now,
-      })
-      .eq('code', code);
-
-    if (inviteError) throw inviteError;
+    const { error } = await supabase.rpc("accept_invite", { p_code: code });
+    if (error) throw error;
   }
 
   /**
@@ -225,12 +179,12 @@ export class ConnectionService {
     if (!user) return [];
 
     const { data, error } = await supabase
-      .from('invite_codes')
+      .from("invite_codes")
       .select()
-      .eq('creator_id', user.id)
-      .gte('expires_at', new Date().toISOString())
-      .is('accepted_by', null)
-      .order('created_at', { ascending: false });
+      .eq("creator_id", user.id)
+      .gte("expires_at", new Date().toISOString())
+      .is("accepted_by", null)
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
     return data as InviteCode[];

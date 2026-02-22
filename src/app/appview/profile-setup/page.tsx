@@ -1,26 +1,40 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
-import { supabase } from '@/lib/supabase/client';
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { supabase } from "@/lib/supabase/client";
+import { logger } from "@/lib/utils/logger";
 
 const AVATAR_SEEDS = [
-  'felix', 'aneka', 'sam', 'charlie', 'alex',
-  'jordan', 'taylor', 'morgan', 'casey', 'riley',
-  'avery', 'quinn', 'sage', 'river', 'skyler',
+  "felix",
+  "aneka",
+  "sam",
+  "charlie",
+  "alex",
+  "jordan",
+  "taylor",
+  "morgan",
+  "casey",
+  "riley",
+  "avery",
+  "quinn",
+  "sage",
+  "river",
+  "skyler",
 ];
 
 export default function ProfileSetup() {
   const router = useRouter();
-  const t = useTranslations('profileSetup');
-  const [displayName, setDisplayName] = useState('');
+  const t = useTranslations("profileSetup");
+  const [displayName, setDisplayName] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const avatarUrls = AVATAR_SEEDS.map(
-    (seed) => `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`
+    (seed) => `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`,
   );
 
   const isValid = displayName.trim().length >= 2 && selectedAvatar;
@@ -33,12 +47,14 @@ export default function ProfileSetup() {
     setError(null);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error(t('error.noUser'));
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error(t("error.noUser"));
 
-      const { error: insertError } = await supabase.from('profiles').insert({
+      const { error: insertError } = await supabase.from("profiles").insert({
         id: user.id,
-        email: user.email!,
+        email: user.email ?? "",
         display_name: displayName.trim(),
         avatar_url: selectedAvatar,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -46,10 +62,10 @@ export default function ProfileSetup() {
 
       if (insertError) throw insertError;
 
-      router.push('/appview/dashboard');
+      router.push("/appview/dashboard");
     } catch (err) {
-      console.error('Error creating profile:', err);
-      setError(err instanceof Error ? err.message : t('error.createFailed'));
+      logger.error("Error creating profile", err);
+      setError(err instanceof Error ? err.message : t("error.createFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -59,7 +75,7 @@ export default function ProfileSetup() {
     <div className="min-h-screen bg-[var(--off-white)] p-6">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold text-[var(--teal)] mb-8">
-          {t('title')}
+          {t("title")}
         </h1>
 
         <form onSubmit={handleSubmit}>
@@ -71,6 +87,7 @@ export default function ProfileSetup() {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -85,27 +102,32 @@ export default function ProfileSetup() {
 
           {/* Display Name */}
           <div className="mb-6">
-            <label className="block text-[var(--slate-700)] font-semibold mb-2">
-              {t('displayNameLabel')}
+            <label
+              htmlFor="display-name"
+              className="block text-[var(--slate-700)] font-semibold mb-2"
+            >
+              {t("displayNameLabel")}
             </label>
             <input
+              id="display-name"
               type="text"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               maxLength={50}
               className="w-full px-4 py-3 border border-[var(--slate-300)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--teal)] focus:border-transparent"
-              placeholder={t('displayNamePlaceholder')}
+              placeholder={t("displayNamePlaceholder")}
               disabled={isLoading}
             />
             <div className="text-sm text-[var(--slate-500)] mt-1">
-              {t('displayNameCount', { count: displayName.length })}
+              {t("displayNameCount", { count: displayName.length })}
             </div>
           </div>
 
           {/* Avatar Gallery */}
           <div className="mb-6">
+            {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes the avatar gallery grid, not a single control */}
             <label className="block text-[var(--slate-700)] font-semibold mb-2">
-              {t('chooseAvatar')}
+              {t("chooseAvatar")}
             </label>
             <div className="grid grid-cols-5 gap-3">
               {avatarUrls.map((url) => (
@@ -116,13 +138,15 @@ export default function ProfileSetup() {
                   disabled={isLoading}
                   className={`aspect-square rounded-lg border-2 overflow-hidden transition-all ${
                     selectedAvatar === url
-                      ? 'border-[var(--teal)] ring-2 ring-[var(--teal)] ring-opacity-50'
-                      : 'border-[var(--slate-200)] hover:border-[var(--slate-400)]'
+                      ? "border-[var(--teal)] ring-2 ring-[var(--teal)] ring-opacity-50"
+                      : "border-[var(--slate-200)] hover:border-[var(--slate-400)]"
                   }`}
                 >
-                  <img
+                  <Image
                     src={url}
-                    alt={t('avatarAlt')}
+                    alt={t("avatarAlt")}
+                    width={100}
+                    height={100}
                     className="w-full h-full object-cover"
                   />
                 </button>
@@ -133,13 +157,16 @@ export default function ProfileSetup() {
           {/* Selected Avatar Preview */}
           {selectedAvatar && (
             <div className="mb-6">
+              {/* biome-ignore lint/a11y/noLabelWithoutControl: presentational label for avatar preview */}
               <label className="block text-[var(--slate-700)] font-semibold mb-2">
-                {t('selectedAvatar')}
+                {t("selectedAvatar")}
               </label>
               <div className="w-32 h-32 mx-auto border-4 border-[var(--teal)] rounded-xl overflow-hidden">
-                <img
+                <Image
                   src={selectedAvatar}
-                  alt={t('selectedAlt')}
+                  alt={t("selectedAlt")}
+                  width={128}
+                  height={128}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -158,6 +185,7 @@ export default function ProfileSetup() {
                   className="animate-spin h-5 w-5"
                   fill="none"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <circle
                     className="opacity-25"
@@ -173,10 +201,10 @@ export default function ProfileSetup() {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   />
                 </svg>
-                {t('creating')}
+                {t("creating")}
               </span>
             ) : (
-              t('continue')
+              t("continue")
             )}
           </button>
         </form>

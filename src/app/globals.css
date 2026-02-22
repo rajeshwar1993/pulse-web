@@ -2,39 +2,39 @@
 
 :root {
   /* Teal (Primary) */
-  --teal-50: #E6F7F6;
-  --teal-100: #B3E8E5;
-  --teal-200: #80D9D4;
-  --teal-300: #62B1AD;
-  --teal-400: #4D8E8A;
-  --teal-500: #3A6B68;
+  --teal-50: #e6f7f6;
+  --teal-100: #b3e8e5;
+  --teal-200: #80d9d4;
+  --teal-300: #62b1ad;
+  --teal-400: #4d8e8a;
+  --teal-500: #3a6b68;
 
   /* Rose (Accent) */
-  --rose-50: #FEF0F0;
-  --rose-100: #FDD5D5;
-  --rose-200: #FBABAB;
-  --rose-300: #F28C8C;
-  --rose-400: #E96B6B;
-  --rose-500: #E04A4A;
+  --rose-50: #fef0f0;
+  --rose-100: #fdd5d5;
+  --rose-200: #fbabab;
+  --rose-300: #f28c8c;
+  --rose-400: #e96b6b;
+  --rose-500: #e04a4a;
 
   /* Neutral */
-  --off-white: #F8FAFC;
-  --slate-50: #F8FAFC;
-  --slate-100: #F1F5F9;
-  --slate-200: #E2E8F0;
-  --slate-300: #CBD5E1;
-  --slate-400: #94A3B8;
-  --slate-500: #64748B;
+  --off-white: #f8fafc;
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
   --slate-600: #475569;
   --slate-700: #334155;
-  --slate-800: #1E293B;
-  --slate-900: #0F172A;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
 
   /* Semantic */
-  --success: #10B981;
-  --warning: #F59E0B;
-  --error: #EF4444;
-  --info: #3B82F6;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
 
   /* Convenience aliases */
   --teal: var(--teal-300);
@@ -82,7 +82,8 @@
   --color-info: var(--info);
 
   /* Typography */
-  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-sans:
+    var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-secondary: var(--font-instrument-sans), sans-serif;
 }
 
@@ -124,4 +125,15 @@ body {
   padding-right: max(var(--safe-area-inset-right), 1rem);
   padding-bottom: max(var(--safe-area-inset-bottom), 1rem);
   padding-left: max(var(--safe-area-inset-left), 1rem);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
 }

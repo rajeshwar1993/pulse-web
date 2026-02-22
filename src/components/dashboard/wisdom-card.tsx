@@ -1,9 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { getRandomWisdom } from '@/lib/services/wisdom-service';
-import type { WisdomPhrase } from '@/lib/data/wisdom-library';
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+import { getRandomWisdomIndex } from "@/lib/services/wisdom-service";
 
 interface WisdomCardProps {
   /**
@@ -37,22 +36,24 @@ export function WisdomCard({
   dismissDelay = 3000,
   onDismiss,
 }: WisdomCardProps) {
-  const t = useTranslations('common');
-  const tWisdom = useTranslations('dashboard.wisdomCard');
-  const [wisdom, setWisdom] = useState<WisdomPhrase | null>(null);
+  const t = useTranslations("common");
+  const tWisdom = useTranslations("dashboard.wisdomCard");
+  const tPhrases = useTranslations("wisdom");
+  const [wisdomIndex, setWisdomIndex] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [shouldRender, setShouldRender] = useState(true);
 
   // Load wisdom on mount
   useEffect(() => {
-    const selectedWisdom = getRandomWisdom();
-    setWisdom(selectedWisdom);
+    const count = Number(tPhrases("count"));
+    const selectedIndex = getRandomWisdomIndex(count);
+    setWisdomIndex(selectedIndex);
 
     // Trigger fade-in animation after a brief delay
     setTimeout(() => setIsVisible(true), 100);
-  }, []);
+  }, [tPhrases]);
 
-  // Auto-dismiss timer
+  // biome-ignore lint/correctness/useExhaustiveDependencies: handleDismiss is stable — only depends on setState calls
   useEffect(() => {
     if (!autoDismiss || !isVisible) return;
 
@@ -74,31 +75,32 @@ export function WisdomCard({
     }, 300); // Match CSS transition duration
   };
 
-  if (!shouldRender || !wisdom) {
+  if (!shouldRender || wisdomIndex === null) {
     return null;
   }
 
+  const wisdom = tPhrases(`phrases.${wisdomIndex}`);
+
   return (
-    <div
+    <button
+      type="button"
       onClick={handleDismiss}
       className={`
-        relative overflow-hidden rounded-2xl p-6 mb-6
+        relative overflow-hidden rounded-2xl p-6 mb-6 w-full text-left
         bg-white/80 backdrop-blur-md
         border border-[var(--teal)]/20
         shadow-lg shadow-[var(--teal)]/10
         cursor-pointer
         transition-all duration-300 ease-in-out
-        ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'}
+        ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"}
       `}
-      role="button"
-      tabIndex={0}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+        if (e.key === "Escape" || e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           handleDismiss();
         }
       }}
-      aria-label={tWisdom('ariaLabel')}
+      aria-label={tWisdom("ariaLabel")}
     >
       {/* Gradient accent bar */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--teal)] to-[var(--blue)]" />
@@ -110,8 +112,8 @@ export function WisdomCard({
 
       {/* Dismiss hint */}
       <p className="text-center text-[var(--slate-400)] text-xs mt-3">
-        {t('tapToDismiss')}
+        {t("tapToDismiss")}
       </p>
-    </div>
+    </button>
   );
 }

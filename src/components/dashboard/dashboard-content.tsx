@@ -1,12 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { useTranslations } from 'next-intl';
-import { WisdomCard } from './wisdom-card';
-import { StatusCard } from './status-card';
-import { ConnectionGrid, type Connection } from './connection-grid';
-import { EmptyConnectionsView } from './empty-connections-view';
+import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+import { EmptyConnectionsView } from "@/components/shared/empty-connections-view";
+import { FLUTTER_READY_SIGNAL_DELAY_MS } from "@/lib/constants";
+import { logger } from "@/lib/utils/logger";
+import { type Connection, ConnectionGrid } from "./connection-grid";
+import { StatusCard } from "./status-card";
+import { WisdomCard } from "./wisdom-card";
 
 interface DashboardContentProps {
   displayName: string;
@@ -32,7 +34,7 @@ export function DashboardContent({
   connections,
   showWisdom = true,
 }: DashboardContentProps) {
-  const t = useTranslations('dashboard');
+  const t = useTranslations("dashboard");
   const [showWisdomCard, setShowWisdomCard] = useState(showWisdom);
 
   // Send window.isReady signal to Flutter WebView
@@ -41,28 +43,30 @@ export function DashboardContent({
     const sendReadySignal = () => {
       try {
         // Check if running in Flutter WebView (FlutterBridge channel)
-        if (typeof window !== 'undefined' && (window as any).FlutterBridge) {
-          console.log('Sending ready signal to Flutter...');
+        if (typeof window !== "undefined" && window.FlutterBridge) {
+          logger.debug("Sending ready signal to Flutter...");
 
           // Send JSON message
-          (window as any).FlutterBridge.postMessage(
+          window.FlutterBridge.postMessage(
             JSON.stringify({
-              type: 'ready',
+              type: "ready",
               timestamp: Date.now(),
-            })
+            }),
           );
 
-          console.log('Ready signal sent successfully');
+          logger.debug("Ready signal sent successfully");
         } else {
-          console.log('FlutterBridge not available (probably running in browser)');
+          logger.debug(
+            "FlutterBridge not available (probably running in browser)",
+          );
         }
       } catch (error) {
-        console.error('Failed to send ready signal:', error);
+        logger.error("Failed to send ready signal", error);
       }
     };
 
     // Send signal after a brief delay to ensure everything is loaded
-    const timer = setTimeout(sendReadySignal, 500);
+    const timer = setTimeout(sendReadySignal, FLUTTER_READY_SIGNAL_DELAY_MS);
 
     return () => clearTimeout(timer);
   }, []);
@@ -71,9 +75,9 @@ export function DashboardContent({
   const getGreeting = (): string => {
     const hour = new Date().getHours();
 
-    if (hour < 12) return t('greetingMorning');
-    if (hour < 18) return t('greetingAfternoon');
-    return t('greetingEvening');
+    if (hour < 12) return t("greetingMorning");
+    if (hour < 18) return t("greetingAfternoon");
+    return t("greetingEvening");
   };
 
   return (
@@ -85,15 +89,13 @@ export function DashboardContent({
             {getGreeting()}, {displayName}!
           </h1>
           <p className="text-[var(--slate-600)] mt-1">
-            {isActive
-              ? t('activeSubtitle')
-              : t('inactiveSubtitle')}
+            {isActive ? t("activeSubtitle") : t("inactiveSubtitle")}
           </p>
         </div>
         <Link
           href="/appview/settings"
           className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-[var(--slate-100)] transition-colors shrink-0"
-          aria-label="Settings"
+          aria-label={t("settingsAriaLabel")}
         >
           <svg
             width="24"
@@ -105,6 +107,7 @@ export function DashboardContent({
             strokeLinecap="round"
             strokeLinejoin="round"
             className="text-[var(--slate-500)]"
+            aria-hidden="true"
           >
             <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
             <circle cx="12" cy="12" r="3" />

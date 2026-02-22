@@ -4,9 +4,9 @@
  * Barrel export for all dashboard-related components
  */
 
-export { WisdomCard } from './wisdom-card';
-export { StatusCard } from './status-card';
-export { ConnectionCard } from './connection-card';
-export { ConnectionGrid, type Connection } from './connection-grid';
-export { EmptyConnectionsView } from './empty-connections-view';
-export { DashboardContent } from './dashboard-content';
+export { EmptyConnectionsView } from "@/components/shared/empty-connections-view";
+export { ConnectionCard } from "./connection-card";
+export { type Connection, ConnectionGrid } from "./connection-grid";
+export { DashboardContent } from "./dashboard-content";
+export { StatusCard } from "./status-card";
+export { WisdomCard } from "./wisdom-card";

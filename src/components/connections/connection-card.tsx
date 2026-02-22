@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
-import { useTranslations } from 'next-intl';
-import type { ConnectionWithProfile } from '@/lib/types/connection';
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import type { ConnectionWithProfile } from "@/lib/types/connection";
 
 interface ConnectionCardProps {
   connection: ConnectionWithProfile;
@@ -9,18 +10,22 @@ interface ConnectionCardProps {
 }
 
 export function ConnectionCard({ connection, onRemove }: ConnectionCardProps) {
-  const t = useTranslations('connections');
+  const t = useTranslations("connections");
   const statusColor =
-    connection.status === 'active' ? 'bg-green-500' : 'bg-slate-300';
+    connection.status === "active" ? "bg-green-500" : "bg-slate-300";
+  const statusLabel =
+    connection.status === "active" ? t("activeToday") : t("waiting");
 
   return (
     <div className="bg-white rounded-lg p-4 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
       {/* Avatar and Status */}
       <div className="flex items-center gap-3 mb-3">
         <div className="relative">
-          <img
+          <Image
             src={connection.avatar_url}
             alt={connection.display_name}
+            width={64}
+            height={64}
             className="w-16 h-16 rounded-full"
           />
           <div
@@ -31,18 +36,17 @@ export function ConnectionCard({ connection, onRemove }: ConnectionCardProps) {
           <h3 className="font-semibold text-slate-900">
             {connection.display_name}
           </h3>
-          <p className="text-sm text-slate-500">
-            {connection.status === 'active' ? t('activeToday') : t('inactive')}
-          </p>
+          <p className="text-sm text-slate-500">{statusLabel}</p>
         </div>
       </div>
 
       {/* Actions */}
       <button
+        type="button"
         onClick={() => onRemove(connection.id)}
         className="w-full text-sm text-red-600 hover:text-red-700 py-2"
       >
-        {t('removeConnection')}
+        {t("removeConnection")}
       </button>
     </div>
   );

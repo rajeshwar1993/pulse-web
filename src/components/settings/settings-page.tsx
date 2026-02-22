@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
-import Link from 'next/link';
-import { LanguageSelector } from './language-selector';
-import { LocaleService } from '@/lib/services/locale-service';
-import type { SupportedLocale } from '@/i18n/config';
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import type { SupportedLocale } from "@/i18n/config";
+import { LocaleService } from "@/lib/services/locale-service";
+import { LanguageSelector } from "./language-selector";
 
 interface SettingsPageProps {
   currentLocale: string;
 }
 
 export function SettingsPage({ currentLocale }: SettingsPageProps) {
-  const t = useTranslations('settings');
+  const t = useTranslations("settings");
   const router = useRouter();
   const [activeLocale, setActiveLocale] = useState(currentLocale);
 
@@ -40,7 +40,7 @@ export function SettingsPage({ currentLocale }: SettingsPageProps) {
         <Link
           href="/appview/dashboard"
           className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-[var(--slate-100)] transition-colors"
-          aria-label={t('backToDashboard')}
+          aria-label={t("backToDashboard")}
         >
           <svg
             width="24"
@@ -52,20 +52,21 @@ export function SettingsPage({ currentLocale }: SettingsPageProps) {
             strokeLinecap="round"
             strokeLinejoin="round"
             className="text-[var(--slate-700)]"
+            aria-hidden="true"
           >
             <path d="M19 12H5" />
             <path d="m12 19-7-7 7-7" />
           </svg>
         </Link>
         <h1 className="text-2xl font-bold text-[var(--slate-900)]">
-          {t('title')}
+          {t("title")}
         </h1>
       </div>
 
       {/* Language Section */}
       <section className="bg-white rounded-2xl p-6 shadow-sm border border-[var(--slate-200)]">
         <h2 className="text-lg font-semibold text-[var(--slate-800)] mb-4">
-          {t('language')}
+          {t("language")}
         </h2>
         <LanguageSelector
           currentLocale={activeLocale}

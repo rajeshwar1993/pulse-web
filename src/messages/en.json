@@ -44,6 +44,7 @@
       "inviteButton": "Invite someone",
       "comingSoonNote": "Coming soon in Unit 3: Connections"
     },
+    "settingsAriaLabel": "Settings",
     "wisdomCard": {
       "ariaLabel": "Wisdom card - click to dismiss"
     }
@@ -53,7 +54,7 @@
     "connectionCount": "{count, plural, =1 {# connection} other {# connections}}",
     "addConnection": "+ Add Connection",
     "activeToday": "Active today",
-    "inactive": "Inactive",
+    "waiting": "Waiting...",
     "removeConnection": "Remove Connection",
     "removeConfirm": "Remove this connection? You can restore it within 30 days.",
     "removeError": "Failed to remove connection",
@@ -69,7 +70,8 @@
       "shareButton": "Share Invite",
       "shareTitle": "Join Pulse",
       "shareText": "Join me on Pulse! Use code: {code}\nOr click: {url}",
-      "generateError": "Failed to generate invite code"
+      "generateError": "Failed to generate invite code",
+      "close": "Close"
     }
   },
   "profileSetup": {
@@ -96,10 +98,87 @@
     "account": "Account",
     "signOut": "Sign Out"
   },
+  "emptyConnections": {
+    "title": "No connections yet",
+    "message": "Add your first connection to start sharing your daily pulse with family and friends.",
+    "addButton": "Add Connection",
+    "comingSoonNote": "Coming soon in Unit 3: Connections"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "message": "The page you're looking for doesn't exist or has been moved.",
+    "backToDashboard": "Back to Dashboard",
+    "backToHome": "Back to Home"
+  },
   "errors": {
     "generic": "Something went wrong. Please try again.",
     "networkError": "Network error. Please check your connection.",
     "notFound": "Page not found",
     "unauthorized": "You are not authorized to view this page."
+  },
+  "wisdom": {
+    "count": "60",
+    "phrases": {
+      "0": "A simple pulse is the highlight of a parent's morning.",
+      "1": "Small gestures, big impact.",
+      "2": "You just made someone's day a little brighter.",
+      "3": "Connection doesn't require words, just presence.",
+      "4": "Your check-in is their peace of mind.",
+      "5": "Consistency builds trust, one pulse at a time.",
+      "6": "You're building a habit of care.",
+      "7": "Distance doesn't matter when hearts stay connected.",
+      "8": "Your loved ones are smiling right now.",
+      "9": "This small act speaks volumes.",
+      "10": "Every pulse strengthens the bond.",
+      "11": "You're weaving a safety net of connection.",
+      "12": "Regular check-ins create lasting relationships.",
+      "13": "Your presence matters more than you know.",
+      "14": "Family feels closer when you stay in touch.",
+      "15": "A moment of connection can change someone's entire day.",
+      "16": "You're nurturing relationships that matter.",
+      "17": "Love grows with consistent care.",
+      "18": "Your attention is a gift they treasure.",
+      "19": "Building bridges, one pulse at a time.",
+      "20": "Well done! Your consistency is remarkable.",
+      "21": "You're doing great at staying connected.",
+      "22": "Another day of being there for the ones who matter.",
+      "23": "Your dedication to connection is inspiring.",
+      "24": "Keep going - you're making a real difference.",
+      "25": "This is what showing up looks like.",
+      "26": "You're creating a legacy of care.",
+      "27": "Your commitment to family is beautiful.",
+      "28": "Every pulse counts, and you're counting on yourself.",
+      "29": "You're proving that distance is just a number.",
+      "30": "Someone is grateful you exist right now.",
+      "31": "Your pulse just brought warmth to someone's heart.",
+      "32": "Peace of mind delivered in an instant.",
+      "33": "You're their reminder that they're not alone.",
+      "34": "Anxiety replaced with assurance - that's your gift.",
+      "35": "You turned someone's worry into relief.",
+      "36": "Your check-in is their comfort.",
+      "37": "Love isn't always loud - sometimes it's just a pulse.",
+      "38": "You're the reason someone feels secure today.",
+      "39": "Connection is the antidote to loneliness, and you just shared it.",
+      "40": "Habits like these shape who we become.",
+      "41": "One more day of showing up. That's powerful.",
+      "42": "Routines of care create extraordinary relationships.",
+      "43": "You're building a streak of kindness.",
+      "44": "Daily actions compound into lifelong bonds.",
+      "45": "Small habits, profound impact.",
+      "46": "Consistency is the secret ingredient of love.",
+      "47": "You're making caring a daily practice.",
+      "48": "This routine is your relationship superpower.",
+      "49": "Building connection, one day at a time.",
+      "50": "The best investments are in people you love.",
+      "51": "Time spent connecting is never wasted.",
+      "52": "In a busy world, your pause to connect matters.",
+      "53": "Technology brings us together when we choose to use it well.",
+      "54": "Modern problems, timeless solutions: just stay in touch.",
+      "55": "You're using tech to strengthen what matters most - relationships.",
+      "56": "The future is built on connections we nurture today.",
+      "57": "Your pulse is proof that you care.",
+      "58": "Distance is temporary, connection is forever.",
+      "59": "You're redefining what it means to be present."
+    }
   }
 }

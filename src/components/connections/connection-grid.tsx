@@ -1,5 +1,5 @@
-import type { ConnectionWithProfile } from '@/lib/types/connection';
-import { ConnectionCard } from './connection-card';
+import type { ConnectionWithProfile } from "@/lib/types/connection";
+import { ConnectionCard } from "./connection-card";
 
 interface ConnectionGridProps {
   connections: ConnectionWithProfile[];

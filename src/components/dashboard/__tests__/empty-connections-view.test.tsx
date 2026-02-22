@@ -1,97 +1,98 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { EmptyConnectionsView } from '../empty-connections-view';
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, it, vi } from "vitest";
+import { EmptyConnectionsView } from "@/components/shared/empty-connections-view";
 
-vi.mock('next-intl', () => ({
+vi.mock("next-intl", () => ({
   useTranslations: () => (key: string) => {
     const translations: Record<string, string> = {
-      title: 'No connections yet',
+      title: "No connections yet",
       message:
-        "You haven't added any connections to your Pulse network. Start connecting with family and friends to share your daily check-ins.",
-      inviteButton: 'Invite someone',
-      comingSoonNote: 'Coming soon in Unit 3: Connections',
+        "Add your first connection to start sharing your daily pulse with family and friends.",
+      addButton: "Add Connection",
+      comingSoonNote: "Coming soon in Unit 3: Connections",
     };
     return translations[key] || key;
   },
 }));
 
-describe('EmptyConnectionsView', () => {
-  it('should render empty state message', () => {
+describe("EmptyConnectionsView", () => {
+  it("should render empty state message", () => {
     render(<EmptyConnectionsView />);
 
-    expect(screen.getByText('No connections yet')).toBeInTheDocument();
-    expect(
-      screen.getByText(/You haven't added any connections to your Pulse network/)
-    ).toBeInTheDocument();
+    expect(screen.getByText("No connections yet")).toBeInTheDocument();
+    expect(screen.getByText(/Add your first connection/)).toBeInTheDocument();
   });
 
-  it('should render invite button', () => {
+  it("should render disabled button when no onAddConnection", () => {
     render(<EmptyConnectionsView />);
 
-    const inviteButton = screen.getByRole('button', { name: /invite someone/i });
-    expect(inviteButton).toBeInTheDocument();
+    const button = screen.getByRole("button", { name: /add connection/i });
+    expect(button).toBeInTheDocument();
+    expect(button).toBeDisabled();
   });
 
-  it('should have disabled invite button', () => {
-    render(<EmptyConnectionsView />);
-
-    const inviteButton = screen.getByRole('button', { name: /invite someone/i });
-    expect(inviteButton).toBeDisabled();
-  });
-
-  it('should show "Coming soon" notice', () => {
+  it('should show "Coming soon" notice when no onAddConnection', () => {
     render(<EmptyConnectionsView />);
 
     expect(screen.getByText(/Coming soon in Unit 3/)).toBeInTheDocument();
   });
 
-  it('should render icon/illustration', () => {
+  it("should render active button when onAddConnection provided", async () => {
+    const handleAdd = vi.fn();
+    render(<EmptyConnectionsView onAddConnection={handleAdd} />);
+
+    const button = screen.getByRole("button", { name: /add connection/i });
+    expect(button).toBeEnabled();
+
+    await userEvent.click(button);
+    expect(handleAdd).toHaveBeenCalledOnce();
+  });
+
+  it('should not show "Coming soon" when onAddConnection provided', () => {
+    render(<EmptyConnectionsView onAddConnection={() => {}} />);
+
+    expect(screen.queryByText(/Coming soon/)).not.toBeInTheDocument();
+  });
+
+  it("should render icon/illustration", () => {
     const { container } = render(<EmptyConnectionsView />);
 
-    // Check for SVG icon
-    const icon = container.querySelector('svg');
+    const icon = container.querySelector("svg");
     expect(icon).toBeInTheDocument();
-    expect(icon).toHaveClass('text-[var(--teal)]');
+    expect(icon).toHaveClass("text-[var(--teal)]");
   });
 
-  it('should have white background and border', () => {
+  it("should have white background and border", () => {
     const { container } = render(<EmptyConnectionsView />);
 
-    const card = container.querySelector('.bg-white');
+    const card = container.querySelector(".bg-white");
     expect(card).toBeInTheDocument();
-    expect(card).toHaveClass('border');
-    expect(card).toHaveClass('border-[var(--slate-200)]');
+    expect(card).toHaveClass("border");
+    expect(card).toHaveClass("border-[var(--slate-200)]");
   });
 
-  it('should have centered content', () => {
+  it("should have centered content", () => {
     const { container } = render(<EmptyConnectionsView />);
 
-    const centeredContent = container.querySelector('.text-center');
+    const centeredContent = container.querySelector(".text-center");
     expect(centeredContent).toBeInTheDocument();
   });
 
-  it('should render all descriptive text', () => {
-    render(<EmptyConnectionsView />);
-
-    expect(
-      screen.getByText(
-        /Start connecting with family and friends to share your daily check-ins/
-      )
-    ).toBeInTheDocument();
-  });
-
-  it('should have plus icon in button', () => {
+  it("should have plus icon in button", () => {
     const { container } = render(<EmptyConnectionsView />);
 
-    // Check for plus icon SVG path
-    const plusIcon = container.querySelector('button svg path');
+    const plusIcon = container.querySelector("button svg path");
     expect(plusIcon).toBeInTheDocument();
   });
 
-  it('should have tooltip on disabled button', () => {
+  it("should have tooltip on disabled button", () => {
     render(<EmptyConnectionsView />);
 
-    const inviteButton = screen.getByRole('button', { name: /invite someone/i });
-    expect(inviteButton).toHaveAttribute('title', 'Coming soon in Unit 3: Connections');
+    const button = screen.getByRole("button", { name: /add connection/i });
+    expect(button).toHaveAttribute(
+      "title",
+      "Coming soon in Unit 3: Connections",
+    );
   });
 });

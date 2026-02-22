@@ -1,5 +1,6 @@
 import type { Viewport } from "next";
 import { FlutterBridgeListener } from "@/components/providers/flutter-bridge-listener";
+import { ToastProvider } from "@/components/providers/toast-provider";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -17,7 +18,7 @@ export default function AppViewLayout({
   return (
     <div className="safe-area-inset">
       <FlutterBridgeListener />
-      {children}
+      <ToastProvider>{children}</ToastProvider>
     </div>
   );
 }

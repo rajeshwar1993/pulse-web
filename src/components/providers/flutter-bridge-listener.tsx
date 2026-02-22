@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { LocaleService } from '@/lib/services/locale-service';
-import { supportedLocales } from '@/i18n/config';
-import type { SupportedLocale } from '@/i18n/config';
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import type { SupportedLocale } from "@/i18n/config";
+import { supportedLocales } from "@/i18n/config";
+import { LocaleService } from "@/lib/services/locale-service";
 
 export function FlutterBridgeListener() {
   const router = useRouter();
@@ -18,10 +18,16 @@ export function FlutterBridgeListener() {
       }
     };
 
-    window.addEventListener('flutter-locale-changed', handleLocaleChanged as EventListener);
+    window.addEventListener(
+      "flutter-locale-changed",
+      handleLocaleChanged as EventListener,
+    );
 
     return () => {
-      window.removeEventListener('flutter-locale-changed', handleLocaleChanged as EventListener);
+      window.removeEventListener(
+        "flutter-locale-changed",
+        handleLocaleChanged as EventListener,
+      );
     };
   }, [router]);
 

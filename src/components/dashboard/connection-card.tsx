@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
-import { formatDistanceToNow } from 'date-fns';
-import { useTranslations } from 'next-intl';
+import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
+import { formatRelativeTime } from "@/lib/utils/format-date";
 
 interface ConnectionCardProps {
   /**
@@ -15,7 +16,7 @@ interface ConnectionCardProps {
   /**
    * Status of the connection (active = pulsed today, waiting = hasn't pulsed yet)
    */
-  status: 'active' | 'waiting';
+  status: "active" | "waiting";
   /**
    * The timestamp when the connection pulsed (if active)
    */
@@ -36,22 +37,23 @@ export function ConnectionCard({
   status,
   pulseTime,
 }: ConnectionCardProps) {
-  const t = useTranslations('dashboard.connectionCard');
-  const isActive = status === 'active';
+  const t = useTranslations("dashboard.connectionCard");
+  const locale = useLocale();
+  const isActive = status === "active";
 
   // Format the pulse time for display
-  const formattedTime = pulseTime && isActive
-    ? formatDistanceToNow(pulseTime, { addSuffix: true })
-    : null;
+  const formattedTime =
+    pulseTime && isActive ? formatRelativeTime(pulseTime, locale) : null;
 
   return (
     <div
       className={`
         relative bg-white rounded-xl p-4 border
         transition-all duration-200 hover:shadow-md
-        ${isActive
-          ? 'border-[var(--teal)]/30 shadow-sm'
-          : 'border-[var(--slate-200)] opacity-70'
+        ${
+          isActive
+            ? "border-[var(--teal)]/30 shadow-sm"
+            : "border-[var(--slate-200)] opacity-70"
         }
       `}
     >
@@ -62,15 +64,18 @@ export function ConnectionCard({
             // Active pulse ring animation
             <div className="absolute inset-0 rounded-full bg-[var(--teal)]/20 animate-ping" />
           )}
-          <img
+          <Image
             src={avatar}
             alt={name}
+            width={48}
+            height={48}
             className={`
               relative w-12 h-12 rounded-full object-cover
               ring-2
-              ${isActive
-                ? 'ring-[var(--teal)]'
-                : 'ring-[var(--slate-300)] grayscale-[30%]'
+              ${
+                isActive
+                  ? "ring-[var(--teal)]"
+                  : "ring-[var(--slate-300)] grayscale-[30%]"
               }
             `}
           />
@@ -78,7 +83,7 @@ export function ConnectionCard({
           <div
             className={`
               absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-white
-              ${isActive ? 'bg-[var(--green)]' : 'bg-[var(--slate-400)]'}
+              ${isActive ? "bg-[var(--green)]" : "bg-[var(--slate-400)]"}
             `}
           />
         </div>
@@ -88,29 +93,35 @@ export function ConnectionCard({
           <p
             className={`
               font-semibold truncate
-              ${isActive ? 'text-[var(--slate-900)]' : 'text-[var(--slate-600)]'}
+              ${isActive ? "text-[var(--slate-900)]" : "text-[var(--slate-600)]"}
             `}
+            title={name}
           >
             {name}
           </p>
           <p
             className={`
               text-sm truncate
-              ${isActive ? 'text-[var(--slate-600)]' : 'text-[var(--slate-500)]'}
+              ${isActive ? "text-[var(--slate-600)]" : "text-[var(--slate-500)]"}
             `}
           >
             {isActive ? (
               <>
-                <span className="text-[var(--green)] font-medium">{t('active')}</span>
+                <span className="text-[var(--green)] font-medium">
+                  {t("active")}
+                </span>
                 {formattedTime && (
                   <>
-                    {' '}
-                    • <span className="text-[var(--slate-500)]">{formattedTime}</span>
+                    {" "}
+                    •{" "}
+                    <span className="text-[var(--slate-500)]">
+                      {formattedTime}
+                    </span>
                   </>
                 )}
               </>
             ) : (
-              <span className="text-[var(--slate-500)]">{t('waiting')}</span>
+              <span className="text-[var(--slate-500)]">{t("waiting")}</span>
             )}
           </p>
         </div>
@@ -123,6 +134,7 @@ export function ConnectionCard({
               fill="currentColor"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
             >
               <path
                 fillRule="evenodd"
@@ -139,6 +151,7 @@ export function ConnectionCard({
               stroke="currentColor"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
