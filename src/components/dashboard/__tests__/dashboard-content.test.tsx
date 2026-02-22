@@ -45,6 +45,13 @@ vi.mock("../ghost-calendar", () => ({
   ),
 }));
 
+vi.mock("../missed-pulse-survey-modal", () => ({
+  // biome-ignore lint/suspicious/noExplicitAny: test mock props
+  MissedPulseSurveyModal: (props: any) => (
+    <div data-testid="missed-pulse-survey-modal" data-date={props.missedDate} />
+  ),
+}));
+
 vi.mock("@/components/shared/empty-connections-view", () => ({
   EmptyConnectionsView: () => <div data-testid="empty-connections" />,
 }));
@@ -236,5 +243,23 @@ describe("DashboardContent", () => {
       render(<DashboardContent {...baseProps} />);
       vi.advanceTimersByTime(600);
     }).not.toThrow();
+  });
+
+  it("should show missed pulse survey modal when missedPulseDate is provided", () => {
+    vi.setSystemTime(new Date(2026, 1, 22, 9, 0));
+    render(<DashboardContent {...baseProps} missedPulseDate="2026-02-21" />);
+
+    expect(
+      screen.getByTestId("missed-pulse-survey-modal"),
+    ).toBeInTheDocument();
+  });
+
+  it("should not show missed pulse survey modal when missedPulseDate is null", () => {
+    vi.setSystemTime(new Date(2026, 1, 22, 9, 0));
+    render(<DashboardContent {...baseProps} missedPulseDate={null} />);
+
+    expect(
+      screen.queryByTestId("missed-pulse-survey-modal"),
+    ).not.toBeInTheDocument();
   });
 });

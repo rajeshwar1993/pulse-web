@@ -4,7 +4,7 @@ import { PULSE_DAY_RESET_HOUR } from "@/lib/constants";
  * Get today's logical pulse-day date (accounting for 4 AM boundary).
  * A pulse at 3 AM belongs to the previous calendar day.
  */
-function getTodayPulseDay(): string {
+export function getTodayPulseDay(): string {
   const now = new Date();
   const adjusted = new Date(now.getTime());
   adjusted.setHours(adjusted.getHours() - PULSE_DAY_RESET_HOUR);

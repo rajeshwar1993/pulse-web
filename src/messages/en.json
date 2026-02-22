@@ -102,6 +102,17 @@
     "settingsAriaLabel": "Settings",
     "wisdomCard": {
       "ariaLabel": "Wisdom card - click to dismiss"
+    },
+    "missedPulseSurvey": {
+      "title": "We missed you!",
+      "subtitle": "What happened yesterday?",
+      "responses": {
+        "forgot": "I forgot",
+        "busy": "Too busy",
+        "tech_issue": "Tech issue",
+        "not_feeling_it": "Not feeling it"
+      },
+      "skip": "Skip"
     }
   },
   "connections": {

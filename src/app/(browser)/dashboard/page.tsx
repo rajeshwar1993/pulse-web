@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import type { Connection } from "@/components/dashboard/connection-grid";
 import { PULSE_DAY_RESET_HOUR } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/server";
+import { getTodayPulseDay } from "@/lib/utils/streak";
 import { BrowserDashboardClient } from "./page-client";
 
 export const metadata: Metadata = {
@@ -72,6 +73,28 @@ export default async function BrowserDashboard() {
 
   const connections: Connection[] = [];
 
+  // --- Missed pulse survey detection ---
+  let missedPulseDate: string | null = null;
+  if (profile.last_pulse_date) {
+    const todayPulseDay = getTodayPulseDay();
+    const today = new Date(`${todayPulseDay}T00:00:00`);
+    const yesterdayPulseDay = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+    const yStr = `${yesterdayPulseDay.getFullYear()}-${String(yesterdayPulseDay.getMonth() + 1).padStart(2, "0")}-${String(yesterdayPulseDay.getDate()).padStart(2, "0")}`;
+
+    if (profile.last_pulse_date < yStr) {
+      const { data: existingSurvey } = await supabase
+        .from("missed_pulse_surveys")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("missed_date", yStr)
+        .maybeSingle();
+
+      if (!existingSurvey) {
+        missedPulseDate = yStr;
+      }
+    }
+  }
+
   return (
     <BrowserDashboardClient
       displayName={profile.display_name}
@@ -79,6 +102,7 @@ export default async function BrowserDashboard() {
       pulseTime={pulseTime}
       connections={connections}
       pulsedDates={pulsedDates}
+      missedPulseDate={missedPulseDate}
     />
   );
 }

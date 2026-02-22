@@ -44,3 +44,15 @@ export const WISDOM_SESSION_KEY = "pulse_last_wisdom";
 
 /** Maximum retry attempts when selecting a non-repeating wisdom phrase */
 export const WISDOM_MAX_ATTEMPTS = 10;
+
+// ---------------------------------------------------------------------------
+// Missed Pulse Survey
+// ---------------------------------------------------------------------------
+
+/** Response options displayed to the user (excludes "skipped" which is automatic). */
+export const MISSED_PULSE_RESPONSES = [
+  "forgot",
+  "busy",
+  "tech_issue",
+  "not_feeling_it",
+] as const;

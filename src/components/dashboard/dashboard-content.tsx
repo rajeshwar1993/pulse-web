@@ -9,6 +9,7 @@ import { FLUTTER_READY_SIGNAL_DELAY_MS } from "@/lib/constants";
 import { logger } from "@/lib/utils/logger";
 import { type Connection, ConnectionGrid } from "./connection-grid";
 import { GhostCalendar } from "./ghost-calendar";
+import { MissedPulseSurveyModal } from "./missed-pulse-survey-modal";
 import { PulseButton } from "./pulse-button";
 import { StatusCard } from "./status-card";
 import { StreakBadge } from "./streak-badge";
@@ -25,6 +26,7 @@ interface DashboardContentProps {
   currentStreak?: number;
   longestStreak?: number;
   pulsedDates?: string[];
+  missedPulseDate?: string | null;
 }
 
 /**
@@ -47,9 +49,13 @@ export function DashboardContent({
   currentStreak = 0,
   longestStreak = 0,
   pulsedDates = [],
+  missedPulseDate,
 }: DashboardContentProps) {
   const t = useTranslations("dashboard");
   const [showWisdomCard, setShowWisdomCard] = useState(showWisdom);
+  const [showMissedPulseSurvey, setShowMissedPulseSurvey] = useState(
+    !!missedPulseDate,
+  );
 
   // Send window.isReady signal to Flutter WebView
   useEffect(() => {
@@ -96,6 +102,14 @@ export function DashboardContent({
 
   return (
     <div className="space-y-6">
+      {/* Missed Pulse Survey Modal */}
+      {showMissedPulseSurvey && missedPulseDate && (
+        <MissedPulseSurveyModal
+          missedDate={missedPulseDate}
+          onComplete={() => setShowMissedPulseSurvey(false)}
+        />
+      )}
+
       {/* Header with dynamic greeting */}
       <div className="flex items-start justify-between">
         <div>
