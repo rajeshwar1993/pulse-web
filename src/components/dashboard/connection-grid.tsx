@@ -42,6 +42,7 @@ export function ConnectionGrid({ connections }: ConnectionGridProps) {
             key={connection.id}
             avatar={connection.avatar}
             name={connection.name}
+            timezone={connection.timezone}
             status={connection.status}
             pulseTime={connection.pulseTime}
             currentStreak={connection.currentStreak}

@@ -3,19 +3,38 @@ import { describe, expect, it, vi } from "vitest";
 import { ConnectionCard } from "../connection-card";
 
 vi.mock("next-intl", () => ({
-  useTranslations: () => (key: string) => {
-    const translations: Record<string, string> = {
-      active: "Active",
-      waiting: "Waiting...",
-    };
-    return translations[key] || key;
-  },
+  useTranslations:
+    () =>
+    (key: string, params?: Record<string, string>) => {
+      const translations: Record<string, string> = {
+        active: "Active",
+        waiting: "Waiting...",
+        earlyMorning: "Morning there",
+      };
+      if (key === "localTime" && params) {
+        return `${params.time} for ${params.name}`;
+      }
+      return translations[key] || key;
+    },
   useLocale: () => "en",
+}));
+
+vi.mock("@/hooks/use-partner-time", () => ({
+  usePartnerTime: () => "10:00 PM",
+}));
+
+vi.mock("@/lib/utils/timezone", () => ({
+  getWaitingContext: (tz: string) => {
+    if (tz === "Asia/Tokyo") return "morning";
+    if (tz === "Pacific/Auckland") return "late";
+    return "daytime";
+  },
 }));
 
 describe("ConnectionCard", () => {
   const mockAvatar = "https://example.com/avatar.jpg";
   const mockName = "John Doe";
+  const mockTimezone = "America/New_York";
 
   describe("Active state", () => {
     it("should render active state correctly", () => {
@@ -25,6 +44,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="active"
           pulseTime={pulseTime}
         />,
@@ -42,6 +62,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="active"
           pulseTime={pulseTime}
         />,
@@ -59,6 +80,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="active"
           pulseTime={pulseTime}
         />,
@@ -77,6 +99,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="active"
           pulseTime={pulseTime}
         />,
@@ -94,6 +117,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="active"
           pulseTime={pulseTime}
         />,
@@ -111,6 +135,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="active"
           pulseTime={pulseTime}
         />,
@@ -130,12 +155,31 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="active"
           pulseTime={pulseTime}
         />,
       );
 
       expect(screen.getByText(/2 hours ago/)).toBeInTheDocument();
+    });
+
+    it("should display partner local time", () => {
+      const pulseTime = new Date();
+
+      render(
+        <ConnectionCard
+          avatar={mockAvatar}
+          name={mockName}
+          timezone={mockTimezone}
+          status="active"
+          pulseTime={pulseTime}
+        />,
+      );
+
+      expect(
+        screen.getByText("10:00 PM for John Doe"),
+      ).toBeInTheDocument();
     });
   });
 
@@ -145,6 +189,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="waiting"
           pulseTime={null}
         />,
@@ -159,6 +204,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="waiting"
           pulseTime={null}
         />,
@@ -174,6 +220,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="waiting"
           pulseTime={null}
         />,
@@ -189,6 +236,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="waiting"
           pulseTime={null}
         />,
@@ -206,6 +254,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="waiting"
           pulseTime={null}
         />,
@@ -221,6 +270,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="waiting"
           pulseTime={null}
         />,
@@ -235,6 +285,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="waiting"
           pulseTime={null}
         />,
@@ -244,12 +295,73 @@ describe("ConnectionCard", () => {
     });
   });
 
+  describe("Timezone context", () => {
+    it("should show 'Morning there' when partner is in morning timezone", () => {
+      render(
+        <ConnectionCard
+          avatar={mockAvatar}
+          name={mockName}
+          timezone="Asia/Tokyo"
+          status="waiting"
+          pulseTime={null}
+        />,
+      );
+
+      expect(screen.getByText("Morning there")).toBeInTheDocument();
+    });
+
+    it("should show 'Waiting...' when partner is in daytime timezone", () => {
+      render(
+        <ConnectionCard
+          avatar={mockAvatar}
+          name={mockName}
+          timezone="America/New_York"
+          status="waiting"
+          pulseTime={null}
+        />,
+      );
+
+      expect(screen.getByText("Waiting...")).toBeInTheDocument();
+    });
+
+    it("should show 'Waiting...' when partner is in late timezone", () => {
+      render(
+        <ConnectionCard
+          avatar={mockAvatar}
+          name={mockName}
+          timezone="Pacific/Auckland"
+          status="waiting"
+          pulseTime={null}
+        />,
+      );
+
+      expect(screen.getByText("Waiting...")).toBeInTheDocument();
+    });
+
+    it("should display partner local time line", () => {
+      render(
+        <ConnectionCard
+          avatar={mockAvatar}
+          name={mockName}
+          timezone={mockTimezone}
+          status="waiting"
+          pulseTime={null}
+        />,
+      );
+
+      expect(
+        screen.getByText("10:00 PM for John Doe"),
+      ).toBeInTheDocument();
+    });
+  });
+
   describe("Streak display", () => {
     it("should show streak indicator when currentStreak > 0", () => {
       render(
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="active"
           pulseTime={new Date()}
           currentStreak={7}
@@ -265,6 +377,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="active"
           pulseTime={new Date()}
           currentStreak={0}
@@ -279,6 +392,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="active"
           pulseTime={new Date()}
         />,
@@ -292,6 +406,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="waiting"
           pulseTime={null}
           currentStreak={3}
@@ -308,6 +423,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="active"
           pulseTime={new Date()}
         />,
@@ -322,6 +438,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="active"
           pulseTime={new Date()}
         />,
@@ -337,6 +454,7 @@ describe("ConnectionCard", () => {
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
+          timezone={mockTimezone}
           status="active"
           pulseTime={new Date()}
         />,
