@@ -6,11 +6,15 @@ const sizeStyles: Record<SpinnerSize, string> = {
   lg: "h-12 w-12 border-2",
 };
 
+/** Props for the {@link Spinner} component. */
 interface SpinnerProps {
+  /** Diameter of the spinner. @default "md" */
   size?: SpinnerSize;
+  /** Additional CSS classes to apply. */
   className?: string;
 }
 
+/** Animated circular spinner used as a loading indicator. */
 export function Spinner({ size = "md", className = "" }: SpinnerProps) {
   return (
     <output

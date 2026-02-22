@@ -5,6 +5,18 @@ const meta = {
   title: "Dashboard/WisdomCard",
   component: WisdomCard,
   tags: ["autodocs"],
+  argTypes: {
+    autoDismiss: {
+      control: "boolean",
+      description: "Whether the card automatically dismisses after a delay",
+      table: { defaultValue: { summary: "true" } },
+    },
+    dismissDelay: {
+      control: "number",
+      description: "Auto-dismiss delay in milliseconds",
+      table: { defaultValue: { summary: "3000" } },
+    },
+  },
   args: {
     autoDismiss: false,
   },

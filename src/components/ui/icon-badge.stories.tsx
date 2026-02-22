@@ -5,6 +5,20 @@ const meta = {
   title: "UI/IconBadge",
   component: IconBadge,
   tags: ["autodocs"],
+  argTypes: {
+    size: {
+      control: "select",
+      options: ["xs", "sm", "md", "lg"],
+      description: "Badge size",
+      table: { defaultValue: { summary: "md" } },
+    },
+    color: {
+      control: "select",
+      options: ["teal", "rose", "green", "slate"],
+      description: "Badge background color",
+      table: { defaultValue: { summary: "teal" } },
+    },
+  },
 } satisfies Meta<typeof IconBadge>;
 
 export default meta;

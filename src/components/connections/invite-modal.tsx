@@ -13,10 +13,22 @@ import { ConnectionService } from "@/lib/services/connection-service";
 import type { InviteCode } from "@/lib/types/connection";
 import { logger } from "@/lib/utils/logger";
 
+/**
+ * Props for the InviteModal component.
+ */
 interface InviteModalProps {
+  /** Callback invoked when the modal is closed. */
   onClose: () => void;
 }
 
+/**
+ * InviteModal Component
+ *
+ * Generates a single-use invite code and presents it in a modal with:
+ * - QR code for scanning
+ * - Copyable code field
+ * - Native share integration (falls back to clipboard copy)
+ */
 export function InviteModal({ onClose }: InviteModalProps) {
   const t = useTranslations("connections.invite");
   const [inviteCode, setInviteCode] = useState<InviteCode | null>(null);

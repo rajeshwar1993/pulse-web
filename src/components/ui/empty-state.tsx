@@ -1,14 +1,21 @@
 import type React from "react";
 import { Card } from "./card";
 
+/** Props for the {@link EmptyState} component. */
 interface EmptyStateProps {
+  /** Optional icon displayed above the title. */
   icon?: React.ReactNode;
+  /** Primary heading text. */
   title: string;
+  /** Descriptive body text shown below the title. */
   message: string;
+  /** Optional call-to-action element (e.g. a button) rendered below the message. */
   action?: React.ReactNode;
+  /** Additional CSS classes to apply to the outer card. */
   className?: string;
 }
 
+/** Centered card for empty or zero-data states with icon, message, and optional action. */
 export function EmptyState({
   icon,
   title,

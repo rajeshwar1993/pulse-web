@@ -4,10 +4,15 @@ import { useEffect } from "react";
 
 export type ToastVariant = "success" | "error" | "info";
 
+/** Props for the {@link Toast} component. */
 interface ToastProps {
+  /** Text content displayed inside the toast. */
   message: string;
+  /** Color scheme indicating the type of notification. */
   variant: ToastVariant;
+  /** Callback fired when the toast auto-dismisses or is manually closed. */
   onDismiss: () => void;
+  /** Time in milliseconds before the toast auto-dismisses. @default 3000 */
   duration?: number;
 }
 
@@ -17,6 +22,7 @@ const variantStyles: Record<ToastVariant, string> = {
   info: "bg-[var(--slate-800)] text-white",
 };
 
+/** Fixed-position notification banner that auto-dismisses after a configurable duration. */
 export function Toast({
   message,
   variant,

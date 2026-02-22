@@ -7,6 +7,12 @@ const meta = {
   title: "Connections/InviteModal",
   component: InviteModal,
   tags: ["autodocs"],
+  argTypes: {
+    onClose: {
+      action: "onClose",
+      description: "Callback invoked when the modal is closed",
+    },
+  },
   decorators: [
     (Story) => (
       <ToastProvider>

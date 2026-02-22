@@ -1,0 +1,74 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Getting Started/Accessibility" />
+
+# Accessibility
+
+Pulse targets **WCAG 2.1 AA** compliance. This guide covers the standards our components follow.
+
+## Keyboard Navigation
+
+All interactive components support full keyboard operation:
+
+| Component | Keys |
+|-----------|------|
+| Button | `Enter`, `Space` to activate |
+| Modal | `Escape` to close, `Tab` to cycle focus within |
+| Toast | Auto-dismissed; `aria-live="assertive"` for screen readers |
+| WisdomCard | `Enter`, `Space`, `Escape` to dismiss |
+| FormInput | Standard input keyboard behavior |
+
+## Focus Management
+
+- **Modal** traps focus — Tab cycles through focusable elements inside the dialog
+- **InviteModal** auto-focuses the first interactive element on open
+- Focus returns to the trigger element when a modal closes
+- Visible focus rings use `focus:ring-2 focus:ring-[var(--teal)]`
+
+## Screen Reader Support
+
+- **Alert** uses `role="alert"` for important messages
+- **Toast** uses `role="alert"` with `aria-live="assertive"` for time-sensitive notifications
+- **Modal** uses `role="dialog"` with `aria-modal="true"`
+- **Spinner** uses `aria-label="Loading"` on the output element
+- Decorative SVGs use `aria-hidden="true"`
+- **Avatar** requires meaningful `alt` text for the image
+
+## Color Contrast
+
+All text meets the following minimum contrast ratios against their backgrounds:
+
+- **Normal text** (< 18pt): 4.5:1 ratio minimum
+- **Large text** (>= 18pt bold or >= 24pt): 3:1 ratio minimum
+- **UI components**: 3:1 ratio against adjacent colors
+
+Key color pairings:
+- `--slate-900` on white → passes AA
+- `--slate-600` on white → passes AA for normal text
+- White on `--teal` → passes AA for large text
+- White on `--error` → passes AA
+
+## Status Indicators
+
+Pulse status is never communicated by color alone:
+
+- **Active**: Green dot + checkmark icon + "Active" text label
+- **Inactive**: Gray dot + clock icon + "Not pulsed yet" text label
+- **Connection active**: Teal ring + heart icon + timestamp text
+- **Connection waiting**: Gray ring + clock icon + "Waiting..." text
+
+## Component-Specific Notes
+
+### Button
+- Uses native `<button>` element for built-in keyboard and screen reader support
+- `disabled` state sets `aria-disabled` implicitly and reduces opacity
+- `loading` state disables the button and shows a spinner with text
+
+### Modal
+- Background scroll is not locked (consider adding this)
+- Backdrop click closes the modal (via click event delegation)
+- `aria-labelledby` should reference the modal's heading ID
+
+### FormInput
+- Always pair with a visible `<label>` via the `label` and `htmlFor` props
+- The `htmlFor` prop links the label to the input's `id` attribute

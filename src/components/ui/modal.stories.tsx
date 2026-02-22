@@ -8,6 +8,28 @@ const meta = {
   title: "UI/Modal",
   component: Modal,
   tags: ["autodocs"],
+  argTypes: {
+    open: {
+      control: "boolean",
+      description: "Whether the modal is open",
+    },
+    maxWidth: {
+      control: "select",
+      options: ["sm", "md"],
+      description: "Maximum width of the modal",
+      table: { defaultValue: { summary: "md" } },
+    },
+    padding: {
+      control: "select",
+      options: ["md", "lg"],
+      description: "Inner padding of the modal",
+      table: { defaultValue: { summary: "md" } },
+    },
+    ariaLabelledBy: {
+      control: "text",
+      description: "ID of the element that labels the modal for accessibility",
+    },
+  },
   args: {
     onClose: fn(),
   },

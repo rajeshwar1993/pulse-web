@@ -5,6 +5,21 @@ const meta = {
   title: "Dashboard/ConnectionCard",
   component: ConnectionCard,
   tags: ["autodocs"],
+  argTypes: {
+    avatar: {
+      control: "text",
+      description: "URL of the connection's avatar image",
+    },
+    name: {
+      control: "text",
+      description: "Display name of the connection",
+    },
+    status: {
+      control: "select",
+      options: ["active", "waiting"],
+      description: "Current pulse status of the connection",
+    },
+  },
 } satisfies Meta<typeof ConnectionCard>;
 
 export default meta;

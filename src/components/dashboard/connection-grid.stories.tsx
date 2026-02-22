@@ -6,6 +6,12 @@ const meta = {
   title: "Dashboard/ConnectionGrid",
   component: ConnectionGrid,
   tags: ["autodocs"],
+  argTypes: {
+    connections: {
+      control: "object",
+      description: "Array of dashboard connections to display in the grid",
+    },
+  },
 } satisfies Meta<typeof ConnectionGrid>;
 
 export default meta;

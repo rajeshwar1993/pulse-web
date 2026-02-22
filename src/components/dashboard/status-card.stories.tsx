@@ -5,6 +5,12 @@ const meta = {
   title: "Dashboard/StatusCard",
   component: StatusCard,
   tags: ["autodocs"],
+  argTypes: {
+    isActive: {
+      control: "boolean",
+      description: "Whether the user has an active pulse today",
+    },
+  },
 } satisfies Meta<typeof StatusCard>;
 
 export default meta;

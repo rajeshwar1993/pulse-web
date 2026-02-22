@@ -5,6 +5,28 @@ const meta = {
   title: "UI/FormInput",
   component: FormInput,
   tags: ["autodocs"],
+  argTypes: {
+    label: {
+      control: "text",
+      description: "Label text displayed above the input",
+    },
+    htmlFor: {
+      control: "text",
+      description: "HTML for attribute linking the label to the input",
+    },
+    placeholder: {
+      control: "text",
+      description: "Placeholder text shown when the input is empty",
+    },
+    disabled: {
+      control: "boolean",
+      description: "Whether the input is disabled",
+    },
+    readOnly: {
+      control: "boolean",
+      description: "Whether the input is read-only",
+    },
+  },
 } satisfies Meta<typeof FormInput>;
 
 export default meta;

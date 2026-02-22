@@ -33,12 +33,17 @@ export function buttonVariants({
   return `inline-flex items-center justify-center font-semibold disabled:opacity-50 disabled:cursor-not-allowed ${variantStyles[variant]} ${sizeStyles[size]}`;
 }
 
+/** Props for the {@link Button} component. */
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Visual style variant of the button. @default "primary" */
   variant?: ButtonVariant;
+  /** Size preset controlling padding and font size. @default "md" */
   size?: ButtonSize;
+  /** When true, shows a spinner and disables the button. @default false */
   loading?: boolean;
 }
 
+/** Interactive button with variant styles, size presets, and a loading state. */
 export function Button({
   variant = "primary",
   size = "md",

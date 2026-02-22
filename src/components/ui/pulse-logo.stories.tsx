@@ -5,6 +5,12 @@ const meta = {
   title: "UI/PulseLogo",
   component: PulseLogo,
   tags: ["autodocs"],
+  argTypes: {
+    className: {
+      control: "text",
+      description: "CSS classes to control logo size and styling",
+    },
+  },
 } satisfies Meta<typeof PulseLogo>;
 
 export default meta;

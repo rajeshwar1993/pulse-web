@@ -5,6 +5,19 @@ const meta = {
   title: "UI/Card",
   component: Card,
   tags: ["autodocs"],
+  argTypes: {
+    padding: {
+      control: "select",
+      options: ["sm", "md", "lg"],
+      description: "Card inner padding",
+      table: { defaultValue: { summary: "md" } },
+    },
+    hover: {
+      control: "boolean",
+      description: "Whether the card has an elevated shadow on hover",
+      table: { defaultValue: { summary: "false" } },
+    },
+  },
 } satisfies Meta<typeof Card>;
 
 export default meta;

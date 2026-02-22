@@ -5,6 +5,20 @@ const meta = {
   title: "UI/Heading",
   component: Heading,
   tags: ["autodocs"],
+  argTypes: {
+    as: {
+      control: "select",
+      options: ["h1", "h2", "h3"],
+      description: "HTML heading level to render",
+      table: { defaultValue: { summary: "h2" } },
+    },
+    size: {
+      control: "select",
+      options: ["xl", "lg", "md", "base", "sm"],
+      description: "Visual size of the heading",
+      table: { defaultValue: { summary: "md" } },
+    },
+  },
 } satisfies Meta<typeof Heading>;
 
 export default meta;

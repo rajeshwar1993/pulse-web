@@ -23,12 +23,17 @@ const variantStyles: Record<
   },
 };
 
+/** Props for the {@link Alert} component. */
 interface AlertProps {
+  /** Severity level controlling colors and icon styling. @default "error" */
   variant?: AlertVariant;
+  /** Alert message content. */
   children: React.ReactNode;
+  /** Additional CSS classes to apply. */
   className?: string;
 }
 
+/** Inline alert banner with an icon, colored by severity variant. */
 export function Alert({
   variant = "error",
   className = "",

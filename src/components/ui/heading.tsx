@@ -11,11 +11,15 @@ const sizeStyles: Record<HeadingSize, string> = {
   sm: "text-lg font-semibold",
 };
 
+/** Props for the {@link Heading} component. */
 interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
+  /** The HTML heading element to render. @default "h2" */
   as?: HeadingLevel;
+  /** Visual text size, independent of the heading level. @default "md" */
   size?: HeadingSize;
 }
 
+/** Semantic heading with decoupled visual size and HTML element level. */
 export function Heading({
   as: Tag = "h2",
   size = "md",

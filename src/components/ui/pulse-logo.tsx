@@ -1,7 +1,10 @@
+/** Props for the {@link PulseLogo} component. */
 interface PulseLogoProps {
+  /** Additional CSS classes to apply (e.g. sizing). */
   className?: string;
 }
 
+/** Pulse brand logo -- a teal circle with a white heart icon. */
 export function PulseLogo({ className = "" }: PulseLogoProps) {
   return (
     <div

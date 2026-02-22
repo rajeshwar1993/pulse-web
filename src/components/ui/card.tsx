@@ -8,11 +8,15 @@ const paddingStyles: Record<CardPadding, string> = {
   lg: "p-8",
 };
 
+/** Props for the {@link Card} component. */
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Inner padding preset. @default "md" */
   padding?: CardPadding;
+  /** When true, elevates the shadow on hover. @default false */
   hover?: boolean;
 }
 
+/** Rounded container with a border, shadow, and configurable padding. */
 export function Card({
   padding = "md",
   hover = false,

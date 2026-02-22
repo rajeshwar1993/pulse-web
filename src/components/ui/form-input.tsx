@@ -1,10 +1,14 @@
 import type React from "react";
 
+/** Props for the {@link FormInput} component. */
 interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  /** Text label displayed above the input. */
   label?: string;
+  /** HTML `for`/`id` attribute linking the label to the input. */
   htmlFor?: string;
 }
 
+/** Styled text input with an optional label, supporting all native input attributes. */
 export function FormInput({
   label,
   htmlFor,

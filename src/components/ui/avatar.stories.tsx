@@ -5,6 +5,28 @@ const meta = {
   title: "UI/Avatar",
   component: Avatar,
   tags: ["autodocs"],
+  argTypes: {
+    src: {
+      control: "text",
+      description: "Image source URL for the avatar",
+    },
+    alt: {
+      control: "text",
+      description: "Alt text for the avatar image",
+    },
+    size: {
+      control: "select",
+      options: ["sm", "md", "lg"],
+      description: "Avatar size",
+      table: { defaultValue: { summary: "md" } },
+    },
+    status: {
+      control: "select",
+      options: ["active", "inactive", "none"],
+      description: "Status indicator displayed on the avatar",
+      table: { defaultValue: { summary: "none" } },
+    },
+  },
 } satisfies Meta<typeof Avatar>;
 
 export default meta;

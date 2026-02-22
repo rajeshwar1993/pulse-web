@@ -7,6 +7,16 @@ const meta = {
   title: "UI/EmptyState",
   component: EmptyState,
   tags: ["autodocs"],
+  argTypes: {
+    title: {
+      control: "text",
+      description: "Heading text for the empty state",
+    },
+    message: {
+      control: "text",
+      description: "Descriptive message below the title",
+    },
+  },
 } satisfies Meta<typeof EmptyState>;
 
 export default meta;

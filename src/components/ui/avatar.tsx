@@ -23,14 +23,21 @@ const dotStyles: Record<Exclude<AvatarStatus, "none">, string> = {
   inactive: "bg-[var(--slate-400)]",
 };
 
+/** Props for the {@link Avatar} component. */
 interface AvatarProps {
+  /** URL of the avatar image. */
   src: string;
+  /** Accessible alt text for the image. */
   alt: string;
+  /** Rendered dimensions of the avatar. @default "md" */
   size?: AvatarSize;
+  /** Activity status; shows a colored ring and status dot when not "none". @default "none" */
   status?: AvatarStatus;
+  /** Additional CSS classes to apply. */
   className?: string;
 }
 
+/** Circular user avatar with optional activity status ring and dot indicator. */
 export function Avatar({
   src,
   alt,

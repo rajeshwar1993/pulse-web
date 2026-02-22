@@ -17,13 +17,19 @@ const colorStyles: Record<IconBadgeColor, string> = {
   slate: "bg-[var(--slate-200)]",
 };
 
+/** Props for the {@link IconBadge} component. */
 interface IconBadgeProps {
+  /** Dimensions of the circular badge. @default "md" */
   size?: IconBadgeSize;
+  /** Background color theme of the badge. @default "teal" */
   color?: IconBadgeColor;
+  /** Icon or content rendered inside the badge. */
   children: React.ReactNode;
+  /** Additional CSS classes to apply. */
   className?: string;
 }
 
+/** Circular badge that wraps an icon with a colored background. */
 export function IconBadge({
   size = "md",
   color = "teal",

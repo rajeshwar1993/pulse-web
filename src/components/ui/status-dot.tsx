@@ -5,12 +5,17 @@ const variantStyles: Record<StatusDotVariant, string> = {
   inactive: "bg-[var(--slate-300)]",
 };
 
+/** Props for the {@link StatusDot} component. */
 interface StatusDotProps {
+  /** Visual state of the dot. */
   status: StatusDotVariant;
+  /** When true, adds a pulsing animation ring around an active dot. @default false */
   ping?: boolean;
+  /** Additional CSS classes to apply. */
   className?: string;
 }
 
+/** Colored dot indicating active or inactive status, with an optional ping animation. */
 export function StatusDot({
   status,
   ping = false,

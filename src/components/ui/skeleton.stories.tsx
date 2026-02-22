@@ -5,6 +5,18 @@ const meta = {
   title: "UI/Skeleton",
   component: Skeleton,
   tags: ["autodocs"],
+  argTypes: {
+    rounded: {
+      control: "select",
+      options: ["sm", "md", "full"],
+      description: "Border radius style",
+      table: { defaultValue: { summary: "md" } },
+    },
+    className: {
+      control: "text",
+      description: "Additional CSS classes for width and height",
+    },
+  },
 } satisfies Meta<typeof Skeleton>;
 
 export default meta;

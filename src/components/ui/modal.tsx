@@ -16,15 +16,23 @@ const paddingStyles: Record<ModalPadding, string> = {
   lg: "p-8",
 };
 
+/** Props for the {@link Modal} component. */
 interface ModalProps {
+  /** Whether the modal is currently visible. */
   open: boolean;
+  /** Callback fired when the backdrop is clicked or Escape is pressed. */
   onClose: () => void;
+  /** Maximum width constraint of the modal panel. @default "md" */
   maxWidth?: ModalMaxWidth;
+  /** Inner padding of the modal panel. @default "md" */
   padding?: ModalPadding;
+  /** ID of the element that labels the modal for accessibility. */
   ariaLabelledBy?: string;
+  /** Content rendered inside the modal panel. */
   children: React.ReactNode;
 }
 
+/** Centered dialog overlay that closes on backdrop click or Escape key. */
 export function Modal({
   open,
   onClose,

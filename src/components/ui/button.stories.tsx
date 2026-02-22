@@ -6,6 +6,29 @@ const meta = {
   title: "UI/Button",
   component: Button,
   tags: ["autodocs"],
+  argTypes: {
+    variant: {
+      control: "select",
+      options: ["primary", "secondary", "danger", "ghost"],
+      description: "Visual style variant",
+      table: { defaultValue: { summary: "primary" } },
+    },
+    size: {
+      control: "select",
+      options: ["sm", "md", "lg"],
+      description: "Button size",
+      table: { defaultValue: { summary: "md" } },
+    },
+    loading: {
+      control: "boolean",
+      description: "Whether the button shows a loading spinner",
+      table: { defaultValue: { summary: "false" } },
+    },
+    disabled: {
+      control: "boolean",
+      description: "Whether the button is disabled",
+    },
+  },
   args: {
     onClick: fn(),
   },

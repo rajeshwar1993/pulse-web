@@ -1,0 +1,50 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Getting Started/Introduction" />
+
+# Pulse Design System
+
+Pulse is a daily check-in app that helps families and close friends stay connected through simple, silent signals. This Storybook documents the shared component library powering the Pulse experience.
+
+## Architecture
+
+Pulse uses a **hybrid Flutter + Next.js** architecture:
+
+- **Flutter** provides the native mobile shell (splash screen, auth, WebView container)
+- **Next.js** renders all UI screens inside the WebView — dashboard, profile setup, connections, and settings
+- **Supabase** handles auth, database, and real-time sync
+
+All components in this Storybook live in the Next.js layer (`pulse-web/src/components/`).
+
+## Design Principles
+
+1. **Warmth over efficiency** — Pulse communicates care; the UI should feel warm and personal, not clinical
+2. **Minimal interaction** — The core action is a single daily pulse; every screen should minimize friction
+3. **Glanceable status** — Users should understand everyone's status in under 2 seconds
+4. **Accessibility first** — WCAG 2.1 AA compliance, keyboard navigation, screen reader support
+
+## Color Tokens
+
+| Token | Usage |
+|-------|-------|
+| `--teal` | Primary brand, buttons, active states |
+| `--green` | Success, pulse active indicator |
+| `--error` | Danger actions, error states |
+| `--slate-*` | Text, borders, backgrounds (200–900 scale) |
+| `--off-white` | Page background |
+
+## Typography Scale
+
+| Size | Class | Weight | Usage |
+|------|-------|--------|-------|
+| xl | `text-5xl` | Bold | App title |
+| lg | `text-3xl` | Bold | Page headings |
+| md | `text-2xl` | Bold | Section headings |
+| base | `text-xl` | Semibold | Subheadings |
+| sm | `text-lg` | Semibold | Card titles |
+
+## Component Categories
+
+- **UI Atoms** — Button, Card, Heading, Spinner, IconBadge, Avatar, Modal, StatusDot, FormInput, Alert, Skeleton, EmptyState, PulseLogo, Toast
+- **Dashboard** — StatusCard, ConnectionCard, ConnectionGrid, WisdomCard
+- **Connections** — InviteModal

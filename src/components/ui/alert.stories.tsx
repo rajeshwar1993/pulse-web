@@ -5,6 +5,14 @@ const meta = {
   title: "UI/Alert",
   component: Alert,
   tags: ["autodocs"],
+  argTypes: {
+    variant: {
+      control: "select",
+      options: ["error", "warning", "info"],
+      description: "Alert severity variant",
+      table: { defaultValue: { summary: "error" } },
+    },
+  },
 } satisfies Meta<typeof Alert>;
 
 export default meta;

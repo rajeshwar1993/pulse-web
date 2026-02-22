@@ -1,0 +1,69 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Getting Started/Component Guidelines" />
+
+# Component Guidelines
+
+Best practices for using Pulse components consistently across the app.
+
+## Button
+
+- Use `primary` for the main call-to-action on each screen (one per page)
+- Use `secondary` for cancel/back actions paired with a primary button
+- Use `danger` only for destructive actions (remove connection, delete account)
+- Use `ghost` for navigation or low-emphasis actions
+- Always set `loading={true}` during async operations to prevent double-submission
+- Use the `lg` size for full-width mobile actions
+
+## Card
+
+- Default `md` padding for standard content cards
+- Use `sm` padding inside grids or lists where space is tight
+- Use `lg` padding for hero or empty-state cards
+- Enable `hover` only for interactive/clickable cards
+
+## Heading
+
+- The `as` prop sets the semantic HTML tag (h1, h2, h3) — match your document outline
+- The `size` prop controls visual size independently of semantics
+- Use `xl` only for the app logo/title
+- Use `lg` for top-level page headings
+- Use `sm` for section titles inside cards
+
+## Modal
+
+- Always provide `ariaLabelledBy` pointing to a heading inside the modal
+- Modals auto-close on Escape key and backdrop click
+- Use `sm` maxWidth for confirmation dialogs, `md` for forms or content
+- Prefer modals over new pages for quick actions (invite, confirm delete)
+
+## EmptyState
+
+- Always include an `icon` (use `IconBadge` wrapper) for visual anchoring
+- The `action` slot should contain a `Button` that resolves the empty state
+- Keep `message` text under two sentences
+
+## StatusDot
+
+- Use `active` for "pulsed today" and `inactive` for "not yet pulsed"
+- Enable `ping` animation only on the user's own active status, not on connection cards
+
+## Toast
+
+- Use `success` for completed actions (profile saved, connection added)
+- Use `error` for failed operations
+- Use `info` for passive notifications (auto-pulse sent)
+- Default 3-second duration is appropriate for most messages
+
+## Alert
+
+- Use `error` for form validation failures and API errors
+- Use `warning` for session expiry or degraded functionality
+- Use `info` for neutral informational messages
+- Alerts are persistent (unlike toasts) — use for messages the user needs to read carefully
+
+## Avatar
+
+- Always provide a meaningful `alt` text (person's name)
+- Use `status` ring to indicate pulse state on connection cards
+- Use `none` status for profile display or settings

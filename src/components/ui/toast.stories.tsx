@@ -6,6 +6,22 @@ const meta = {
   title: "UI/Toast",
   component: Toast,
   tags: ["autodocs"],
+  argTypes: {
+    message: {
+      control: "text",
+      description: "Toast message content",
+    },
+    variant: {
+      control: "select",
+      options: ["success", "error", "info"],
+      description: "Toast variant determining color and icon",
+    },
+    duration: {
+      control: "number",
+      description: "Auto-dismiss duration in milliseconds",
+      table: { defaultValue: { summary: "3000" } },
+    },
+  },
   args: {
     onDismiss: fn(),
     duration: 60000, // long duration so it doesn't auto-dismiss in Storybook

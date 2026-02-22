@@ -8,6 +8,12 @@ const preview: Preview = {
     nextjs: {
       appDirectory: true,
     },
+    docs: {
+      toc: true,
+    },
+    controls: {
+      expanded: true,
+    },
   },
   decorators: [
     (Story) => (
