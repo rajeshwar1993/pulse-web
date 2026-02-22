@@ -26,6 +26,11 @@ export const Default: Story = {
   args: {
     currentLocale: "en",
     dashboardHref: "/dashboard",
+    profile: {
+      display_name: "Alex Johnson",
+      avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=felix",
+    },
+    profileSetupHref: "/profile-setup?mode=edit",
   },
   play: async ({ canvas, step }) => {
     await step("Verify settings title", async () => {

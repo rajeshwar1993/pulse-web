@@ -123,6 +123,7 @@
   },
   "profileSetup": {
     "title": "Set up your profile",
+    "editTitle": "Edit your profile",
     "displayNameLabel": "Display Name",
     "displayNamePlaceholder": "Enter your name",
     "displayNameCount": "{count}/50",
@@ -131,14 +132,19 @@
     "avatarAlt": "Avatar",
     "selectedAlt": "Selected",
     "creating": "Creating...",
+    "saving": "Saving...",
     "continue": "Continue",
     "error": {
       "noUser": "No user",
-      "createFailed": "Failed to create profile"
+      "createFailed": "Failed to create profile",
+      "loadFailed": "Failed to load profile",
+      "updateFailed": "Failed to update profile"
     }
   },
   "settings": {
     "title": "Settings",
+    "profile": "Profile",
+    "editProfile": "Edit profile",
     "language": "Language",
     "backToDashboard": "Back to Dashboard",
     "notifications": "Notifications",

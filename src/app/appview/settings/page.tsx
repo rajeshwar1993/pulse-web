@@ -15,13 +15,20 @@ export default async function Settings() {
     redirect("/");
   }
 
-  // Get current locale
-  const locale = await getLocale();
+  // Fetch profile and locale in parallel
+  const [locale, { data: profile }] = await Promise.all([
+    getLocale(),
+    supabase
+      .from("profiles")
+      .select("display_name, avatar_url")
+      .eq("id", user.id)
+      .single(),
+  ]);
 
   return (
     <div className="min-h-screen bg-[var(--off-white)] p-6">
       <div className="max-w-4xl mx-auto">
-        <SettingsPage currentLocale={locale} />
+        <SettingsPage currentLocale={locale} profile={profile ?? undefined} />
       </div>
     </div>
   );

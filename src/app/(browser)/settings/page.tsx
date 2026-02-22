@@ -20,7 +20,21 @@ export default async function BrowserSettings() {
     redirect("/auth/login");
   }
 
-  const locale = await getLocale();
+  const [locale, { data: profile }] = await Promise.all([
+    getLocale(),
+    supabase
+      .from("profiles")
+      .select("display_name, avatar_url")
+      .eq("id", user.id)
+      .single(),
+  ]);
 
-  return <SettingsPage currentLocale={locale} dashboardHref="/dashboard" />;
+  return (
+    <SettingsPage
+      currentLocale={locale}
+      dashboardHref="/dashboard"
+      profile={profile ?? undefined}
+      profileSetupHref="/profile-setup?mode=edit"
+    />
+  );
 }

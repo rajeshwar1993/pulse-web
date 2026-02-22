@@ -25,5 +25,15 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     currentLocale: "en",
+    profile: {
+      display_name: "Alex Johnson",
+      avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=felix",
+    },
+  },
+};
+
+export const WithoutProfile: Story = {
+  args: {
+    currentLocale: "en",
   },
 };
