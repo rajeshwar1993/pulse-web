@@ -1,6 +1,8 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+import { Card } from "@/components/ui/card";
+import { Heading } from "@/components/ui/heading";
 import { formatRelativeTime } from "@/lib/utils/format-date";
 
 interface StatusCardProps {
@@ -32,10 +34,10 @@ export function StatusCard({ isActive, pulseTime }: StatusCardProps) {
     : null;
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6 border border-[var(--slate-200)]">
-      <h2 className="text-lg font-semibold text-[var(--slate-900)] mb-4">
+    <Card>
+      <Heading as="h2" size="sm" className="mb-4">
         {t("title")}
-      </h2>
+      </Heading>
 
       <div className="flex items-center gap-3">
         {/* Status indicator */}
@@ -107,6 +109,6 @@ export function StatusCard({ isActive, pulseTime }: StatusCardProps) {
           )}
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

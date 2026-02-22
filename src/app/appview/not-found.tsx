@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { buttonVariants } from "@/components/ui/button";
 import { PulseLogo } from "@/components/ui/pulse-logo";
 
 export default async function AppViewNotFound() {
@@ -12,10 +13,7 @@ export default async function AppViewNotFound() {
           {t("title")}
         </h2>
         <p className="text-[var(--slate-600)] mb-6">{t("message")}</p>
-        <Link
-          href="/appview/dashboard"
-          className="inline-block px-6 py-3 bg-[var(--teal)] text-white rounded-lg font-medium hover:bg-[var(--teal-400)] transition-colors"
-        >
+        <Link href="/appview/dashboard" className={buttonVariants()}>
           {t("backToDashboard")}
         </Link>
       </div>

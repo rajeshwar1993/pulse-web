@@ -1,7 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { Avatar } from "@/components/ui/avatar";
+import { Card } from "@/components/ui/card";
 import type { ConnectionWithProfile } from "@/lib/types/connection";
 
 interface ConnectionCardProps {
@@ -11,27 +12,19 @@ interface ConnectionCardProps {
 
 export function ConnectionCard({ connection, onRemove }: ConnectionCardProps) {
   const t = useTranslations("connections");
-  const statusColor =
-    connection.status === "active" ? "bg-green-500" : "bg-slate-300";
   const statusLabel =
     connection.status === "active" ? t("activeToday") : t("waiting");
 
   return (
-    <div className="bg-white rounded-lg p-4 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+    <Card padding="sm" hover>
       {/* Avatar and Status */}
       <div className="flex items-center gap-3 mb-3">
-        <div className="relative">
-          <Image
-            src={connection.avatar_url}
-            alt={connection.display_name}
-            width={64}
-            height={64}
-            className="w-16 h-16 rounded-full"
-          />
-          <div
-            className={`absolute bottom-0 right-0 w-4 h-4 ${statusColor} rounded-full border-2 border-white`}
-          />
-        </div>
+        <Avatar
+          src={connection.avatar_url}
+          alt={connection.display_name}
+          size="lg"
+          status={connection.status === "active" ? "active" : "inactive"}
+        />
         <div className="flex-1">
           <h3 className="font-semibold text-slate-900">
             {connection.display_name}
@@ -48,6 +41,6 @@ export function ConnectionCard({ connection, onRemove }: ConnectionCardProps) {
       >
         {t("removeConnection")}
       </button>
-    </div>
+    </Card>
   );
 }

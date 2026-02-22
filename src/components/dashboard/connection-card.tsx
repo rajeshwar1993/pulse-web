@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
+import { Avatar } from "@/components/ui/avatar";
 import { formatRelativeTime } from "@/lib/utils/format-date";
 
 interface ConnectionCardProps {
@@ -59,34 +59,11 @@ export function ConnectionCard({
     >
       <div className="flex items-center gap-3">
         {/* Avatar with status ring */}
-        <div className="relative flex-shrink-0">
-          {isActive && (
-            // Active pulse ring animation
-            <div className="absolute inset-0 rounded-full bg-[var(--teal)]/20 animate-ping" />
-          )}
-          <Image
-            src={avatar}
-            alt={name}
-            width={48}
-            height={48}
-            className={`
-              relative w-12 h-12 rounded-full object-cover
-              ring-2
-              ${
-                isActive
-                  ? "ring-[var(--teal)]"
-                  : "ring-[var(--slate-300)] grayscale-[30%]"
-              }
-            `}
-          />
-          {/* Status dot */}
-          <div
-            className={`
-              absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-white
-              ${isActive ? "bg-[var(--green)]" : "bg-[var(--slate-400)]"}
-            `}
-          />
-        </div>
+        <Avatar
+          src={avatar}
+          alt={name}
+          status={isActive ? "active" : "inactive"}
+        />
 
         {/* Connection info */}
         <div className="flex-1 min-w-0">
