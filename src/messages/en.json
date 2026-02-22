@@ -160,7 +160,22 @@
   "landing": {
     "heroSubtitle": "A simple daily check-in that keeps your closest connections at ease.",
     "getStarted": "Get Started",
-    "logIn": "Log In"
+    "logIn": "Log In",
+    "howItWorks": "How it works",
+    "step1Title": "Send your Pulse",
+    "step1Desc": "One tap each day lets your loved ones know you're doing well.",
+    "step2Title": "Stay Connected",
+    "step2Desc": "See at a glance who's checked in today across your circle.",
+    "step3Title": "Peace of Mind",
+    "step3Desc": "No news feeds, no pressure. Just quiet reassurance for the people who care.",
+    "whyPulse": "Why Pulse?",
+    "whyDesc": "Life gets busy. A phone call feels like too much, a text gets lost in the noise. Pulse is the simplest way to say \"I'm okay\" to the people who matter most.",
+    "featureSimple": "Takes less than 2 seconds",
+    "featurePrivate": "No social feed, no likes, no pressure",
+    "featureFamily": "Built for families and close friends",
+    "featureFree": "Free forever. No ads.",
+    "ctaTitle": "Ready to stay connected?",
+    "ctaSubtitle": "Join Pulse and give your loved ones peace of mind, one tap at a time."
   },
   "notFound": {
     "title": "Page not found",
