@@ -1,95 +1,52 @@
-import { type BrowserContext } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { createClient } from '@supabase/supabase-js';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from '../config';
 
 /**
- * Mock Supabase auth session data for testing.
- * In a real scenario, you would generate actual tokens from a test Supabase instance.
- */
-const MOCK_SESSION = {
-  access_token: 'test-access-token',
-  refresh_token: 'test-refresh-token',
-  expires_at: Math.floor(Date.now() / 1000) + 3600,
-  expires_in: 3600,
-  token_type: 'bearer',
-  user: {
-    id: 'test-user-id',
-    email: 'test@example.com',
-    aud: 'authenticated',
-    role: 'authenticated',
-  },
-};
-
-/**
- * Set up authenticated state by injecting Supabase session cookies/localStorage.
+ * Sign in as a user via the login page UI.
  *
- * Usage with Playwright storageState:
- * ```ts
- * test.use({ storageState: 'e2e/.auth/user.json' });
- * ```
- *
- * Or call directly in a test:
- * ```ts
- * await setupAuthState(page.context());
- * ```
+ * Uses the actual login form so cookies are set correctly by the app's
+ * own @supabase/ssr client. Useful for multi-user scenarios where you
+ * need a second user signed in on a different page/context.
  */
-export async function setupAuthState(context: BrowserContext): Promise<void> {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://localhost:54321';
-  const projectRef = new URL(supabaseUrl).hostname.split('.')[0];
-
-  // Add Supabase auth cookies
-  const baseUrl = 'http://localhost:3000';
-  await context.addCookies([
-    {
-      name: `sb-${projectRef}-auth-token`,
-      value: JSON.stringify(MOCK_SESSION),
-      domain: 'localhost',
-      path: '/',
-    },
-    {
-      name: 'sb-access-token',
-      value: MOCK_SESSION.access_token,
-      domain: 'localhost',
-      path: '/',
-    },
-    {
-      name: 'sb-refresh-token',
-      value: MOCK_SESSION.refresh_token,
-      domain: 'localhost',
-      path: '/',
-    },
-  ]);
+export async function loginViaUI(
+  page: Page,
+  email: string,
+  password: string,
+): Promise<void> {
+  await page.goto('/auth/login');
+  await page.locator('#login-email').fill(email);
+  await page.locator('#login-password').fill(password);
+  await page.locator('button[type="submit"]').click();
+  await page.waitForURL('**/dashboard', { timeout: 15_000 });
 }
 
 /**
- * Generate a storage state file for authenticated tests.
- * This can be used with `test.use({ storageState: path })`.
+ * Sign in via the Supabase API (Node.js side).
+ *
+ * Returns a real session object. Useful when you need session
+ * tokens without a browser (e.g., for API-level testing).
  */
-export function getMockStorageState() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'http://localhost:54321';
-  const projectRef = new URL(supabaseUrl).hostname.split('.')[0];
+export async function signInViaAPI(email: string, password: string) {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    throw new Error(
+      'Missing SUPABASE_URL or SUPABASE_ANON_KEY. ' +
+        'Ensure pulse-web/.env.local is configured.',
+    );
+  }
 
-  return {
-    cookies: [
-      {
-        name: `sb-${projectRef}-auth-token`,
-        value: JSON.stringify(MOCK_SESSION),
-        domain: 'localhost',
-        path: '/',
-        httpOnly: false,
-        secure: false,
-        sameSite: 'Lax' as const,
-        expires: -1,
-      },
-    ],
-    origins: [
-      {
-        origin: 'http://localhost:3000',
-        localStorage: [
-          {
-            name: `sb-${projectRef}-auth-token`,
-            value: JSON.stringify(MOCK_SESSION),
-          },
-        ],
-      },
-    ],
-  };
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    throw new Error(`Sign-in failed for ${email}: ${error.message}`);
+  }
+
+  return data;
 }
