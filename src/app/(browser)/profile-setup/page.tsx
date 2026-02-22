@@ -1,0 +1,166 @@
+"use client";
+
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { Alert } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { FormInput } from "@/components/ui/form-input";
+import { Heading } from "@/components/ui/heading";
+import { supabase } from "@/lib/supabase/client";
+import { logger } from "@/lib/utils/logger";
+
+const AVATAR_SEEDS = [
+  "felix",
+  "aneka",
+  "sam",
+  "charlie",
+  "alex",
+  "jordan",
+  "taylor",
+  "morgan",
+  "casey",
+  "riley",
+  "avery",
+  "quinn",
+  "sage",
+  "river",
+  "skyler",
+];
+
+export default function BrowserProfileSetup() {
+  const router = useRouter();
+  const t = useTranslations("profileSetup");
+  const [displayName, setDisplayName] = useState("");
+  const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const avatarUrls = AVATAR_SEEDS.map(
+    (seed) => `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`,
+  );
+
+  const isValid = displayName.trim().length >= 2 && selectedAvatar;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isValid) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error(t("error.noUser"));
+
+      const { error: insertError } = await supabase.from("profiles").insert({
+        id: user.id,
+        email: user.email ?? "",
+        display_name: displayName.trim(),
+        avatar_url: selectedAvatar,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      });
+
+      if (insertError) throw insertError;
+
+      router.push("/dashboard");
+    } catch (err) {
+      logger.error("Error creating profile", err);
+      setError(err instanceof Error ? err.message : t("error.createFailed"));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      <Heading as="h1" size="lg" className="text-[var(--teal)] mb-8">
+        {t("title")}
+      </Heading>
+
+      <form onSubmit={handleSubmit}>
+        {error && (
+          <Alert variant="error" className="mb-6">
+            {error}
+          </Alert>
+        )}
+
+        <div className="mb-6">
+          <FormInput
+            label={t("displayNameLabel")}
+            htmlFor="display-name"
+            type="text"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            maxLength={50}
+            placeholder={t("displayNamePlaceholder")}
+            disabled={isLoading}
+          />
+          <div className="text-sm text-[var(--slate-500)] mt-1">
+            {t("displayNameCount", { count: displayName.length })}
+          </div>
+        </div>
+
+        <div className="mb-6">
+          {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes the avatar gallery grid */}
+          <label className="block text-[var(--slate-700)] font-semibold mb-2">
+            {t("chooseAvatar")}
+          </label>
+          <div className="grid grid-cols-5 gap-3">
+            {avatarUrls.map((url) => (
+              <button
+                key={url}
+                type="button"
+                onClick={() => setSelectedAvatar(url)}
+                disabled={isLoading}
+                className={`aspect-square rounded-lg border-2 overflow-hidden transition-all ${
+                  selectedAvatar === url
+                    ? "border-[var(--teal)] ring-2 ring-[var(--teal)] ring-opacity-50"
+                    : "border-[var(--slate-200)] hover:border-[var(--slate-400)]"
+                }`}
+              >
+                <Image
+                  src={url}
+                  alt={t("avatarAlt")}
+                  width={100}
+                  height={100}
+                  className="w-full h-full object-cover"
+                />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {selectedAvatar && (
+          <div className="mb-6">
+            {/* biome-ignore lint/a11y/noLabelWithoutControl: presentational label for avatar preview */}
+            <label className="block text-[var(--slate-700)] font-semibold mb-2">
+              {t("selectedAvatar")}
+            </label>
+            <div className="w-32 h-32 mx-auto border-4 border-[var(--teal)] rounded-xl overflow-hidden">
+              <Image
+                src={selectedAvatar}
+                alt={t("selectedAlt")}
+                width={128}
+                height={128}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        )}
+
+        <Button
+          type="submit"
+          size="lg"
+          loading={isLoading}
+          disabled={!isValid || isLoading}
+        >
+          {isLoading ? t("creating") : t("continue")}
+        </Button>
+      </form>
+    </div>
+  );
+}
