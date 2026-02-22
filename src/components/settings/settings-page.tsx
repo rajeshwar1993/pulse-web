@@ -12,9 +12,13 @@ import { LanguageSelector } from "./language-selector";
 
 interface SettingsPageProps {
   currentLocale: string;
+  dashboardHref?: string;
 }
 
-export function SettingsPage({ currentLocale }: SettingsPageProps) {
+export function SettingsPage({
+  currentLocale,
+  dashboardHref = "/appview/dashboard",
+}: SettingsPageProps) {
   const t = useTranslations("settings");
   const router = useRouter();
   const [activeLocale, setActiveLocale] = useState(currentLocale);
@@ -40,7 +44,7 @@ export function SettingsPage({ currentLocale }: SettingsPageProps) {
       {/* Header */}
       <div className="flex items-center gap-3">
         <Link
-          href="/appview/dashboard"
+          href={dashboardHref}
           className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-[var(--slate-100)] transition-colors"
           aria-label={t("backToDashboard")}
         >

@@ -8,6 +8,7 @@ import { Heading } from "@/components/ui/heading";
 import { FLUTTER_READY_SIGNAL_DELAY_MS } from "@/lib/constants";
 import { logger } from "@/lib/utils/logger";
 import { type Connection, ConnectionGrid } from "./connection-grid";
+import { PulseButton } from "./pulse-button";
 import { StatusCard } from "./status-card";
 import { WisdomCard } from "./wisdom-card";
 
@@ -17,6 +18,8 @@ interface DashboardContentProps {
   pulseTime?: Date | null;
   connections: Connection[];
   showWisdom?: boolean;
+  settingsHref?: string;
+  onPulse?: () => Promise<void>;
 }
 
 /**
@@ -34,6 +37,8 @@ export function DashboardContent({
   pulseTime,
   connections,
   showWisdom = true,
+  settingsHref = "/appview/settings",
+  onPulse,
 }: DashboardContentProps) {
   const t = useTranslations("dashboard");
   const [showWisdomCard, setShowWisdomCard] = useState(showWisdom);
@@ -94,7 +99,7 @@ export function DashboardContent({
           </p>
         </div>
         <Link
-          href="/appview/settings"
+          href={settingsHref}
           className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-[var(--slate-100)] transition-colors shrink-0"
           aria-label={t("settingsAriaLabel")}
         >
@@ -124,6 +129,9 @@ export function DashboardContent({
           onDismiss={() => setShowWisdomCard(false)}
         />
       )}
+
+      {/* Pulse Button (browser only, when not pulsed) */}
+      {!isActive && onPulse && <PulseButton onPulse={onPulse} />}
 
       {/* Status Card */}
       <StatusCard isActive={isActive} pulseTime={pulseTime} />

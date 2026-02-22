@@ -10,12 +10,59 @@
     "comingSoon": "Coming soon",
     "tapToDismiss": "Tap to dismiss"
   },
+  "nav": {
+    "appName": "Pulse",
+    "dashboard": "Dashboard",
+    "connections": "Connections",
+    "settings": "Settings",
+    "logout": "Log out",
+    "menu": "Menu"
+  },
   "auth": {
     "signInPrompt": "Sign in to get started",
     "mobileSignInNote": "Use the mobile app to sign in and create your profile. Then access your dashboard here.",
     "error": {
       "title": "Authentication Error",
       "message": "Sorry, we couldn't sign you in. Please try again."
+    },
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to your Pulse account",
+      "emailLabel": "Email",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Password",
+      "submitButton": "Sign in",
+      "forgotPassword": "Forgot your password?",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up",
+      "orContinueWith": "Or continue with",
+      "googleButton": "Continue with Google"
+    },
+    "signup": {
+      "title": "Create your account",
+      "subtitle": "Start staying connected with your circle",
+      "orContinueWith": "Or continue with",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm password",
+      "submitButton": "Create account",
+      "hasAccount": "Already have an account?",
+      "logInLink": "Log in",
+      "passwordHint": "Must be at least 8 characters",
+      "passwordMismatch": "Passwords do not match",
+      "verificationSent": "Check your email to verify your account"
+    },
+    "forgotPassword": {
+      "title": "Reset your password",
+      "subtitle": "Enter your email and we'll send you a reset link",
+      "submitButton": "Send reset link",
+      "successMessage": "Check your email for a password reset link",
+      "backToLogin": "Back to login"
+    },
+    "resetPassword": {
+      "title": "Set new password",
+      "submitButton": "Update password",
+      "successMessage": "Password updated successfully"
     }
   },
   "dashboard": {
@@ -103,6 +150,17 @@
     "message": "Add your first connection to start sharing your daily pulse with family and friends.",
     "addButton": "Add Connection",
     "comingSoonNote": "Coming soon in Unit 3: Connections"
+  },
+  "pulse": {
+    "sendPulse": "Send Pulse",
+    "sending": "Sending...",
+    "sent": "Pulse sent!",
+    "alreadySent": "You've already pulsed today"
+  },
+  "landing": {
+    "heroSubtitle": "A simple daily check-in that keeps your closest connections at ease.",
+    "getStarted": "Get Started",
+    "logIn": "Log In"
   },
   "notFound": {
     "title": "Page not found",
