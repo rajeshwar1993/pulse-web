@@ -14,6 +14,7 @@ interface BrowserDashboardClientProps {
   pulseTime?: Date | null;
   connections: Connection[];
   pulsedDates?: string[];
+  missedPulseDate?: string | null;
 }
 
 export function BrowserDashboardClient({
@@ -22,6 +23,7 @@ export function BrowserDashboardClient({
   pulseTime,
   connections,
   pulsedDates = [],
+  missedPulseDate,
 }: BrowserDashboardClientProps) {
   const router = useRouter();
   const { showToast } = useToast();
@@ -47,6 +49,7 @@ export function BrowserDashboardClient({
       settingsHref="/settings"
       onPulse={handlePulse}
       pulsedDates={pulsedDates}
+      missedPulseDate={missedPulseDate}
     />
   );
 }

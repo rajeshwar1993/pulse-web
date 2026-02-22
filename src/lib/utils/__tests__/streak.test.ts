@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { getEffectiveStreak } from "../streak";
+import { getEffectiveStreak, getTodayPulseDay } from "../streak";
 
 describe("getEffectiveStreak", () => {
   beforeEach(() => {
@@ -74,5 +74,40 @@ describe("getEffectiveStreak", () => {
   it("should handle large streaks correctly", () => {
     vi.setSystemTime(new Date(2026, 1, 22, 10, 0));
     expect(getEffectiveStreak(365, "2026-02-22")).toBe(365);
+  });
+});
+
+describe("getTodayPulseDay", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("should return today's date after 4 AM", () => {
+    vi.setSystemTime(new Date(2026, 1, 22, 10, 0)); // 10 AM on Feb 22
+    expect(getTodayPulseDay()).toBe("2026-02-22");
+  });
+
+  it("should return yesterday's date before 4 AM", () => {
+    vi.setSystemTime(new Date(2026, 1, 22, 3, 0)); // 3 AM on Feb 22
+    expect(getTodayPulseDay()).toBe("2026-02-21");
+  });
+
+  it("should return today's date at exactly 4 AM", () => {
+    vi.setSystemTime(new Date(2026, 1, 22, 4, 0)); // Exactly 4 AM on Feb 22
+    expect(getTodayPulseDay()).toBe("2026-02-22");
+  });
+
+  it("should handle midnight correctly", () => {
+    vi.setSystemTime(new Date(2026, 1, 22, 0, 0)); // Midnight Feb 22
+    expect(getTodayPulseDay()).toBe("2026-02-21");
+  });
+
+  it("should handle month boundaries", () => {
+    vi.setSystemTime(new Date(2026, 2, 1, 2, 0)); // 2 AM on March 1
+    expect(getTodayPulseDay()).toBe("2026-02-28");
   });
 });

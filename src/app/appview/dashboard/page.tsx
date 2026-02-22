@@ -3,7 +3,7 @@ import type { Connection } from "@/components/dashboard/connection-grid";
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { PULSE_DAY_RESET_HOUR } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/server";
-import { getEffectiveStreak } from "@/lib/utils/streak";
+import { getEffectiveStreak, getTodayPulseDay } from "@/lib/utils/streak";
 
 /**
  * Get the start of the current Pulse Day (4:00 AM local time)
@@ -86,6 +86,29 @@ export default async function Dashboard() {
   // Note: When connections are populated, map timezone from ConnectionWithProfile:
   // { ...conn, timezone: conn.timezone }
 
+  // --- Missed pulse survey detection ---
+  let missedPulseDate: string | null = null;
+  if (profile.last_pulse_date) {
+    const todayPulseDay = getTodayPulseDay();
+    const today = new Date(`${todayPulseDay}T00:00:00`);
+    const yesterdayPulseDay = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+    const yStr = `${yesterdayPulseDay.getFullYear()}-${String(yesterdayPulseDay.getMonth() + 1).padStart(2, "0")}-${String(yesterdayPulseDay.getDate()).padStart(2, "0")}`;
+
+    if (profile.last_pulse_date < yStr) {
+      // User missed yesterday — check if already surveyed
+      const { data: existingSurvey } = await supabase
+        .from("missed_pulse_surveys")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("missed_date", yStr)
+        .maybeSingle();
+
+      if (!existingSurvey) {
+        missedPulseDate = yStr;
+      }
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[var(--off-white)] p-6">
       <div className="max-w-4xl mx-auto">
@@ -98,6 +121,7 @@ export default async function Dashboard() {
           currentStreak={currentStreak}
           longestStreak={longestStreak}
           pulsedDates={pulsedDates}
+          missedPulseDate={missedPulseDate}
         />
       </div>
     </div>
