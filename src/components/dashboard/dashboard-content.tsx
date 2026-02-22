@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { EmptyConnectionsView } from "@/components/shared/empty-connections-view";
+import { Heading } from "@/components/ui/heading";
 import { FLUTTER_READY_SIGNAL_DELAY_MS } from "@/lib/constants";
 import { logger } from "@/lib/utils/logger";
 import { type Connection, ConnectionGrid } from "./connection-grid";
@@ -85,9 +86,9 @@ export function DashboardContent({
       {/* Header with dynamic greeting */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-[var(--slate-900)]">
+          <Heading as="h1" size="lg">
             {getGreeting()}, {displayName}!
-          </h1>
+          </Heading>
           <p className="text-[var(--slate-600)] mt-1">
             {isActive ? t("activeSubtitle") : t("inactiveSubtitle")}
           </p>

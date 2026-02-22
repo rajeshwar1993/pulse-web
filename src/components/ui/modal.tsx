@@ -4,16 +4,24 @@ import type React from "react";
 import { useEffect, useRef } from "react";
 
 type ModalMaxWidth = "sm" | "md";
+type ModalPadding = "md" | "lg";
 
 const maxWidthStyles: Record<ModalMaxWidth, string> = {
   sm: "max-w-sm",
   md: "max-w-md",
 };
 
+const paddingStyles: Record<ModalPadding, string> = {
+  md: "p-6",
+  lg: "p-8",
+};
+
 interface ModalProps {
   open: boolean;
   onClose: () => void;
   maxWidth?: ModalMaxWidth;
+  padding?: ModalPadding;
+  ariaLabelledBy?: string;
   children: React.ReactNode;
 }
 
@@ -21,6 +29,8 @@ export function Modal({
   open,
   onClose,
   maxWidth = "md",
+  padding = "md",
+  ariaLabelledBy,
   children,
 }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -50,7 +60,8 @@ export function Modal({
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        className={`bg-white rounded-2xl p-6 ${maxWidthStyles[maxWidth]} w-full`}
+        aria-labelledby={ariaLabelledBy}
+        className={`bg-white rounded-2xl ${paddingStyles[padding]} ${maxWidthStyles[maxWidth]} w-full`}
       >
         {children}
       </div>

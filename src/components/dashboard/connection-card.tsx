@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { Avatar } from "@/components/ui/avatar";
+import { IconBadge } from "@/components/ui/icon-badge";
 import { formatRelativeTime } from "@/lib/utils/format-date";
 
 interface ConnectionCardProps {
@@ -105,7 +106,7 @@ export function ConnectionCard({
 
         {/* Status icon */}
         {isActive ? (
-          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--green)]/10 flex items-center justify-center">
+          <IconBadge size="xs" color="green" className="flex-shrink-0">
             <svg
               className="w-4 h-4 text-[var(--green)]"
               fill="currentColor"
@@ -119,9 +120,9 @@ export function ConnectionCard({
                 clipRule="evenodd"
               />
             </svg>
-          </div>
+          </IconBadge>
         ) : (
-          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--slate-200)] flex items-center justify-center">
+          <IconBadge size="xs" color="slate" className="flex-shrink-0">
             <svg
               className="w-4 h-4 text-[var(--slate-400)]"
               fill="none"
@@ -137,7 +138,7 @@ export function ConnectionCard({
                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-          </div>
+          </IconBadge>
         )}
       </div>
     </div>

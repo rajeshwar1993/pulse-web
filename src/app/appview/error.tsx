@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
 import { IconBadge } from "@/components/ui/icon-badge";
 
 export default function AppViewError({
@@ -29,9 +30,9 @@ export default function AppViewError({
             />
           </svg>
         </IconBadge>
-        <h2 className="text-xl font-semibold text-[var(--slate-900)] mb-2">
+        <Heading as="h2" size="base" className="mb-2">
           Something went wrong
-        </h2>
+        </Heading>
         <p className="text-[var(--slate-600)] mb-6">
           Please try again or restart the app.
         </p>
