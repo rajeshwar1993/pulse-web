@@ -8,6 +8,19 @@ const preview: Preview = {
     nextjs: {
       appDirectory: true,
     },
+    viewport: {
+      viewports: {
+        desktop: {
+          name: "Desktop",
+          styles: { width: "1280px", height: "800px" },
+        },
+        mobile: {
+          name: "Mobile",
+          styles: { width: "390px", height: "844px" },
+        },
+      },
+      defaultViewport: "desktop",
+    },
     docs: {
       toc: true,
     },
