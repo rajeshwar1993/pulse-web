@@ -9,6 +9,8 @@ vi.mock("next-intl", () => ({
       title: "Settings",
       language: "Language",
       backToDashboard: "Back to Dashboard",
+      profile: "Profile",
+      editProfile: "Edit profile",
     };
     return translations[key] || key;
   },
@@ -81,5 +83,60 @@ describe("SettingsPage", () => {
     expect(mockSyncToProfile).toHaveBeenCalledWith("en");
     expect(mockNotifyFlutterBridge).toHaveBeenCalledWith("en");
     expect(mockRefresh).toHaveBeenCalled();
+  });
+
+  describe("Profile Card", () => {
+    const mockProfile = {
+      display_name: "Alex Johnson",
+      avatar_url: "https://api.dicebear.com/7.x/avataaars/svg?seed=felix",
+    };
+
+    it("should render the profile card when profile is provided", () => {
+      render(<SettingsPage currentLocale="en" profile={mockProfile} />);
+
+      expect(screen.getByText("Profile")).toBeInTheDocument();
+      expect(screen.getByText("Alex Johnson")).toBeInTheDocument();
+    });
+
+    it("should render the avatar with correct src and alt", () => {
+      render(<SettingsPage currentLocale="en" profile={mockProfile} />);
+
+      const avatar = screen.getByAltText("Alex Johnson");
+      expect(avatar).toBeInTheDocument();
+      expect(avatar).toHaveAttribute("src", mockProfile.avatar_url);
+    });
+
+    it("should render an edit link with default appview href", () => {
+      render(<SettingsPage currentLocale="en" profile={mockProfile} />);
+
+      const editLink = screen.getByRole("link", { name: /edit profile/i });
+      expect(editLink).toBeInTheDocument();
+      expect(editLink).toHaveAttribute(
+        "href",
+        "/appview/profile-setup?mode=edit",
+      );
+    });
+
+    it("should use custom profileSetupHref when provided", () => {
+      render(
+        <SettingsPage
+          currentLocale="en"
+          profile={mockProfile}
+          profileSetupHref="/profile-setup?mode=edit"
+        />,
+      );
+
+      const editLink = screen.getByRole("link", { name: /edit profile/i });
+      expect(editLink).toHaveAttribute("href", "/profile-setup?mode=edit");
+    });
+
+    it("should not render the profile card when profile is undefined", () => {
+      render(<SettingsPage currentLocale="en" />);
+
+      expect(screen.queryByText("Profile")).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("link", { name: /edit profile/i }),
+      ).not.toBeInTheDocument();
+    });
   });
 });

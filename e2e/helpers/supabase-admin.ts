@@ -216,6 +216,20 @@ export async function getInviteCodes(userId: string) {
   return data;
 }
 
+/**
+ * Update a user's profile fields (e.g. display_name, avatar_url).
+ */
+export async function updateProfile(
+  userId: string,
+  fields: { display_name?: string; avatar_url?: string },
+) {
+  const { error } = await getAdmin()
+    .from('profiles')
+    .update(fields)
+    .eq('id', userId);
+  if (error) throw new Error(`Failed to update profile: ${error.message}`);
+}
+
 // ─── Test Data Setup Helpers ─────────────────────────────────────
 
 /**
