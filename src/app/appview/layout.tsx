@@ -1,4 +1,5 @@
 import type { Viewport } from "next";
+import { BottomNav } from "@/components/appview/bottom-nav";
 import { FlutterBridgeListener } from "@/components/providers/flutter-bridge-listener";
 import { ToastProvider } from "@/components/providers/toast-provider";
 
@@ -16,9 +17,10 @@ export default function AppViewLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="safe-area-inset">
+    <div className="safe-area-inset pb-20">
       <FlutterBridgeListener />
       <ToastProvider>{children}</ToastProvider>
+      <BottomNav />
     </div>
   );
 }
