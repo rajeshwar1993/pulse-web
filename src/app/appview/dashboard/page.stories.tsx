@@ -37,7 +37,6 @@ export const Active: Story = {
     pulseTime: new Date(Date.now() - 2 * 60 * 60 * 1000),
     connections: mockConnections,
     showWisdom: true,
-    settingsHref: "/appview/settings",
     pulsedDates: mockPulsedDatesScattered,
   },
   play: async ({ canvas, step }) => {
@@ -64,6 +63,5 @@ export const Inactive: Story = {
     pulseTime: null,
     connections: [],
     showWisdom: false,
-    settingsHref: "/appview/settings",
   },
 };

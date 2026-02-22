@@ -29,7 +29,6 @@ function BrowserDashboardStory({
       pulseTime={pulseTime}
       connections={connections}
       showWisdom={isActive}
-      settingsHref="/settings"
       pulsedDates={pulsedDates}
     />
   );

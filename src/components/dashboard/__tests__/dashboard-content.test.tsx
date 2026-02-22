@@ -61,15 +61,6 @@ vi.mock("@/hooks/use-seen-receipts", () => ({
   useSeenReceipts: (...args: unknown[]) => mockUseSeenReceipts(...args),
 }));
 
-vi.mock("next/link", () => ({
-  // biome-ignore lint/suspicious/noExplicitAny: test mock props
-  default: ({ children, href, ...rest }: any) => (
-    <a href={href} {...rest}>
-      {children}
-    </a>
-  ),
-}));
-
 vi.mock("next-intl", () => ({
   useTranslations: () => (key: string) => {
     const translations: Record<string, string> = {
@@ -78,7 +69,6 @@ vi.mock("next-intl", () => ({
       greetingEvening: "Good evening",
       activeSubtitle: "You're all set for today.",
       inactiveSubtitle: "Welcome back!",
-      settingsAriaLabel: "Settings",
     };
     return translations[key] || key;
   },
@@ -213,14 +203,6 @@ describe("DashboardContent", () => {
 
     expect(screen.getByTestId("connection-grid")).toBeInTheDocument();
     expect(screen.queryByTestId("empty-connections")).not.toBeInTheDocument();
-  });
-
-  it("should render settings link", () => {
-    vi.setSystemTime(new Date(2026, 1, 22, 9, 0));
-    render(<DashboardContent {...baseProps} />);
-
-    const settingsLink = screen.getByRole("link", { name: /settings/i });
-    expect(settingsLink).toHaveAttribute("href", "/appview/settings");
   });
 
   it("should send FlutterBridge ready signal", () => {

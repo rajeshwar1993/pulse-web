@@ -46,7 +46,6 @@ export function BrowserDashboardClient({
       pulseTime={pulseTime}
       connections={connections}
       showWisdom={isActive}
-      settingsHref="/settings"
       onPulse={handlePulse}
       pulsedDates={pulsedDates}
       missedPulseDate={missedPulseDate}
