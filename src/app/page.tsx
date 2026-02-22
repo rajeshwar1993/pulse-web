@@ -93,11 +93,11 @@ export default async function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/signup" className={buttonVariants({ size: "md" })}>
+            <Link href="/auth/signup" className={buttonVariants({ size: "md" })}>
               {tLanding("getStarted")}
             </Link>
             <Link
-              href="/login"
+              href="/auth/login"
               className={buttonVariants({ variant: "secondary", size: "md" })}
             >
               {tLanding("logIn")}
@@ -167,7 +167,7 @@ export default async function Home() {
           <p className="text-[var(--slate-500)] mb-8">
             {tLanding("ctaSubtitle")}
           </p>
-          <Link href="/signup" className={buttonVariants({ size: "md" })}>
+          <Link href="/auth/signup" className={buttonVariants({ size: "md" })}>
             {tLanding("getStarted")}
           </Link>
         </div>

@@ -31,7 +31,7 @@ function InviteContent() {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) {
-        router.push(`/login?next=/invite?code=${code}`);
+        router.push(`/auth/login?next=/invite?code=${code}`);
         return;
       }
       setIsAuthenticated(true);

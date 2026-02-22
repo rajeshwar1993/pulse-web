@@ -35,7 +35,7 @@ export default async function BrowserDashboard() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login");
+    redirect("/auth/login");
   }
 
   const { data: profile } = await supabase

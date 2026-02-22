@@ -17,7 +17,7 @@ export default async function BrowserSettings() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login");
+    redirect("/auth/login");
   }
 
   const locale = await getLocale();

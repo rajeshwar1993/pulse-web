@@ -39,7 +39,7 @@ export default async function AuthErrorPage() {
         </Heading>
         <p className="text-[var(--slate-500)]">{t("message")}</p>
         <div className="flex flex-col gap-3 pt-2">
-          <Link href="/login" className={buttonVariants()}>
+          <Link href="/auth/login" className={buttonVariants()}>
             Try again
           </Link>
           <Link

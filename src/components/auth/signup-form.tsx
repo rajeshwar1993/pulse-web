@@ -76,7 +76,7 @@ export function SignupForm() {
         <p className="text-sm text-[var(--slate-500)]">
           {t("hasAccount")}{" "}
           <Link
-            href="/login"
+            href="/auth/login"
             className="text-[var(--teal)] hover:text-[var(--teal-400)] font-medium transition-colors"
           >
             {t("logInLink")}
@@ -136,7 +136,7 @@ export function SignupForm() {
       <p className="text-center text-sm text-[var(--slate-500)]">
         {t("hasAccount")}{" "}
         <Link
-          href="/login"
+          href="/auth/login"
           className="text-[var(--teal)] hover:text-[var(--teal-400)] font-medium transition-colors"
         >
           {t("logInLink")}

@@ -135,7 +135,7 @@ describe("SignupForm", () => {
   it("should render log in link", () => {
     render(<SignupForm />);
 
-    expect(screen.getByText("Log in")).toHaveAttribute("href", "/login");
+    expect(screen.getByText("Log in")).toHaveAttribute("href", "/auth/login");
   });
 
   it("should show password hint text", () => {

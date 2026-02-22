@@ -58,7 +58,7 @@ export function ForgotPasswordForm() {
           {t("successMessage")}
         </p>
         <Link
-          href="/login"
+          href="/auth/login"
           className="inline-block text-sm text-[var(--teal)] hover:text-[var(--teal-400)] font-medium transition-colors"
         >
           {t("backToLogin")}
@@ -89,7 +89,7 @@ export function ForgotPasswordForm() {
 
       <p className="text-center">
         <Link
-          href="/login"
+          href="/auth/login"
           className="text-sm text-[var(--teal)] hover:text-[var(--teal-400)] font-medium transition-colors"
         >
           {t("backToLogin")}

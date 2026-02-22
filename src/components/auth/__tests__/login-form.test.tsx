@@ -75,9 +75,9 @@ describe("LoginForm", () => {
 
     expect(screen.getByText("Forgot your password?")).toHaveAttribute(
       "href",
-      "/forgot-password",
+      "/auth/forgot-password",
     );
-    expect(screen.getByText("Sign up")).toHaveAttribute("href", "/signup");
+    expect(screen.getByText("Sign up")).toHaveAttribute("href", "/auth/signup");
   });
 
   it("should show error on sign in failure", async () => {

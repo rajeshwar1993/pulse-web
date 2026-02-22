@@ -43,7 +43,7 @@ export function ResetPasswordForm() {
       return;
     }
 
-    router.push("/login");
+    router.push("/auth/login");
   };
 
   return (

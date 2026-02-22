@@ -79,7 +79,7 @@ export function LoginForm() {
 
       <div className="text-right">
         <Link
-          href="/forgot-password"
+          href="/auth/forgot-password"
           className="text-sm text-[var(--teal)] hover:text-[var(--teal-400)] transition-colors"
         >
           {t("forgotPassword")}
@@ -93,7 +93,7 @@ export function LoginForm() {
       <p className="text-center text-sm text-[var(--slate-500)]">
         {t("noAccount")}{" "}
         <Link
-          href="/signup"
+          href="/auth/signup"
           className="text-[var(--teal)] hover:text-[var(--teal-400)] font-medium transition-colors"
         >
           {t("signUpLink")}

@@ -102,7 +102,7 @@ describe("ResetPasswordForm", () => {
       expect(mockUpdateUser).toHaveBeenCalledWith({
         password: "newpassword123",
       });
-      expect(mockPush).toHaveBeenCalledWith("/login");
+      expect(mockPush).toHaveBeenCalledWith("/auth/login");
     });
   });
 
