@@ -1,16 +1,18 @@
-import { createClient } from '@/lib/supabase/server';
-import { redirect } from 'next/navigation';
-import { getLocale } from 'next-intl/server';
-import { SettingsPage } from '@/components/settings/settings-page';
+import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
+import { SettingsPage } from "@/components/settings/settings-page";
+import { createClient } from "@/lib/supabase/server";
 
 export default async function Settings() {
   const supabase = await createClient();
 
   // Check if user is authenticated
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect('/');
+    redirect("/");
   }
 
   // Get current locale

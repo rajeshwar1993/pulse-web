@@ -1,14 +1,15 @@
-import { getRequestConfig } from 'next-intl/server';
-import { cookies } from 'next/headers';
-import { defaultLocale, supportedLocales } from './config';
-import type { SupportedLocale } from './config';
+import { cookies } from "next/headers";
+import { getRequestConfig } from "next-intl/server";
+import { LOCALE_COOKIE_NAME } from "@/lib/constants";
+import type { SupportedLocale } from "./config";
+import { defaultLocale, supportedLocales } from "./config";
 
 export default getRequestConfig(async () => {
   let locale: SupportedLocale = defaultLocale;
 
   try {
     const cookieStore = await cookies();
-    const stored = cookieStore.get('pulse-locale')?.value;
+    const stored = cookieStore.get(LOCALE_COOKIE_NAME)?.value;
     if (stored && supportedLocales.includes(stored as SupportedLocale)) {
       locale = stored as SupportedLocale;
     }

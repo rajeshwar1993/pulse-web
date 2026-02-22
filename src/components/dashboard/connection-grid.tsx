@@ -1,21 +1,16 @@
-'use client';
+"use client";
 
-import { useTranslations } from 'next-intl';
-import { ConnectionCard } from './connection-card';
+import { useTranslations } from "next-intl";
+import type { DashboardConnection } from "@/lib/types/connection";
+import { ConnectionCard } from "./connection-card";
 
-export interface Connection {
-  id: string;
-  avatar: string;
-  name: string;
-  status: 'active' | 'waiting';
-  pulseTime?: Date | null;
-}
+export type { DashboardConnection as Connection } from "@/lib/types/connection";
 
 interface ConnectionGridProps {
   /**
    * Array of connections to display
    */
-  connections: Connection[];
+  connections: DashboardConnection[];
 }
 
 /**
@@ -28,7 +23,7 @@ interface ConnectionGridProps {
  * - Desktop: 2-3 columns
  */
 export function ConnectionGrid({ connections }: ConnectionGridProps) {
-  const t = useTranslations('dashboard.connectionGrid');
+  const t = useTranslations("dashboard.connectionGrid");
 
   if (connections.length === 0) {
     return null;
@@ -37,7 +32,7 @@ export function ConnectionGrid({ connections }: ConnectionGridProps) {
   return (
     <div className="space-y-3">
       <h2 className="text-lg font-semibold text-[var(--slate-900)]">
-        {t('title', { count: connections.length })}
+        {t("title", { count: connections.length })}
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">

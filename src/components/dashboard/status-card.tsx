@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { formatDistanceToNow } from 'date-fns';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from "next-intl";
+import { formatRelativeTime } from "@/lib/utils/format-date";
 
 interface StatusCardProps {
   /**
@@ -23,17 +23,18 @@ interface StatusCardProps {
  * - Inactive state: Grey indicator with "not pulsed yet" message
  */
 export function StatusCard({ isActive, pulseTime }: StatusCardProps) {
-  const t = useTranslations('dashboard.status');
+  const t = useTranslations("dashboard.status");
+  const locale = useLocale();
 
   // Format the pulse time for display
   const formattedTime = pulseTime
-    ? formatDistanceToNow(pulseTime, { addSuffix: true })
+    ? formatRelativeTime(pulseTime, locale)
     : null;
 
   return (
     <div className="bg-white rounded-xl shadow-sm p-6 border border-[var(--slate-200)]">
       <h2 className="text-lg font-semibold text-[var(--slate-900)] mb-4">
-        {t('title')}
+        {t("title")}
       </h2>
 
       <div className="flex items-center gap-3">
@@ -49,6 +50,7 @@ export function StatusCard({ isActive, pulseTime }: StatusCardProps) {
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
                 >
                   <path
                     fillRule="evenodd"
@@ -67,6 +69,7 @@ export function StatusCard({ isActive, pulseTime }: StatusCardProps) {
                 stroke="currentColor"
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -84,21 +87,21 @@ export function StatusCard({ isActive, pulseTime }: StatusCardProps) {
           {isActive ? (
             <>
               <p className="text-[var(--slate-900)] font-semibold">
-                {t('active')}
+                {t("active")}
               </p>
               {formattedTime && (
                 <p className="text-[var(--slate-600)] text-sm">
-                  {t('pulsedTime', { time: formattedTime })}
+                  {t("pulsedTime", { time: formattedTime })}
                 </p>
               )}
             </>
           ) : (
             <>
               <p className="text-[var(--slate-700)] font-semibold">
-                {t('notPulsedYet')}
+                {t("notPulsedYet")}
               </p>
               <p className="text-[var(--slate-500)] text-sm">
-                {t('autoPulseSent')}
+                {t("autoPulseSent")}
               </p>
             </>
           )}

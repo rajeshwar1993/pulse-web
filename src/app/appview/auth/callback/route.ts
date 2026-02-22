@@ -1,10 +1,10 @@
-import { createClient } from '@/lib/supabase/server';
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
-  const code = searchParams.get('code');
-  const next = searchParams.get('next') ?? '/';
+  const code = searchParams.get("code");
+  const _next = searchParams.get("next") ?? "/";
 
   if (code) {
     const supabase = await createClient();
@@ -12,15 +12,17 @@ export async function GET(request: Request) {
 
     if (!error) {
       // Get the authenticated user
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       if (user) {
         // Check if profile exists
         const { data: profile } = await supabase
-          .from('profiles')
+          .from("profiles")
           .select()
-          .eq('id', user.id)
-          .single();
+          .eq("id", user.id)
+          .maybeSingle();
 
         if (profile) {
           // Profile exists, redirect to dashboard
