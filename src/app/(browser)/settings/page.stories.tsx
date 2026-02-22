@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect } from "storybook/test";
 import { SettingsPage } from "@/components/settings/settings-page";
 
 const meta = {
@@ -25,5 +26,19 @@ export const Default: Story = {
   args: {
     currentLocale: "en",
     dashboardHref: "/dashboard",
+  },
+  play: async ({ canvas, step }) => {
+    await step("Verify settings title", async () => {
+      await expect(canvas.getByText("Settings")).toBeVisible();
+    });
+
+    await step("Verify language heading", async () => {
+      await expect(canvas.getByText("Language")).toBeVisible();
+    });
+
+    await step("Verify English is selected", async () => {
+      const englishRadio = canvas.getByRole("radio", { name: /English/ });
+      await expect(englishRadio).toHaveAttribute("aria-checked", "true");
+    });
   },
 };

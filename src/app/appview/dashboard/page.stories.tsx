@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { expect } from "storybook/test";
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { ToastProvider } from "@/components/providers/toast-provider";
 import { mockConnections } from "@/stories/mock-data";
@@ -34,6 +35,21 @@ export const Active: Story = {
     connections: mockConnections,
     showWisdom: true,
     settingsHref: "/appview/settings",
+  },
+  play: async ({ canvas, step }) => {
+    await step("Verify greeting contains name", async () => {
+      await expect(canvas.getByText(/Alice!/)).toBeVisible();
+    });
+
+    await step("Verify active status", async () => {
+      await expect(canvas.getByText("You are active today")).toBeVisible();
+    });
+
+    await step("Verify connections are displayed", async () => {
+      await expect(canvas.getByText("Mom")).toBeVisible();
+      await expect(canvas.getByText("Dad")).toBeVisible();
+      await expect(canvas.getByText("Sibling")).toBeVisible();
+    });
   },
 };
 

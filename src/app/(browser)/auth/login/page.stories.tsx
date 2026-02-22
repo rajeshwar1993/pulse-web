@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useTranslations } from "next-intl";
+import { expect, userEvent } from "storybook/test";
 import { AuthLayout } from "@/components/auth/auth-layout";
 import { LoginForm } from "@/components/auth/login-form";
 import { OAuthButtons } from "@/components/auth/oauth-buttons";
@@ -47,3 +48,28 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const FillForm: Story = {
+  play: async ({ canvas, step }) => {
+    await step("Type email and password", async () => {
+      const emailInput = canvas.getByLabelText("Email");
+      const passwordInput = canvas.getByLabelText("Password");
+
+      await userEvent.type(emailInput, "alice@example.com");
+      await userEvent.type(passwordInput, "password123");
+
+      await expect(emailInput).toHaveValue("alice@example.com");
+      await expect(passwordInput).toHaveValue("password123");
+    });
+
+    await step("Verify submit button is visible", async () => {
+      const submitButton = canvas.getByRole("button", { name: "Sign in" });
+      await expect(submitButton).toBeVisible();
+    });
+
+    await step("Verify navigation links", async () => {
+      await expect(canvas.getByText("Forgot your password?")).toBeVisible();
+      await expect(canvas.getByText("Sign up")).toBeVisible();
+    });
+  },
+};

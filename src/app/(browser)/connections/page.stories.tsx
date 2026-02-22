@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { fn } from "storybook/test";
+import { expect, fn, userEvent, waitFor } from "storybook/test";
 import { ToastProvider } from "@/components/providers/toast-provider";
 import { ConnectionService } from "@/lib/services/connection-service";
 import { mockConnectionsWithProfile } from "@/stories/mock-data";
@@ -33,6 +33,28 @@ export const WithConnections: Story = {
       mockConnectionsWithProfile,
     );
     ConnectionService.removeConnection = fn().mockResolvedValue(undefined);
+  },
+  play: async ({ canvas, step }) => {
+    await step("Wait for connections to load", async () => {
+      await waitFor(() => expect(canvas.getByText("Mom")).toBeVisible());
+    });
+
+    await step("Verify connection count", async () => {
+      await expect(canvas.getByText("3 connections")).toBeVisible();
+    });
+
+    await step("Click Remove and verify confirm modal", async () => {
+      const removeButtons = canvas.getAllByText("Remove Connection");
+      await userEvent.click(removeButtons[0]);
+
+      await waitFor(() =>
+        expect(
+          canvas.getByText(
+            "Remove this connection? You can restore it within 30 days.",
+          ),
+        ).toBeVisible(),
+      );
+    });
   },
 };
 
