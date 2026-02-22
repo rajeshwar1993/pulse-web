@@ -3,18 +3,24 @@ import { expect } from "storybook/test";
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { ToastProvider } from "@/components/providers/toast-provider";
 import type { DashboardConnection } from "@/lib/types/connection";
-import { mockConnections } from "@/stories/mock-data";
+import {
+  mockConnections,
+  mockPulsedDatesScattered,
+  mockPulsedDatesStreak,
+} from "@/stories/mock-data";
 
 function BrowserDashboardStory({
   displayName,
   isActive,
   pulseTime,
   connections,
+  pulsedDates,
 }: {
   displayName: string;
   isActive: boolean;
   pulseTime?: Date | null;
   connections: DashboardConnection[];
+  pulsedDates?: string[];
 }) {
   return (
     <DashboardContent
@@ -24,6 +30,7 @@ function BrowserDashboardStory({
       connections={connections}
       showWisdom={isActive}
       settingsHref="/settings"
+      pulsedDates={pulsedDates}
     />
   );
 }
@@ -56,6 +63,7 @@ export const Active: Story = {
     isActive: true,
     pulseTime: new Date(Date.now() - 2 * 60 * 60 * 1000),
     connections: mockConnections,
+    pulsedDates: mockPulsedDatesScattered,
   },
   play: async ({ canvas, step }) => {
     await step("Verify greeting contains name", async () => {
@@ -89,6 +97,7 @@ export const WithConnections: Story = {
     isActive: true,
     pulseTime: new Date(Date.now() - 30 * 60 * 1000),
     connections: mockConnections,
+    pulsedDates: mockPulsedDatesStreak,
   },
 };
 

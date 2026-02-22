@@ -74,6 +74,13 @@ export default async function Dashboard() {
   );
   const longestStreak: number = profile.longest_streak;
 
+  // Fetch pulse calendar (last 30 days) for Ghost Calendar
+  const { data: pulseCalendarData } = await supabase.rpc(
+    "get_pulse_calendar",
+    { p_days: 30 },
+  );
+  const pulsedDates: string[] = pulseCalendarData ?? [];
+
   // Connections will be fetched from real data in a future unit
   const connections: Connection[] = [];
 
@@ -88,6 +95,7 @@ export default async function Dashboard() {
           showWisdom={isActive}
           currentStreak={currentStreak}
           longestStreak={longestStreak}
+          pulsedDates={pulsedDates}
         />
       </div>
     </div>

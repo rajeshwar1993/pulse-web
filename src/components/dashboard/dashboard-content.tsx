@@ -8,6 +8,7 @@ import { Heading } from "@/components/ui/heading";
 import { FLUTTER_READY_SIGNAL_DELAY_MS } from "@/lib/constants";
 import { logger } from "@/lib/utils/logger";
 import { type Connection, ConnectionGrid } from "./connection-grid";
+import { GhostCalendar } from "./ghost-calendar";
 import { PulseButton } from "./pulse-button";
 import { StatusCard } from "./status-card";
 import { StreakBadge } from "./streak-badge";
@@ -23,6 +24,7 @@ interface DashboardContentProps {
   onPulse?: () => Promise<void>;
   currentStreak?: number;
   longestStreak?: number;
+  pulsedDates?: string[];
 }
 
 /**
@@ -44,6 +46,7 @@ export function DashboardContent({
   onPulse,
   currentStreak = 0,
   longestStreak = 0,
+  pulsedDates = [],
 }: DashboardContentProps) {
   const t = useTranslations("dashboard");
   const [showWisdomCard, setShowWisdomCard] = useState(showWisdom);
@@ -146,6 +149,9 @@ export function DashboardContent({
         currentStreak={currentStreak}
         longestStreak={longestStreak}
       />
+
+      {/* Ghost Calendar */}
+      <GhostCalendar pulsedDates={pulsedDates} />
 
       {/* Connections Section */}
       <div>

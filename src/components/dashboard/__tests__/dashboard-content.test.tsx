@@ -35,6 +35,16 @@ vi.mock("../streak-badge", () => ({
   ),
 }));
 
+vi.mock("../ghost-calendar", () => ({
+  // biome-ignore lint/suspicious/noExplicitAny: test mock props
+  GhostCalendar: (props: any) => (
+    <div
+      data-testid="ghost-calendar"
+      data-dates={props.pulsedDates?.length ?? 0}
+    />
+  ),
+}));
+
 vi.mock("@/components/shared/empty-connections-view", () => ({
   EmptyConnectionsView: () => <div data-testid="empty-connections" />,
 }));

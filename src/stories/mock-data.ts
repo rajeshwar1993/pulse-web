@@ -44,6 +44,45 @@ export const mockConnections: DashboardConnection[] = [
   },
 ];
 
+/** Generate mock pulsed dates for Ghost Calendar stories. */
+function generateMockPulsedDates(
+  pattern: "streak" | "scattered" | "empty",
+): string[] {
+  const today = new Date();
+  const fmt = (d: Date) => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  };
+
+  if (pattern === "empty") return [];
+
+  if (pattern === "streak") {
+    // Last 14 consecutive days pulsed
+    return Array.from({ length: 14 }, (_, i) => {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      return fmt(d);
+    });
+  }
+
+  // Scattered: ~60% of days pulsed, with some gaps
+  const dates: string[] = [];
+  for (let i = 0; i < 30; i++) {
+    if (i % 5 !== 3 && i % 7 !== 0) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      dates.push(fmt(d));
+    }
+  }
+  return dates;
+}
+
+export const mockPulsedDatesStreak = generateMockPulsedDates("streak");
+export const mockPulsedDatesScattered = generateMockPulsedDates("scattered");
+export const mockPulsedDatesEmpty = generateMockPulsedDates("empty");
+
 export const mockConnectionsWithProfile: ConnectionWithProfile[] = [
   {
     id: "conn-1",

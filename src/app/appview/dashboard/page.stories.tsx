@@ -2,7 +2,10 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { expect } from "storybook/test";
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { ToastProvider } from "@/components/providers/toast-provider";
-import { mockConnections } from "@/stories/mock-data";
+import {
+  mockConnections,
+  mockPulsedDatesScattered,
+} from "@/stories/mock-data";
 
 const meta = {
   title: "Pages/AppView/Dashboard",
@@ -35,6 +38,7 @@ export const Active: Story = {
     connections: mockConnections,
     showWisdom: true,
     settingsHref: "/appview/settings",
+    pulsedDates: mockPulsedDatesScattered,
   },
   play: async ({ canvas, step }) => {
     await step("Verify greeting contains name", async () => {
