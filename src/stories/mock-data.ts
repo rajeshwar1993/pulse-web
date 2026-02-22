@@ -17,6 +17,7 @@ export const mockProfile = {
 export const mockConnections: DashboardConnection[] = [
   {
     id: "conn-1",
+    userId: "user-002",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=aneka",
     name: "Mom",
     timezone: "America/New_York",
@@ -27,6 +28,7 @@ export const mockConnections: DashboardConnection[] = [
   },
   {
     id: "conn-2",
+    userId: "user-003",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sam",
     name: "Dad",
     timezone: "Europe/London",
@@ -37,6 +39,7 @@ export const mockConnections: DashboardConnection[] = [
   },
   {
     id: "conn-3",
+    userId: "user-004",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=charlie",
     name: "Sibling",
     timezone: "Asia/Tokyo",

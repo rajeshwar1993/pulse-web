@@ -20,6 +20,7 @@ type Story = StoryObj<typeof meta>;
 const mockConnections: DashboardConnection[] = [
   {
     id: "1",
+    userId: "user-101",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mom",
     name: "Mom",
     timezone: "America/New_York",
@@ -30,6 +31,7 @@ const mockConnections: DashboardConnection[] = [
   },
   {
     id: "2",
+    userId: "user-102",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Dad",
     name: "Dad",
     timezone: "Europe/London",
@@ -39,6 +41,7 @@ const mockConnections: DashboardConnection[] = [
   },
   {
     id: "3",
+    userId: "user-103",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sister",
     name: "Sister",
     timezone: "Asia/Tokyo",
@@ -49,6 +52,7 @@ const mockConnections: DashboardConnection[] = [
   },
   {
     id: "4",
+    userId: "user-104",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Grandma",
     name: "Grandma",
     timezone: "Australia/Sydney",

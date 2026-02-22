@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { EmptyConnectionsView } from "@/components/shared/empty-connections-view";
 import { Heading } from "@/components/ui/heading";
 import { FLUTTER_READY_SIGNAL_DELAY_MS } from "@/lib/constants";
+import { useSeenReceipts } from "@/hooks/use-seen-receipts";
 import { logger } from "@/lib/utils/logger";
 import { type Connection, ConnectionGrid } from "./connection-grid";
 import { GhostCalendar } from "./ghost-calendar";
@@ -52,6 +53,7 @@ export function DashboardContent({
   missedPulseDate,
 }: DashboardContentProps) {
   const t = useTranslations("dashboard");
+  useSeenReceipts(connections);
   const [showWisdomCard, setShowWisdomCard] = useState(showWisdom);
   const [showMissedPulseSurvey, setShowMissedPulseSurvey] = useState(
     !!missedPulseDate,

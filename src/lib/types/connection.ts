@@ -41,6 +41,7 @@ export interface ConnectionWithProfile {
 /** Display-oriented connection used in the dashboard view */
 export interface DashboardConnection {
   id: string;
+  userId: string;
   avatar: string;
   name: string;
   timezone: string;
