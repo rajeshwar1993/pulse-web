@@ -53,6 +53,7 @@ export function GhostCalendar({ pulsedDates }: GhostCalendarProps) {
           return (
             <div key={date} className="flex items-center justify-center">
               <div
+                data-testid={isPulsed ? "dot-filled" : "dot-ghost"}
                 className={`
                   w-6 h-6 rounded-full transition-colors
                   ${

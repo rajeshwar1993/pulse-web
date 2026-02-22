@@ -25,13 +25,12 @@ describe("GhostCalendar", () => {
     vi.useRealTimers();
   });
 
-  it("should render 30 calendar dots", () => {
+  it("should render 30 calendar dots total", () => {
     render(<GhostCalendar pulsedDates={[]} />);
 
-    // 30 days + padding cells in the grid
-    // Each dot has a rounded-full class
-    const dots = screen.getByTestId("card").querySelectorAll(".rounded-full");
-    expect(dots).toHaveLength(30);
+    const filled = screen.queryAllByTestId("dot-filled");
+    const ghost = screen.queryAllByTestId("dot-ghost");
+    expect(filled.length + ghost.length).toBe(30);
   });
 
   it("should render filled dots for pulsed dates", () => {
@@ -40,20 +39,16 @@ describe("GhostCalendar", () => {
 
     render(<GhostCalendar pulsedDates={[today, yesterday]} />);
 
-    const filledDots = screen
-      .getByTestId("card")
-      .querySelectorAll(".bg-teal-300");
-    expect(filledDots).toHaveLength(2);
+    const filled = screen.getAllByTestId("dot-filled");
+    expect(filled).toHaveLength(2);
   });
 
-  it("should render ghost dots for non-pulsed dates", () => {
+  it("should render all ghost dots when no dates pulsed", () => {
     render(<GhostCalendar pulsedDates={[]} />);
 
-    // All 30 dots should be ghost dots (have border classes)
-    const ghostDots = screen
-      .getByTestId("card")
-      .querySelectorAll('[class*="border-2"]');
-    expect(ghostDots).toHaveLength(30);
+    const ghost = screen.getAllByTestId("dot-ghost");
+    expect(ghost).toHaveLength(30);
+    expect(screen.queryAllByTestId("dot-filled")).toHaveLength(0);
   });
 
   it("should render inside a Card", () => {
@@ -61,16 +56,7 @@ describe("GhostCalendar", () => {
     expect(screen.getByTestId("card")).toBeInTheDocument();
   });
 
-  it("should handle empty pulsedDates array", () => {
-    render(<GhostCalendar pulsedDates={[]} />);
-
-    const filledDots = screen
-      .getByTestId("card")
-      .querySelectorAll(".bg-teal-300");
-    expect(filledDots).toHaveLength(0);
-  });
-
-  it("should handle all days pulsed", () => {
+  it("should render all filled dots when every day is pulsed", () => {
     const allDates: string[] = [];
     for (let i = 29; i >= 0; i--) {
       const date = new Date();
@@ -80,9 +66,48 @@ describe("GhostCalendar", () => {
 
     render(<GhostCalendar pulsedDates={allDates} />);
 
-    const filledDots = screen
-      .getByTestId("card")
-      .querySelectorAll(".bg-teal-300");
-    expect(filledDots).toHaveLength(30);
+    expect(screen.getAllByTestId("dot-filled")).toHaveLength(30);
+    expect(screen.queryAllByTestId("dot-ghost")).toHaveLength(0);
+  });
+
+  it("should distinguish today's ghost dot with stronger border", () => {
+    render(<GhostCalendar pulsedDates={[]} />);
+
+    const ghosts = screen.getAllByTestId("dot-ghost");
+    const todayDot = ghosts[ghosts.length - 1]; // last dot = today
+    expect(todayDot.className).toContain("slate-300");
+  });
+
+  it("should use lighter border for past ghost dots", () => {
+    render(<GhostCalendar pulsedDates={[]} />);
+
+    const ghosts = screen.getAllByTestId("dot-ghost");
+    const pastDot = ghosts[0]; // first dot = oldest day
+    expect(pastDot.className).toContain("slate-200");
+  });
+
+  it("should ignore dates outside the 30-day window", () => {
+    const oldDate = formatDate(new Date(2025, 0, 1)); // way in the past
+    render(<GhostCalendar pulsedDates={[oldDate]} />);
+
+    expect(screen.queryAllByTestId("dot-filled")).toHaveLength(0);
+    expect(screen.getAllByTestId("dot-ghost")).toHaveLength(30);
+  });
+
+  it("should render a 7-column grid", () => {
+    render(<GhostCalendar pulsedDates={[]} />);
+
+    const grid = screen.getByTestId("card").querySelector(".grid");
+    expect(grid).toBeDefined();
+    expect(grid?.getAttribute("style")).toContain("repeat(7, 1fr)");
+  });
+
+  it("should add padding cells to fill the first row", () => {
+    render(<GhostCalendar pulsedDates={[]} />);
+
+    // 30 days in 7 columns → 30 % 7 = 2, padding = 5
+    // Total grid children = 5 padding + 30 dots = 35
+    const grid = screen.getByTestId("card").querySelector(".grid");
+    expect(grid?.children.length).toBe(35);
   });
 });
