@@ -63,6 +63,13 @@ export default async function BrowserDashboard() {
     ? new Date(todayPulse.created_at)
     : null;
 
+  // Fetch pulse calendar (last 30 days) for Ghost Calendar
+  const { data: pulseCalendarData } = await supabase.rpc(
+    "get_pulse_calendar",
+    { p_days: 30 },
+  );
+  const pulsedDates: string[] = pulseCalendarData ?? [];
+
   const connections: Connection[] = [];
 
   return (
@@ -71,6 +78,7 @@ export default async function BrowserDashboard() {
       isActive={isActive}
       pulseTime={pulseTime}
       connections={connections}
+      pulsedDates={pulsedDates}
     />
   );
 }
