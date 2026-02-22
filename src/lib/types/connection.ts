@@ -30,6 +30,7 @@ export interface ConnectionWithProfile {
   user_id: string;
   display_name: string;
   avatar_url: string;
+  timezone: string;
   status: "active" | "waiting";
   last_pulse?: string;
   created_at: string;
@@ -42,6 +43,7 @@ export interface DashboardConnection {
   id: string;
   avatar: string;
   name: string;
+  timezone: string;
   status: "active" | "waiting";
   pulseTime?: Date | null;
   currentStreak: number;

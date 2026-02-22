@@ -14,6 +14,10 @@ const meta = {
       control: "text",
       description: "Display name of the connection",
     },
+    timezone: {
+      control: "text",
+      description: "IANA timezone string for the connection",
+    },
     status: {
       control: "select",
       options: ["active", "waiting"],
@@ -33,6 +37,7 @@ export const Active: Story = {
   args: {
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mom",
     name: "Mom",
+    timezone: "America/New_York",
     status: "active",
     pulseTime: new Date(Date.now() - 30 * 60 * 1000),
     currentStreak: 12,
@@ -43,6 +48,7 @@ export const ActiveNoStreak: Story = {
   args: {
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mom",
     name: "Mom",
+    timezone: "Europe/London",
     status: "active",
     pulseTime: new Date(Date.now() - 30 * 60 * 1000),
     currentStreak: 0,
@@ -53,6 +59,7 @@ export const Waiting: Story = {
   args: {
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Dad",
     name: "Dad",
+    timezone: "Asia/Tokyo",
     status: "waiting",
     currentStreak: 0,
   },
@@ -62,6 +69,7 @@ export const LongName: Story = {
   args: {
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alexandra",
     name: "Alexandra Konstantinova-Petrovskaya",
+    timezone: "Australia/Sydney",
     status: "active",
     pulseTime: new Date(Date.now() - 60 * 60 * 1000),
     currentStreak: 5,

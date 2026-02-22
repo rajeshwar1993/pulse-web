@@ -83,6 +83,8 @@ export default async function Dashboard() {
 
   // Connections will be fetched from real data in a future unit
   const connections: Connection[] = [];
+  // Note: When connections are populated, map timezone from ConnectionWithProfile:
+  // { ...conn, timezone: conn.timezone }
 
   return (
     <div className="min-h-screen bg-[var(--off-white)] p-6">

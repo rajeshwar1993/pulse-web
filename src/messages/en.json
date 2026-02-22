@@ -83,7 +83,9 @@
     },
     "connectionCard": {
       "active": "Active",
-      "waiting": "Waiting..."
+      "waiting": "Waiting...",
+      "earlyMorning": "Morning there",
+      "localTime": "{time} for {name}"
     },
     "emptyConnections": {
       "title": "No connections yet",

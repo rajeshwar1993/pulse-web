@@ -22,8 +22,8 @@ export class ConnectionService {
         from_user_id,
         to_user_id,
         created_at,
-        from_profile:profiles!connections_from_user_id_fkey(id, display_name, avatar_url, current_streak, longest_streak, last_pulse_date),
-        to_profile:profiles!connections_to_user_id_fkey(id, display_name, avatar_url, current_streak, longest_streak, last_pulse_date)
+        from_profile:profiles!connections_from_user_id_fkey(id, display_name, avatar_url, timezone, current_streak, longest_streak, last_pulse_date),
+        to_profile:profiles!connections_to_user_id_fkey(id, display_name, avatar_url, timezone, current_streak, longest_streak, last_pulse_date)
       `,
       )
       .or(`from_user_id.eq.${user.id},to_user_id.eq.${user.id}`)
@@ -43,6 +43,7 @@ export class ConnectionService {
         user_id: otherProfile.id,
         display_name: otherProfile.display_name,
         avatar_url: otherProfile.avatar_url,
+        timezone: otherProfile.timezone ?? "UTC",
         status: "active", // Will be enhanced with pulse status in Unit 4
         created_at: conn.created_at,
         current_streak: getEffectiveStreak(

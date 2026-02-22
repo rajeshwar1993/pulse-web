@@ -20,6 +20,7 @@ const baseConnection: ConnectionWithProfile = {
   user_id: "user-002",
   display_name: "Mom",
   avatar_url: "https://example.com/mom.png",
+  timezone: "America/New_York",
   status: "active",
   last_pulse: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
   created_at: "2025-01-01T00:00:00Z",

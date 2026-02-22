@@ -3,7 +3,9 @@
 import { useLocale, useTranslations } from "next-intl";
 import { Avatar } from "@/components/ui/avatar";
 import { IconBadge } from "@/components/ui/icon-badge";
+import { usePartnerTime } from "@/hooks/use-partner-time";
 import { formatRelativeTime } from "@/lib/utils/format-date";
+import { getWaitingContext } from "@/lib/utils/timezone";
 
 interface ConnectionCardProps {
   /**
@@ -14,6 +16,10 @@ interface ConnectionCardProps {
    * Display name of the connection
    */
   name: string;
+  /**
+   * IANA timezone string for the connection (e.g., "America/New_York")
+   */
+  timezone: string;
   /**
    * Status of the connection (active = pulsed today, waiting = hasn't pulsed yet)
    */
@@ -39,6 +45,7 @@ interface ConnectionCardProps {
 export function ConnectionCard({
   avatar,
   name,
+  timezone,
   status,
   pulseTime,
   currentStreak = 0,
@@ -46,6 +53,8 @@ export function ConnectionCard({
   const t = useTranslations("dashboard.connectionCard");
   const locale = useLocale();
   const isActive = status === "active";
+  const partnerTime = usePartnerTime(timezone, locale);
+  const waitingContext = getWaitingContext(timezone);
 
   // Format the pulse time for display
   const formattedTime =
@@ -104,9 +113,18 @@ export function ConnectionCard({
                 )}
               </>
             ) : (
-              <span className="text-[var(--slate-500)]">{t("waiting")}</span>
+              <span className="text-[var(--slate-500)]">
+                {waitingContext === "morning"
+                  ? t("earlyMorning")
+                  : t("waiting")}
+              </span>
             )}
           </p>
+          {partnerTime && (
+            <p className="text-xs text-[var(--slate-400)] truncate">
+              {t("localTime", { time: partnerTime, name })}
+            </p>
+          )}
         </div>
 
         {/* Streak + Status icon */}

@@ -189,6 +189,7 @@ describe("DashboardContent", () => {
         id: "1",
         avatar: "/a.png",
         name: "Bob",
+        timezone: "America/New_York",
         status: "active" as const,
         pulseTime: null,
         currentStreak: 3,

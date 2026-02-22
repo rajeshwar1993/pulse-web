@@ -92,11 +92,13 @@ describe("ConnectionService", () => {
             id: "user-123",
             display_name: "Alice",
             avatar_url: "/alice.png",
+            timezone: "America/New_York",
           },
           to_profile: {
             id: "user-456",
             display_name: "Bob",
             avatar_url: "/bob.png",
+            timezone: "Europe/London",
           },
         },
       ];
@@ -111,6 +113,7 @@ describe("ConnectionService", () => {
         user_id: "user-456",
         display_name: "Bob",
         avatar_url: "/bob.png",
+        timezone: "Europe/London",
         status: "active",
         created_at: "2026-01-01",
         current_streak: 0,
@@ -129,11 +132,13 @@ describe("ConnectionService", () => {
             id: "user-456",
             display_name: "Bob",
             avatar_url: "/bob.png",
+            timezone: "Europe/London",
           },
           to_profile: {
             id: "user-123",
             display_name: "Alice",
             avatar_url: "/alice.png",
+            timezone: "America/New_York",
           },
         },
       ];
