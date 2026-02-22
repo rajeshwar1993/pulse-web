@@ -56,6 +56,11 @@ vi.mock("@/components/shared/empty-connections-view", () => ({
   EmptyConnectionsView: () => <div data-testid="empty-connections" />,
 }));
 
+const mockUseSeenReceipts = vi.fn();
+vi.mock("@/hooks/use-seen-receipts", () => ({
+  useSeenReceipts: (...args: unknown[]) => mockUseSeenReceipts(...args),
+}));
+
 vi.mock("next/link", () => ({
   // biome-ignore lint/suspicious/noExplicitAny: test mock props
   default: ({ children, href, ...rest }: any) => (
@@ -194,6 +199,7 @@ describe("DashboardContent", () => {
     const connections = [
       {
         id: "1",
+        userId: "user-456",
         avatar: "/a.png",
         name: "Bob",
         timezone: "America/New_York",
@@ -261,5 +267,25 @@ describe("DashboardContent", () => {
     expect(
       screen.queryByTestId("missed-pulse-survey-modal"),
     ).not.toBeInTheDocument();
+  });
+
+  it("should call useSeenReceipts with connections", () => {
+    vi.setSystemTime(new Date(2026, 1, 22, 9, 0));
+    const connections = [
+      {
+        id: "1",
+        userId: "user-456",
+        avatar: "/a.png",
+        name: "Bob",
+        timezone: "America/New_York",
+        status: "active" as const,
+        pulseTime: null,
+        currentStreak: 3,
+        longestStreak: 5,
+      },
+    ];
+    render(<DashboardContent {...baseProps} connections={connections} />);
+
+    expect(mockUseSeenReceipts).toHaveBeenCalledWith(connections);
   });
 });
