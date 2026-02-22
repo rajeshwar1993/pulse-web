@@ -13,9 +13,9 @@ export default async function NotFound() {
         <Heading as="h1" size="xl" className="text-[var(--teal)] mb-4">
           404
         </Heading>
-        <h2 className="text-xl font-semibold text-[var(--slate-900)] mb-2">
+        <Heading as="h2" size="base" className="mb-2">
           {t("title")}
-        </h2>
+        </Heading>
         <p className="text-[var(--slate-600)] mb-8">{t("message")}</p>
         <Link href="/" className={buttonVariants()}>
           {t("backToHome")}

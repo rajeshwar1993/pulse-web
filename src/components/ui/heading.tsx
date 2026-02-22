@@ -1,12 +1,13 @@
 import type React from "react";
 
 type HeadingLevel = "h1" | "h2" | "h3";
-type HeadingSize = "xl" | "lg" | "md" | "sm";
+type HeadingSize = "xl" | "lg" | "md" | "base" | "sm";
 
 const sizeStyles: Record<HeadingSize, string> = {
   xl: "text-5xl font-bold",
   lg: "text-3xl font-bold",
   md: "text-2xl font-bold",
+  base: "text-xl font-semibold",
   sm: "text-lg font-semibold",
 };
 

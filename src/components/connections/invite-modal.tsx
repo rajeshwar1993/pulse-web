@@ -4,6 +4,10 @@ import { useTranslations } from "next-intl";
 import { QRCodeSVG } from "qrcode.react";
 import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/components/providers/toast-provider";
+import { Button } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
+import { Modal } from "@/components/ui/modal";
+import { Spinner } from "@/components/ui/spinner";
 import { INVITE_DEEP_LINK_PREFIX } from "@/lib/constants";
 import { ConnectionService } from "@/lib/services/connection-service";
 import type { InviteCode } from "@/lib/types/connection";
@@ -19,31 +23,22 @@ export function InviteModal({ onClose }: InviteModalProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const { showToast } = useToast();
-  const modalRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: generateCode is stable and only needed on mount
   useEffect(() => {
     generateCode();
   }, []);
 
-  // Escape key handler
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [onClose]);
-
   // biome-ignore lint/correctness/useExhaustiveDependencies: focus trap re-binds when loading state changes
   useEffect(() => {
-    const modal = modalRef.current;
-    if (!modal) return;
+    const container = contentRef.current;
+    if (!container) return;
 
     const focusableSelector =
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
     const focusableElements =
-      modal.querySelectorAll<HTMLElement>(focusableSelector);
+      container.querySelectorAll<HTMLElement>(focusableSelector);
     if (focusableElements.length === 0) return;
 
     const firstEl = focusableElements[0];
@@ -65,8 +60,8 @@ export function InviteModal({ onClose }: InviteModalProps) {
       }
     };
 
-    modal.addEventListener("keydown", handleTab);
-    return () => modal.removeEventListener("keydown", handleTab);
+    container.addEventListener("keydown", handleTab);
+    return () => container.removeEventListener("keydown", handleTab);
   }, [isLoading]);
 
   const generateCode = async () => {
@@ -119,29 +114,18 @@ export function InviteModal({ onClose }: InviteModalProps) {
   };
 
   return (
-    // biome-ignore lint/a11y/noStaticElementInteractions: backdrop overlay with click-to-close
-    // biome-ignore lint/a11y/useKeyWithClickEvents: Escape key handled via separate useEffect
-    <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
+    <Modal
+      open={true}
+      onClose={onClose}
+      padding="lg"
+      ariaLabelledBy="invite-modal-title"
     >
-      <div
-        ref={modalRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="invite-modal-title"
-        className="bg-white rounded-2xl p-8 max-w-md w-full"
-      >
+      <div ref={contentRef}>
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h2
-            id="invite-modal-title"
-            className="text-2xl font-bold text-slate-900"
-          >
+          <Heading as="h2" size="md" id="invite-modal-title">
             {t("title")}
-          </h2>
+          </Heading>
           <button
             type="button"
             onClick={onClose}
@@ -167,7 +151,7 @@ export function InviteModal({ onClose }: InviteModalProps) {
 
         {isLoading ? (
           <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-300"></div>
+            <Spinner size="lg" />
           </div>
         ) : inviteCode ? (
           <>
@@ -214,16 +198,12 @@ export function InviteModal({ onClose }: InviteModalProps) {
             </p>
 
             {/* Share Button */}
-            <button
-              type="button"
-              onClick={shareInvite}
-              className="w-full bg-teal-300 text-white py-4 rounded-lg font-semibold hover:bg-teal-400 transition-colors"
-            >
+            <Button onClick={shareInvite} size="lg">
               {t("shareButton")}
-            </button>
+            </Button>
           </>
         ) : null}
       </div>
-    </div>
+    </Modal>
   );
 }
