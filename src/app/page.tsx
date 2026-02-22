@@ -1,56 +1,12 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { FeatureItem } from "@/components/landing/feature-item";
+import { StepCard } from "@/components/landing/step-card";
 import { buttonVariants } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { PulseLogo } from "@/components/ui/pulse-logo";
 import { createClient } from "@/lib/supabase/server";
-
-function StepCard({
-  number,
-  title,
-  description,
-}: {
-  number: number;
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="text-center">
-      <div className="w-12 h-12 rounded-full bg-[var(--teal-50)] text-[var(--teal)] font-bold text-lg flex items-center justify-center mx-auto mb-4">
-        {number}
-      </div>
-      <h3 className="text-lg font-semibold text-[var(--slate-800)] mb-2">
-        {title}
-      </h3>
-      <p className="text-[var(--slate-500)] text-sm leading-relaxed">
-        {description}
-      </p>
-    </div>
-  );
-}
-
-function FeatureItem({ text }: { text: string }) {
-  return (
-    <li className="flex items-start gap-3">
-      <svg
-        className="w-5 h-5 text-[var(--teal)] mt-0.5 flex-shrink-0"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        aria-hidden="true"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M5 13l4 4L19 7"
-        />
-      </svg>
-      <span className="text-[var(--slate-600)]">{text}</span>
-    </li>
-  );
-}
 
 export default async function Home() {
   const supabase = await createClient();
@@ -93,7 +49,10 @@ export default async function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/auth/signup" className={buttonVariants({ size: "md" })}>
+            <Link
+              href="/auth/signup"
+              className={buttonVariants({ size: "md" })}
+            >
               {tLanding("getStarted")}
             </Link>
             <Link
