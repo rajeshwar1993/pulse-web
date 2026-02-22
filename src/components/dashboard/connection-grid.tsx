@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { Heading } from "@/components/ui/heading";
 import type { DashboardConnection } from "@/lib/types/connection";
 import { ConnectionCard } from "./connection-card";
 
@@ -31,9 +32,9 @@ export function ConnectionGrid({ connections }: ConnectionGridProps) {
 
   return (
     <div className="space-y-3">
-      <h2 className="text-lg font-semibold text-[var(--slate-900)]">
+      <Heading as="h2" size="sm">
         {t("title", { count: connections.length })}
-      </h2>
+      </Heading>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {connections.map((connection) => (

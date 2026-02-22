@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { Heading } from "@/components/ui/heading";
 import { PulseLogo } from "@/components/ui/pulse-logo";
 import { createClient } from "@/lib/supabase/server";
 
@@ -36,9 +37,9 @@ export default async function Home() {
     <main className="min-h-screen bg-[var(--off-white)] flex items-center justify-center px-4">
       <div className="text-center max-w-md">
         <PulseLogo className="w-32 h-32 mx-auto mb-6" />
-        <h1 className="text-5xl font-bold text-[var(--teal)] mb-4">
+        <Heading as="h1" size="xl" className="text-[var(--teal)] mb-4">
           {tCommon("appName")}
-        </h1>
+        </Heading>
         <p className="text-xl text-[var(--slate-600)] mb-8">
           {tCommon("tagline")}
         </p>

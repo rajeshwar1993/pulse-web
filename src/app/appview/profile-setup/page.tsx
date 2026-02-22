@@ -4,6 +4,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { Alert } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { FormInput } from "@/components/ui/form-input";
+import { Heading } from "@/components/ui/heading";
 import { supabase } from "@/lib/supabase/client";
 import { logger } from "@/lib/utils/logger";
 
@@ -74,47 +78,27 @@ export default function ProfileSetup() {
   return (
     <div className="min-h-screen bg-[var(--off-white)] p-6">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold text-[var(--teal)] mb-8">
+        <Heading as="h1" size="lg" className="text-[var(--teal)] mb-8">
           {t("title")}
-        </h1>
+        </Heading>
 
         <form onSubmit={handleSubmit}>
           {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-              <svg
-                className="w-5 h-5 text-red-600 mt-0.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              <p className="text-red-800">{error}</p>
-            </div>
+            <Alert variant="error" className="mb-6">
+              {error}
+            </Alert>
           )}
 
           {/* Display Name */}
           <div className="mb-6">
-            <label
+            <FormInput
+              label={t("displayNameLabel")}
               htmlFor="display-name"
-              className="block text-[var(--slate-700)] font-semibold mb-2"
-            >
-              {t("displayNameLabel")}
-            </label>
-            <input
-              id="display-name"
               type="text"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               maxLength={50}
-              className="w-full px-4 py-3 border border-[var(--slate-300)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--teal)] focus:border-transparent"
               placeholder={t("displayNamePlaceholder")}
               disabled={isLoading}
             />
@@ -174,39 +158,14 @@ export default function ProfileSetup() {
           )}
 
           {/* Continue Button */}
-          <button
+          <Button
             type="submit"
+            size="lg"
+            loading={isLoading}
             disabled={!isValid || isLoading}
-            className="w-full py-4 bg-[var(--teal)] text-white rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90 transition-opacity"
           >
-            {isLoading ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg
-                  className="animate-spin h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-                {t("creating")}
-              </span>
-            ) : (
-              t("continue")
-            )}
-          </button>
+            {isLoading ? t("creating") : t("continue")}
+          </Button>
         </form>
       </div>
     </div>

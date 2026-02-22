@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Heading } from "@/components/ui/heading";
 import type { SupportedLocale } from "@/i18n/config";
 import { LocaleService } from "@/lib/services/locale-service";
 import { LanguageSelector } from "./language-selector";
@@ -58,21 +60,21 @@ export function SettingsPage({ currentLocale }: SettingsPageProps) {
             <path d="m12 19-7-7 7-7" />
           </svg>
         </Link>
-        <h1 className="text-2xl font-bold text-[var(--slate-900)]">
+        <Heading as="h1" size="md">
           {t("title")}
-        </h1>
+        </Heading>
       </div>
 
       {/* Language Section */}
-      <section className="bg-white rounded-2xl p-6 shadow-sm border border-[var(--slate-200)]">
-        <h2 className="text-lg font-semibold text-[var(--slate-800)] mb-4">
+      <Card className="rounded-2xl">
+        <Heading as="h2" size="sm" className="text-[var(--slate-800)] mb-4">
           {t("language")}
-        </h2>
+        </Heading>
         <LanguageSelector
           currentLocale={activeLocale}
           onLocaleChange={handleLocaleChange}
         />
-      </section>
+      </Card>
     </div>
   );
 }

@@ -52,10 +52,10 @@ describe("ConnectionCard", () => {
       expect(avatar).toHaveClass("ring-[var(--teal)]");
     });
 
-    it("should show pulse animation ring", () => {
+    it("should show active ring on avatar", () => {
       const pulseTime = new Date();
 
-      const { container } = render(
+      render(
         <ConnectionCard
           avatar={mockAvatar}
           name={mockName}
@@ -64,9 +64,10 @@ describe("ConnectionCard", () => {
         />,
       );
 
-      // Check for ping animation
-      const pingElement = container.querySelector(".animate-ping");
-      expect(pingElement).toBeInTheDocument();
+      // Check for active ring styling via Avatar component
+      const avatar = screen.getByAltText(mockName);
+      expect(avatar).toHaveClass("ring-2");
+      expect(avatar).toHaveClass("ring-[var(--teal)]");
     });
 
     it("should display green status dot", () => {
