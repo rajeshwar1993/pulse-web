@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "storybook/test";
 import { Button } from "./button";
+import { Heading } from "./heading";
 import { Modal } from "./modal";
 
 const meta = {
@@ -20,9 +21,9 @@ export const Default: Story = {
     open: true,
     children: (
       <div>
-        <h2 className="text-xl font-semibold text-[var(--slate-900)] mb-4">
+        <Heading as="h2" size="base" className="mb-4">
           Confirm Action
-        </h2>
+        </Heading>
         <p className="text-[var(--slate-600)] mb-6">
           Are you sure you want to proceed?
         </p>
@@ -56,6 +57,27 @@ export const SmallWidth: Story = {
             Remove
           </Button>
         </div>
+      </div>
+    ),
+  },
+};
+
+export const LargePadding: Story = {
+  args: {
+    open: true,
+    padding: "lg",
+    ariaLabelledBy: "modal-title",
+    children: (
+      <div>
+        <Heading as="h2" size="md" id="modal-title" className="mb-6">
+          Invite Connection
+        </Heading>
+        <div className="bg-[var(--slate-50)] rounded-lg p-8 mb-6 flex justify-center">
+          <div className="w-48 h-48 bg-[var(--slate-200)] rounded-lg flex items-center justify-center text-[var(--slate-400)]">
+            QR Code
+          </div>
+        </div>
+        <Button size="lg">Share Invite</Button>
       </div>
     ),
   },

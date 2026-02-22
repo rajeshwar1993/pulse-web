@@ -34,6 +34,14 @@ export const Medium: Story = {
   },
 };
 
+export const Base: Story = {
+  args: {
+    as: "h2",
+    size: "base",
+    children: "Something went wrong",
+  },
+};
+
 export const Small: Story = {
   args: {
     as: "h2",
