@@ -1,6 +1,6 @@
+import { fetchConnectionsWithPulseStatus } from "@/lib/queries/connections";
 import { supabase } from "@/lib/supabase/client";
 import type { ConnectionWithProfile, InviteCode } from "@/lib/types/connection";
-import { getEffectiveStreak } from "@/lib/utils/streak";
 
 // biome-ignore lint/complexity/noStaticOnlyClass: service pattern groups related methods under a namespace
 export class ConnectionService {
@@ -14,47 +14,7 @@ export class ConnectionService {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    // Single-row model: current user can be user_a_id or user_b_id.
-    // Join both sides and pick the "other" user's profile.
-    const { data, error } = await supabase
-      .from("connections")
-      .select(
-        `
-        id,
-        user_a_id,
-        user_b_id,
-        created_at,
-        user_a_profile:profiles!connections_user_a_id_fkey(id, display_name, avatar_url, timezone, current_streak, longest_streak, last_pulse_date),
-        user_b_profile:profiles!connections_user_b_id_fkey(id, display_name, avatar_url, timezone, current_streak, longest_streak, last_pulse_date)
-      `,
-      )
-      .or(`user_a_id.eq.${user.id},user_b_id.eq.${user.id}`)
-      .is("removed_at", null)
-      .order("created_at", { ascending: false });
-
-    if (error) throw error;
-
-    // biome-ignore lint/suspicious/noExplicitAny: Supabase join query returns dynamic shape
-    return data.map((conn: any) => {
-      const other =
-        conn.user_a_id === user.id
-          ? conn.user_b_profile
-          : conn.user_a_profile;
-      return {
-        id: conn.id,
-        user_id: other.id,
-        display_name: other.display_name,
-        avatar_url: other.avatar_url,
-        timezone: other.timezone ?? "UTC",
-        status: "active",
-        created_at: conn.created_at,
-        current_streak: getEffectiveStreak(
-          other.current_streak ?? 0,
-          other.last_pulse_date ?? null,
-        ),
-        longest_streak: other.longest_streak ?? 0,
-      };
-    });
+    return fetchConnectionsWithPulseStatus(supabase, user.id);
   }
 
   /**

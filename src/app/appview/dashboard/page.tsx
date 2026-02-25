@@ -1,33 +1,17 @@
 import { redirect } from "next/navigation";
 import type { Connection } from "@/components/dashboard/connection-grid";
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
-import { PULSE_DAY_RESET_HOUR } from "@/lib/constants";
+import {
+  fetchConnectionsWithPulseStatus,
+  toDashboardConnection,
+} from "@/lib/queries/connections";
 import { createClient } from "@/lib/supabase/server";
 import type { ConnectionRequestWithProfile } from "@/lib/types/connection";
-import { getEffectiveStreak, getTodayPulseDay } from "@/lib/utils/streak";
-
-/**
- * Get the start of the current Pulse Day (4:00 AM local time)
- */
-function getStartOfPulseDay(): Date {
-  const now = new Date();
-  const today4AM = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate(),
-    PULSE_DAY_RESET_HOUR,
-    0,
-    0,
-  );
-
-  if (now < today4AM) {
-    // Before 4 AM, Pulse Day started yesterday at 4 AM
-    return new Date(today4AM.getTime() - 24 * 60 * 60 * 1000);
-  } else {
-    // After 4 AM, Pulse Day started today at 4 AM
-    return today4AM;
-  }
-}
+import {
+  getEffectiveStreak,
+  getStartOfPulseDay,
+  getTodayPulseDay,
+} from "@/lib/utils/streak";
 
 export default async function Dashboard() {
   const supabase = await createClient();
@@ -82,10 +66,9 @@ export default async function Dashboard() {
   );
   const pulsedDates: string[] = pulseCalendarData ?? [];
 
-  // Connections will be fetched from real data in a future unit
-  const connections: Connection[] = [];
-  // Note: When connections are populated, map timezone from ConnectionWithProfile:
-  // { ...conn, timezone: conn.timezone }
+  // Fetch connections with pulse status via shared query
+  const connectionsWithProfile = await fetchConnectionsWithPulseStatus(supabase, user.id);
+  const connections: Connection[] = connectionsWithProfile.map(toDashboardConnection);
 
   // --- Missed pulse survey detection ---
   let missedPulseDate: string | null = null;

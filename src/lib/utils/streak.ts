@@ -13,6 +13,27 @@ export function getTodayPulseDay(): string {
 }
 
 /**
+ * Get the start of the current Pulse Day as a Date (4:00 AM local time).
+ * Before 4 AM, returns yesterday at 4 AM; after 4 AM, returns today at 4 AM.
+ */
+export function getStartOfPulseDay(): Date {
+  const now = new Date();
+  const today4AM = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+    PULSE_DAY_RESET_HOUR,
+    0,
+    0,
+  );
+
+  if (now < today4AM) {
+    return new Date(today4AM.getTime() - 24 * 60 * 60 * 1000);
+  }
+  return today4AM;
+}
+
+/**
  * Compute the effective current streak, accounting for staleness.
  *
  * The database stores the streak as of the last pulse. If the user hasn't

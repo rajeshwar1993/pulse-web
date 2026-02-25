@@ -1,33 +1,19 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import type { Connection } from "@/components/dashboard/connection-grid";
-import { PULSE_DAY_RESET_HOUR } from "@/lib/constants";
+import {
+  fetchConnectionsWithPulseStatus,
+  toDashboardConnection,
+} from "@/lib/queries/connections";
 import { createClient } from "@/lib/supabase/server";
 import type { ConnectionRequestWithProfile } from "@/lib/types/connection";
-import { getTodayPulseDay } from "@/lib/utils/streak";
+import { getStartOfPulseDay, getTodayPulseDay } from "@/lib/utils/streak";
 import { BrowserDashboardClient } from "./page-client";
 
 export const metadata: Metadata = {
   title: "Dashboard - Pulse",
   description: "Your daily pulse status and connections",
 };
-
-function getStartOfPulseDay(): Date {
-  const now = new Date();
-  const today4AM = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate(),
-    PULSE_DAY_RESET_HOUR,
-    0,
-    0,
-  );
-
-  if (now < today4AM) {
-    return new Date(today4AM.getTime() - 24 * 60 * 60 * 1000);
-  }
-  return today4AM;
-}
 
 export default async function BrowserDashboard() {
   const supabase = await createClient();
@@ -72,7 +58,9 @@ export default async function BrowserDashboard() {
   );
   const pulsedDates: string[] = pulseCalendarData ?? [];
 
-  const connections: Connection[] = [];
+  // Fetch connections with pulse status via shared query
+  const connectionsWithProfile = await fetchConnectionsWithPulseStatus(supabase, user.id);
+  const connections: Connection[] = connectionsWithProfile.map(toDashboardConnection);
 
   // --- Missed pulse survey detection ---
   let missedPulseDate: string | null = null;

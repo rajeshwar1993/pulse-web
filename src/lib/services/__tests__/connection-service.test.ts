@@ -16,12 +16,14 @@ function createQueryMock() {
     "insert",
     "update",
     "eq",
+    "in",
     "or",
     "is",
     "gte",
     "order",
     "single",
     "maybeSingle",
+    "limit",
   ];
 
   for (const method of methods) {
@@ -49,6 +51,7 @@ function createQueryMock() {
 
 const mockUser = { id: "user-123" };
 let queryMock: ReturnType<typeof createQueryMock>;
+let pulsesQueryMock: ReturnType<typeof createQueryMock>;
 const mockRpc = vi.fn();
 
 vi.mock("@/lib/supabase/client", () => ({
@@ -58,7 +61,10 @@ vi.mock("@/lib/supabase/client", () => ({
         .fn()
         .mockResolvedValue({ data: { user: { id: "user-123" } } }),
     },
-    from: vi.fn().mockImplementation(() => queryMock),
+    from: vi.fn().mockImplementation((table: string) => {
+      if (table === "daily_pulses") return pulsesQueryMock;
+      return queryMock;
+    }),
     // biome-ignore lint/suspicious/noExplicitAny: test mock passthrough
     rpc: (...args: any[]) => mockRpc(...args),
   },
@@ -71,9 +77,15 @@ describe("ConnectionService", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     queryMock = createQueryMock();
-    // Re-bind from to return fresh queryMock
+    pulsesQueryMock = createQueryMock();
+    // daily_pulses mock returns empty by default (no one pulsed today)
+    pulsesQueryMock._setResult({ data: [], error: null });
+    // Re-bind from to return fresh mocks
     // biome-ignore lint/suspicious/noExplicitAny: vi.fn() mock cast
-    (supabase.from as any).mockImplementation(() => queryMock);
+    (supabase.from as any).mockImplementation((table: string) => {
+      if (table === "daily_pulses") return pulsesQueryMock;
+      return queryMock;
+    });
     // biome-ignore lint/suspicious/noExplicitAny: vi.fn() mock cast
     (supabase.auth.getUser as any).mockResolvedValue({
       data: { user: mockUser },
@@ -114,7 +126,7 @@ describe("ConnectionService", () => {
         display_name: "Bob",
         avatar_url: "/bob.png",
         timezone: "Europe/London",
-        status: "active",
+        status: "waiting",
         created_at: "2026-01-01",
         current_streak: 0,
         longest_streak: 0,
