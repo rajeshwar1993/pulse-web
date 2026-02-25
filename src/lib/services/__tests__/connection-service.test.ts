@@ -81,20 +81,20 @@ describe("ConnectionService", () => {
   });
 
   describe("getActiveConnections", () => {
-    it("should return normalized connections", async () => {
+    it("should return normalized connections when current user is user_a", async () => {
       const rawData = [
         {
           id: "conn-1",
-          from_user_id: "user-123",
-          to_user_id: "user-456",
+          user_a_id: "user-123",
+          user_b_id: "user-456",
           created_at: "2026-01-01",
-          from_profile: {
+          user_a_profile: {
             id: "user-123",
             display_name: "Alice",
             avatar_url: "/alice.png",
             timezone: "America/New_York",
           },
-          to_profile: {
+          user_b_profile: {
             id: "user-456",
             display_name: "Bob",
             avatar_url: "/bob.png",
@@ -121,20 +121,20 @@ describe("ConnectionService", () => {
       });
     });
 
-    it("should show the other user profile when current user is to_user", async () => {
+    it("should show the other user profile when current user is user_b", async () => {
       const rawData = [
         {
           id: "conn-2",
-          from_user_id: "user-456",
-          to_user_id: "user-123",
+          user_a_id: "user-100",
+          user_b_id: "user-123",
           created_at: "2026-01-02",
-          from_profile: {
-            id: "user-456",
+          user_a_profile: {
+            id: "user-100",
             display_name: "Bob",
             avatar_url: "/bob.png",
             timezone: "Europe/London",
           },
-          to_profile: {
+          user_b_profile: {
             id: "user-123",
             display_name: "Alice",
             avatar_url: "/alice.png",
@@ -148,7 +148,7 @@ describe("ConnectionService", () => {
       const connections = await ConnectionService.getActiveConnections();
 
       expect(connections[0].display_name).toBe("Bob");
-      expect(connections[0].user_id).toBe("user-456");
+      expect(connections[0].user_id).toBe("user-100");
     });
 
     it("should throw when not authenticated", async () => {

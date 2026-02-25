@@ -14,43 +14,45 @@ export class ConnectionService {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
+    // Single-row model: current user can be user_a_id or user_b_id.
+    // Join both sides and pick the "other" user's profile.
     const { data, error } = await supabase
       .from("connections")
       .select(
         `
         id,
-        from_user_id,
-        to_user_id,
+        user_a_id,
+        user_b_id,
         created_at,
-        from_profile:profiles!connections_from_user_id_fkey(id, display_name, avatar_url, timezone, current_streak, longest_streak, last_pulse_date),
-        to_profile:profiles!connections_to_user_id_fkey(id, display_name, avatar_url, timezone, current_streak, longest_streak, last_pulse_date)
+        user_a_profile:profiles!connections_user_a_id_fkey(id, display_name, avatar_url, timezone, current_streak, longest_streak, last_pulse_date),
+        user_b_profile:profiles!connections_user_b_id_fkey(id, display_name, avatar_url, timezone, current_streak, longest_streak, last_pulse_date)
       `,
       )
-      .or(`from_user_id.eq.${user.id},to_user_id.eq.${user.id}`)
+      .or(`user_a_id.eq.${user.id},user_b_id.eq.${user.id}`)
       .is("removed_at", null)
       .order("created_at", { ascending: false });
 
     if (error) throw error;
 
-    // Normalize connections to show the "other" user
     // biome-ignore lint/suspicious/noExplicitAny: Supabase join query returns dynamic shape
     return data.map((conn: any) => {
-      const isFromUser = conn.from_user_id === user.id;
-      const otherProfile = isFromUser ? conn.to_profile : conn.from_profile;
-
+      const other =
+        conn.user_a_id === user.id
+          ? conn.user_b_profile
+          : conn.user_a_profile;
       return {
         id: conn.id,
-        user_id: otherProfile.id,
-        display_name: otherProfile.display_name,
-        avatar_url: otherProfile.avatar_url,
-        timezone: otherProfile.timezone ?? "UTC",
-        status: "active", // Will be enhanced with pulse status in Unit 4
+        user_id: other.id,
+        display_name: other.display_name,
+        avatar_url: other.avatar_url,
+        timezone: other.timezone ?? "UTC",
+        status: "active",
         created_at: conn.created_at,
         current_streak: getEffectiveStreak(
-          otherProfile.current_streak ?? 0,
-          otherProfile.last_pulse_date ?? null,
+          other.current_streak ?? 0,
+          other.last_pulse_date ?? null,
         ),
-        longest_streak: otherProfile.longest_streak ?? 0,
+        longest_streak: other.longest_streak ?? 0,
       };
     });
   }
@@ -67,7 +69,7 @@ export class ConnectionService {
     const { count, error } = await supabase
       .from("connections")
       .select("*", { count: "exact", head: true })
-      .or(`from_user_id.eq.${user.id},to_user_id.eq.${user.id}`)
+      .or(`user_a_id.eq.${user.id},user_b_id.eq.${user.id}`)
       .is("removed_at", null);
 
     if (error) throw error;
@@ -83,13 +85,17 @@ export class ConnectionService {
     } = await supabase.auth.getUser();
     if (!user) return false;
 
+    // Compute canonical ordering client-side for a single exact index lookup
+    const [a, b] =
+      user.id < otherUserId
+        ? [user.id, otherUserId]
+        : [otherUserId, user.id];
+
     const { count, error } = await supabase
       .from("connections")
       .select("*", { count: "exact", head: true })
-      .or(
-        `and(from_user_id.eq.${user.id},to_user_id.eq.${otherUserId}),` +
-          `and(from_user_id.eq.${otherUserId},to_user_id.eq.${user.id})`,
-      )
+      .eq("user_a_id", a)
+      .eq("user_b_id", b)
       .is("removed_at", null);
 
     if (error) throw error;
@@ -167,7 +173,7 @@ export class ConnectionService {
   }
 
   /**
-   * Accept an invite code and create bidirectional connection.
+   * Accept an invite code and create connection.
    * Uses a database RPC for atomic execution — all operations
    * succeed or fail together within a single transaction.
    */

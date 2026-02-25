@@ -1,12 +1,10 @@
 export interface Connection {
   id: string;
-  from_user_id: string;
-  to_user_id: string;
+  user_a_id: string;
+  user_b_id: string;
   created_at: string;
   removed_at: string | null;
   removed_by: string | null;
-  from_profile?: Profile;
-  to_profile?: Profile;
 }
 
 export interface InviteCode {
