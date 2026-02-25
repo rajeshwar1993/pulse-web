@@ -12,14 +12,20 @@
 export const LOCALE_COOKIE_NAME = "pulse-locale";
 
 // ---------------------------------------------------------------------------
-// Deep Links
+// Invite Links
 // ---------------------------------------------------------------------------
 
-/** Deep link scheme for Pulse app */
-export const PULSE_DEEP_LINK_SCHEME = "pulse://";
+/** Base URL for invite links (defaults to current origin) */
+export const INVITE_BASE_URL =
+  process.env.NEXT_PUBLIC_INVITE_BASE_URL || "";
 
-/** Deep link URL prefix for invite codes */
-export const INVITE_DEEP_LINK_PREFIX = `${PULSE_DEEP_LINK_SCHEME}invite?code=`;
+/** Build a full invite URL for the given code */
+export function getInviteUrl(code: string): string {
+  const base =
+    INVITE_BASE_URL ||
+    (typeof window !== "undefined" ? window.location.origin : "");
+  return `${base}/invite?code=${code}`;
+}
 
 // ---------------------------------------------------------------------------
 // Flutter Bridge

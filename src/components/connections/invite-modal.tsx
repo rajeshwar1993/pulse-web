@@ -1,48 +1,42 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { QRCodeSVG } from "qrcode.react";
 import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/components/providers/toast-provider";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Modal } from "@/components/ui/modal";
 import { Spinner } from "@/components/ui/spinner";
-import { INVITE_DEEP_LINK_PREFIX } from "@/lib/constants";
+import { getInviteUrl } from "@/lib/constants";
+import { ConnectionRequestService } from "@/lib/services/connection-request-service";
 import { ConnectionService } from "@/lib/services/connection-service";
 import type { InviteCode } from "@/lib/types/connection";
 import { logger } from "@/lib/utils/logger";
 
-/**
- * Props for the InviteModal component.
- */
 interface InviteModalProps {
-  /** Callback invoked when the modal is closed. */
   onClose: () => void;
 }
 
 /**
  * InviteModal Component
  *
- * Generates a single-use invite code and presents it in a modal with:
- * - QR code for scanning
- * - Copyable code field
- * - Native share integration (falls back to clipboard copy)
+ * Two-section layout:
+ * 1. Send via Email — targeted connection request
+ * 2. Share using other apps — generates invite code + native share sheet
  */
 export function InviteModal({ onClose }: InviteModalProps) {
   const t = useTranslations("connections.invite");
-  const [inviteCode, setInviteCode] = useState<InviteCode | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [copied, setCopied] = useState(false);
   const { showToast } = useToast();
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: generateCode is stable and only needed on mount
-  useEffect(() => {
-    generateCode();
-  }, []);
+  // Email invite state
+  const [email, setEmail] = useState("");
+  const [emailSending, setEmailSending] = useState(false);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: focus trap re-binds when loading state changes
+  // Share state
+  const [sharing, setSharing] = useState(false);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: focus trap re-binds when content changes
   useEffect(() => {
     const container = contentRef.current;
     if (!container) return;
@@ -74,54 +68,67 @@ export function InviteModal({ onClose }: InviteModalProps) {
 
     container.addEventListener("keydown", handleTab);
     return () => container.removeEventListener("keydown", handleTab);
-  }, [isLoading]);
+  }, []);
 
-  const generateCode = async () => {
-    setIsLoading(true);
+  const isValidEmail = (value: string): boolean =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+  const handleSendEmail = async () => {
+    if (!email.trim() || !isValidEmail(email)) {
+      showToast(t("invalidEmail"), "error");
+      return;
+    }
+
+    setEmailSending(true);
     try {
-      const code = await ConnectionService.generateInviteCode();
-      setInviteCode(code);
+      await ConnectionRequestService.sendRequest(email.trim());
+      // Always show success toast regardless of whether user was found (privacy)
+      showToast(t("inviteSent"), "success");
+      setEmail("");
     } catch (error) {
-      logger.error("Failed to generate invite code", error);
-      showToast(t("generateError"), "error");
-      onClose();
+      const message =
+        error instanceof Error ? error.message : t("generateError");
+      showToast(message, "error");
+      logger.error("Failed to send connection request", error);
     } finally {
-      setIsLoading(false);
+      setEmailSending(false);
     }
   };
 
-  const copyToClipboard = async () => {
-    if (!inviteCode) return;
-
-    const inviteUrl = `${INVITE_DEEP_LINK_PREFIX}${inviteCode.code}`;
+  const handleShare = async () => {
+    setSharing(true);
     try {
-      await navigator.clipboard.writeText(inviteUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
-      logger.warn("Clipboard write failed", error);
-    }
-  };
+      const inviteCode: InviteCode =
+        await ConnectionService.generateInviteCode();
+      const inviteUrl = getInviteUrl(inviteCode.code);
+      const shareText = t("shareText", {
+        code: inviteCode.code,
+        url: inviteUrl,
+      });
 
-  const shareInvite = async () => {
-    if (!inviteCode) return;
-
-    const inviteUrl = `${INVITE_DEEP_LINK_PREFIX}${inviteCode.code}`;
-    const shareText = t("shareText", { code: inviteCode.code, url: inviteUrl });
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: t("shareTitle"),
-          text: shareText,
-        });
-      } catch (error) {
-        // User cancelled or error occurred
-        logger.debug("Share cancelled or failed", { error });
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: t("shareTitle"),
+            text: shareText,
+          });
+        } catch {
+          // User cancelled share — not an error
+        }
+      } else {
+        // Fallback: copy to clipboard
+        try {
+          await navigator.clipboard.writeText(inviteUrl);
+          showToast(t("linkCopied"), "success");
+        } catch {
+          logger.warn("Clipboard write failed");
+        }
       }
-    } else {
-      // Fallback to copy
-      await copyToClipboard();
+    } catch (error) {
+      logger.error("Failed to generate invite code for share", error);
+      showToast(t("generateError"), "error");
+    } finally {
+      setSharing(false);
     }
   };
 
@@ -161,60 +168,57 @@ export function InviteModal({ onClose }: InviteModalProps) {
           </button>
         </div>
 
-        {isLoading ? (
-          <div className="flex justify-center py-12">
-            <Spinner size="lg" />
-          </div>
-        ) : inviteCode ? (
-          <>
-            {/* QR Code */}
-            <div className="bg-slate-50 rounded-lg p-8 mb-6 flex justify-center">
-              <QRCodeSVG
-                value={`${INVITE_DEEP_LINK_PREFIX}${inviteCode.code}`}
-                size={200}
-                level="H"
-                includeMargin={true}
-              />
-            </div>
-
-            {/* Invite Code */}
-            <div className="mb-6">
-              <label
-                htmlFor="invite-code-input"
-                className="block text-sm text-slate-600 mb-2"
-              >
-                {t("codeLabel")}
-              </label>
-              <div className="flex gap-2">
-                <input
-                  id="invite-code-input"
-                  type="text"
-                  value={inviteCode.code}
-                  readOnly
-                  className="flex-1 px-4 py-3 bg-slate-50 rounded-lg font-mono text-lg text-center tracking-wider"
-                />
-                <button
-                  type="button"
-                  onClick={copyToClipboard}
-                  className="px-4 py-3 bg-slate-200 hover:bg-slate-300 rounded-lg"
-                  title="Copy code"
-                >
-                  {copied ? "\u2713" : "\uD83D\uDCCB"}
-                </button>
-              </div>
-            </div>
-
-            {/* Expiry Info */}
-            <p className="text-sm text-slate-500 text-center mb-6">
-              {t("expiryInfo")}
-            </p>
-
-            {/* Share Button */}
-            <Button onClick={shareInvite} size="lg">
-              {t("shareButton")}
+        {/* Section 1: Send via Email */}
+        <div className="mb-6">
+          <label
+            htmlFor="invite-email-input"
+            className="block text-sm font-medium text-[var(--dark-gray)] mb-2"
+          >
+            {t("emailLabel")}
+          </label>
+          <div className="flex gap-2">
+            <input
+              id="invite-email-input"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={t("emailPlaceholder")}
+              className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--pulse-purple)] focus:border-transparent"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSendEmail();
+              }}
+            />
+            <Button
+              onClick={handleSendEmail}
+              loading={emailSending}
+              size="md"
+            >
+              {t("sendRequest")}
             </Button>
-          </>
-        ) : null}
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 mb-6">
+          <div className="flex-1 h-px bg-slate-200" />
+          <span className="text-sm text-slate-400">or</span>
+          <div className="flex-1 h-px bg-slate-200" />
+        </div>
+
+        {/* Section 2: Share using other apps */}
+        <div>
+          <Button
+            onClick={handleShare}
+            loading={sharing}
+            variant="secondary"
+            size="lg"
+          >
+            {t("shareButton")}
+          </Button>
+          <p className="text-sm text-slate-500 text-center mt-2">
+            {t("shareSubtext")}
+          </p>
+        </div>
       </div>
     </Modal>
   );

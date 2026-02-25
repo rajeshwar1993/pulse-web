@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Suspense, useCallback, useEffect, useState } from "react";
+import { InviteLanding } from "@/components/connections/invite-landing";
 import { useToast } from "@/components/providers/toast-provider";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,13 @@ import { Spinner } from "@/components/ui/spinner";
 import { ConnectionService } from "@/lib/services/connection-service";
 import { supabase } from "@/lib/supabase/client";
 import { logger } from "@/lib/utils/logger";
+
+function isMobileDevice(): boolean {
+  if (typeof navigator === "undefined") return false;
+  return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent,
+  );
+}
 
 function InviteContent() {
   const searchParams = useSearchParams();
@@ -24,6 +32,7 @@ function InviteContent() {
   const [accepting, setAccepting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showMobileLanding, setShowMobileLanding] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -31,6 +40,13 @@ function InviteContent() {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) {
+        // Mobile + unauthenticated → show app store landing page
+        if (isMobileDevice()) {
+          setShowMobileLanding(true);
+          setLoading(false);
+          return;
+        }
+        // Desktop + unauthenticated → redirect to login with code preserved
         router.push(`/auth/login?next=/invite?code=${code}`);
         return;
       }
@@ -62,6 +78,10 @@ function InviteContent() {
         <Alert variant="error">{tErrors("generic")}</Alert>
       </div>
     );
+  }
+
+  if (showMobileLanding) {
+    return <InviteLanding code={code} />;
   }
 
   if (loading || !isAuthenticated) {

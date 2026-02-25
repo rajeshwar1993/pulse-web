@@ -3,6 +3,7 @@ import type { Connection } from "@/components/dashboard/connection-grid";
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { PULSE_DAY_RESET_HOUR } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/server";
+import type { ConnectionRequestWithProfile } from "@/lib/types/connection";
 import { getEffectiveStreak, getTodayPulseDay } from "@/lib/utils/streak";
 
 /**
@@ -109,6 +110,27 @@ export default async function Dashboard() {
     }
   }
 
+  // --- Fetch pending connection requests ---
+  const { data: pendingRequestsData } = await supabase
+    .from("connection_requests")
+    .select(
+      `
+      id,
+      from_user_id,
+      to_user_id,
+      status,
+      created_at,
+      responded_at,
+      from_profile:profiles!connection_requests_from_user_id_fkey(id, display_name, avatar_url)
+    `,
+    )
+    .eq("to_user_id", user.id)
+    .eq("status", "pending")
+    .order("created_at", { ascending: false });
+
+  const pendingRequests =
+    (pendingRequestsData as unknown as ConnectionRequestWithProfile[]) ?? [];
+
   return (
     <div className="min-h-screen bg-[var(--off-white)] p-6">
       <div className="max-w-4xl mx-auto">
@@ -122,6 +144,7 @@ export default async function Dashboard() {
           longestStreak={longestStreak}
           pulsedDates={pulsedDates}
           missedPulseDate={missedPulseDate}
+          pendingRequests={pendingRequests}
         />
       </div>
     </div>

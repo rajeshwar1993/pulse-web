@@ -6,10 +6,12 @@ import { EmptyConnectionsView } from "@/components/shared/empty-connections-view
 import { Heading } from "@/components/ui/heading";
 import { FLUTTER_READY_SIGNAL_DELAY_MS } from "@/lib/constants";
 import { useSeenReceipts } from "@/hooks/use-seen-receipts";
+import type { ConnectionRequestWithProfile } from "@/lib/types/connection";
 import { logger } from "@/lib/utils/logger";
 import { type Connection, ConnectionGrid } from "./connection-grid";
 import { GhostCalendar } from "./ghost-calendar";
 import { MissedPulseSurveyModal } from "./missed-pulse-survey-modal";
+import { PendingRequestsBanner } from "./pending-requests-banner";
 import { PulseButton } from "./pulse-button";
 import { StatusCard } from "./status-card";
 import { StreakBadge } from "./streak-badge";
@@ -26,6 +28,7 @@ interface DashboardContentProps {
   longestStreak?: number;
   pulsedDates?: string[];
   missedPulseDate?: string | null;
+  pendingRequests?: ConnectionRequestWithProfile[];
 }
 
 /**
@@ -48,6 +51,7 @@ export function DashboardContent({
   longestStreak = 0,
   pulsedDates = [],
   missedPulseDate,
+  pendingRequests,
 }: DashboardContentProps) {
   const t = useTranslations("dashboard");
   useSeenReceipts(connections);
@@ -118,6 +122,11 @@ export function DashboardContent({
           {isActive ? t("activeSubtitle") : t("inactiveSubtitle")}
         </p>
       </div>
+
+      {/* Pending Connection Requests */}
+      {pendingRequests && pendingRequests.length > 0 && (
+        <PendingRequestsBanner pendingRequests={pendingRequests} />
+      )}
 
       {/* Wisdom Card (conditional) */}
       {showWisdomCard && (

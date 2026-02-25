@@ -7,6 +7,7 @@ import type { Connection } from "@/components/dashboard/connection-grid";
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { useToast } from "@/components/providers/toast-provider";
 import { sendPulse } from "@/lib/services/pulse-service";
+import type { ConnectionRequestWithProfile } from "@/lib/types/connection";
 
 interface BrowserDashboardClientProps {
   displayName: string;
@@ -15,6 +16,7 @@ interface BrowserDashboardClientProps {
   connections: Connection[];
   pulsedDates?: string[];
   missedPulseDate?: string | null;
+  pendingRequests?: ConnectionRequestWithProfile[];
 }
 
 export function BrowserDashboardClient({
@@ -24,6 +26,7 @@ export function BrowserDashboardClient({
   connections,
   pulsedDates = [],
   missedPulseDate,
+  pendingRequests,
 }: BrowserDashboardClientProps) {
   const router = useRouter();
   const { showToast } = useToast();
@@ -49,6 +52,7 @@ export function BrowserDashboardClient({
       onPulse={handlePulse}
       pulsedDates={pulsedDates}
       missedPulseDate={missedPulseDate}
+      pendingRequests={pendingRequests}
     />
   );
 }

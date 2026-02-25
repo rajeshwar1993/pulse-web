@@ -130,13 +130,27 @@
     },
     "invite": {
       "title": "Invite Connection",
-      "codeLabel": "Invite Code",
-      "expiryInfo": "Expires in 30 days \u2022 One-time use",
-      "shareButton": "Share Invite",
+      "emailLabel": "Send via Email",
+      "emailPlaceholder": "friend@example.com",
+      "sendRequest": "Send",
+      "inviteSent": "Invite sent!",
+      "invalidEmail": "Please enter a valid email address",
+      "selfEmailError": "You can't send a request to yourself",
+      "shareButton": "Share using other apps",
+      "shareSubtext": "Share with WhatsApp, Instagram, and more",
       "shareTitle": "Join Pulse",
       "shareText": "Join me on Pulse! Use code: {code}\nOr click: {url}",
+      "linkCopied": "Invite link copied!",
       "generateError": "Failed to generate invite code",
       "close": "Close"
+    },
+    "requests": {
+      "pendingTitle": "Connection Requests",
+      "wantsToConnect": "wants to connect with you",
+      "accept": "Accept",
+      "decline": "Decline",
+      "accepted": "Connection accepted!",
+      "declined": "Request declined"
     }
   },
   "profileSetup": {
@@ -200,6 +214,15 @@
     "featureFree": "Free forever. No ads.",
     "ctaTitle": "Ready to stay connected?",
     "ctaSubtitle": "Join Pulse and give your loved ones peace of mind, one tap at a time."
+  },
+  "inviteLanding": {
+    "title": "You've been invited to Pulse!",
+    "subtitle": "A simple daily check-in that keeps your closest connections at ease.",
+    "appStoreButton": "Download on the App Store",
+    "playStoreButton": "Get it on Google Play",
+    "appComingSoon": "The app is coming soon to app stores.",
+    "alreadyHaveAccount": "Already have an account?",
+    "logIn": "Log in"
   },
   "notFound": {
     "title": "Page not found",

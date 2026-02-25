@@ -14,11 +14,17 @@ vi.mock("next-intl", () => ({
   useTranslations: () => (key: string, params?: any) => {
     const translations: Record<string, string> = {
       title: "Invite Connection",
-      codeLabel: "Invite Code",
-      expiryInfo: "Expires in 30 days",
-      shareButton: "Share Invite",
+      emailLabel: "Send via Email",
+      emailPlaceholder: "friend@example.com",
+      sendRequest: "Send",
+      inviteSent: "Invite sent!",
+      invalidEmail: "Please enter a valid email address",
+      shareButton: "Share using other apps",
+      shareSubtext: "Share with WhatsApp, Instagram, and more",
       shareTitle: "Join Pulse",
+      linkCopied: "Invite link copied!",
       generateError: "Failed to generate invite code",
+      close: "Close",
     };
     if (key === "shareText" && params) {
       return `Join me on Pulse! Use code: ${params.code}`;
@@ -27,19 +33,21 @@ vi.mock("next-intl", () => ({
   },
 }));
 
+const mockSendRequest = vi.fn();
 const mockGenerateInviteCode = vi.fn();
+
+vi.mock("@/lib/services/connection-request-service", () => ({
+  ConnectionRequestService: {
+    // biome-ignore lint/suspicious/noExplicitAny: test mock passthrough
+    sendRequest: (...args: any[]) => mockSendRequest(...args),
+  },
+}));
 
 vi.mock("@/lib/services/connection-service", () => ({
   ConnectionService: {
     // biome-ignore lint/suspicious/noExplicitAny: test mock passthrough
     generateInviteCode: (...args: any[]) => mockGenerateInviteCode(...args),
   },
-}));
-
-vi.mock("qrcode.react", () => ({
-  QRCodeSVG: ({ value }: { value: string }) => (
-    <svg data-testid="qr-code" data-value={value} />
-  ),
 }));
 
 const mockInviteCode = {
@@ -58,40 +66,27 @@ describe("InviteModal", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockGenerateInviteCode.mockResolvedValue(mockInviteCode);
+    mockSendRequest.mockResolvedValue("request-id-1");
   });
 
-  it("should show loading spinner initially", () => {
-    mockGenerateInviteCode.mockReturnValue(new Promise(() => {})); // never resolves
+  it("should render the modal with email input and share button", () => {
     render(<InviteModal onClose={onClose} />);
 
     expect(screen.getByText("Invite Connection")).toBeInTheDocument();
-    // Spinner is an animated div, not a role — check the structure
-    const spinner = document.querySelector(".animate-spin");
-    expect(spinner).toBeInTheDocument();
-  });
-
-  it("should display invite code after loading", async () => {
-    render(<InviteModal onClose={onClose} />);
-
-    await waitFor(() => {
-      expect(screen.getByDisplayValue("ABC123")).toBeInTheDocument();
-    });
-
-    expect(screen.getByTestId("qr-code")).toHaveAttribute(
-      "data-value",
-      "pulse://invite?code=ABC123",
-    );
-    expect(screen.getByText("Expires in 30 days")).toBeInTheDocument();
+    expect(screen.getByText("Send via Email")).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("friend@example.com"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Send")).toBeInTheDocument();
+    expect(screen.getByText("Share using other apps")).toBeInTheDocument();
+    expect(
+      screen.getByText("Share with WhatsApp, Instagram, and more"),
+    ).toBeInTheDocument();
   });
 
   it("should call onClose when close button clicked", async () => {
     render(<InviteModal onClose={onClose} />);
 
-    await waitFor(() => {
-      expect(screen.getByDisplayValue("ABC123")).toBeInTheDocument();
-    });
-
-    // The close button is the X icon button in the header
     const closeButtons = screen.getAllByRole("button");
     const closeButton = closeButtons.find((btn) =>
       btn.querySelector('svg path[d*="M6 18L18 6"]'),
@@ -103,54 +98,51 @@ describe("InviteModal", () => {
     expect(onClose).toHaveBeenCalledOnce();
   });
 
-  it("should show error toast and close on generate failure", async () => {
-    mockGenerateInviteCode.mockRejectedValue(new Error("Network error"));
-
+  it("should show error toast for invalid email", async () => {
     render(<InviteModal onClose={onClose} />);
 
-    await waitFor(() => {
-      expect(mockShowToast).toHaveBeenCalledWith(
-        "Failed to generate invite code",
-        "error",
-      );
-    });
-    expect(onClose).toHaveBeenCalledOnce();
+    const emailInput = screen.getByPlaceholderText("friend@example.com");
+    await userEvent.type(emailInput, "not-an-email");
+    await userEvent.click(screen.getByText("Send"));
+
+    expect(mockShowToast).toHaveBeenCalledWith(
+      "Please enter a valid email address",
+      "error",
+    );
+    expect(mockSendRequest).not.toHaveBeenCalled();
   });
 
-  it("should copy invite URL to clipboard", async () => {
-    const writeText = vi.fn().mockResolvedValue(undefined);
-    Object.assign(navigator, {
-      clipboard: { writeText },
-    });
-
+  it("should send connection request and show success toast", async () => {
     render(<InviteModal onClose={onClose} />);
 
+    const emailInput = screen.getByPlaceholderText("friend@example.com");
+    await userEvent.type(emailInput, "friend@example.com");
+    await userEvent.click(screen.getByText("Send"));
+
     await waitFor(() => {
-      expect(screen.getByDisplayValue("ABC123")).toBeInTheDocument();
+      expect(mockSendRequest).toHaveBeenCalledWith("friend@example.com");
     });
 
-    // Click the copy button (the one next to the code input)
-    const copyButton = screen.getByTitle("Copy code");
-    await userEvent.click(copyButton);
-
-    expect(writeText).toHaveBeenCalledWith("pulse://invite?code=ABC123");
+    expect(mockShowToast).toHaveBeenCalledWith("Invite sent!", "success");
   });
 
-  it("should use navigator.share when available", async () => {
+  it("should use navigator.share when available on share button click", async () => {
     const mockShare = vi.fn().mockResolvedValue(undefined);
     Object.assign(navigator, { share: mockShare });
 
     render(<InviteModal onClose={onClose} />);
 
+    await userEvent.click(screen.getByText("Share using other apps"));
+
     await waitFor(() => {
-      expect(screen.getByDisplayValue("ABC123")).toBeInTheDocument();
+      expect(mockGenerateInviteCode).toHaveBeenCalled();
     });
 
-    await userEvent.click(screen.getByText("Share Invite"));
-
-    expect(mockShare).toHaveBeenCalledWith({
-      title: "Join Pulse",
-      text: "Join me on Pulse! Use code: ABC123",
+    await waitFor(() => {
+      expect(mockShare).toHaveBeenCalledWith({
+        title: "Join Pulse",
+        text: "Join me on Pulse! Use code: ABC123",
+      });
     });
 
     // Clean up
@@ -166,12 +158,31 @@ describe("InviteModal", () => {
 
     render(<InviteModal onClose={onClose} />);
 
+    await userEvent.click(screen.getByText("Share using other apps"));
+
     await waitFor(() => {
-      expect(screen.getByDisplayValue("ABC123")).toBeInTheDocument();
+      expect(mockGenerateInviteCode).toHaveBeenCalled();
     });
 
-    await userEvent.click(screen.getByText("Share Invite"));
+    await waitFor(() => {
+      expect(writeText).toHaveBeenCalled();
+    });
 
-    expect(writeText).toHaveBeenCalledWith("pulse://invite?code=ABC123");
+    expect(mockShowToast).toHaveBeenCalledWith("Invite link copied!", "success");
+  });
+
+  it("should show error toast when share code generation fails", async () => {
+    mockGenerateInviteCode.mockRejectedValue(new Error("Network error"));
+
+    render(<InviteModal onClose={onClose} />);
+
+    await userEvent.click(screen.getByText("Share using other apps"));
+
+    await waitFor(() => {
+      expect(mockShowToast).toHaveBeenCalledWith(
+        "Failed to generate invite code",
+        "error",
+      );
+    });
   });
 });

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import type { Connection } from "@/components/dashboard/connection-grid";
 import { PULSE_DAY_RESET_HOUR } from "@/lib/constants";
 import { createClient } from "@/lib/supabase/server";
+import type { ConnectionRequestWithProfile } from "@/lib/types/connection";
 import { getTodayPulseDay } from "@/lib/utils/streak";
 import { BrowserDashboardClient } from "./page-client";
 
@@ -95,6 +96,27 @@ export default async function BrowserDashboard() {
     }
   }
 
+  // --- Fetch pending connection requests ---
+  const { data: pendingRequestsData } = await supabase
+    .from("connection_requests")
+    .select(
+      `
+      id,
+      from_user_id,
+      to_user_id,
+      status,
+      created_at,
+      responded_at,
+      from_profile:profiles!connection_requests_from_user_id_fkey(id, display_name, avatar_url)
+    `,
+    )
+    .eq("to_user_id", user.id)
+    .eq("status", "pending")
+    .order("created_at", { ascending: false });
+
+  const pendingRequests =
+    (pendingRequestsData as unknown as ConnectionRequestWithProfile[]) ?? [];
+
   return (
     <BrowserDashboardClient
       displayName={profile.display_name}
@@ -103,6 +125,7 @@ export default async function BrowserDashboard() {
       connections={connections}
       pulsedDates={pulsedDates}
       missedPulseDate={missedPulseDate}
+      pendingRequests={pendingRequests}
     />
   );
 }

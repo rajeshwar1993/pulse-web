@@ -38,6 +38,23 @@ export interface ConnectionWithProfile {
   longest_streak: number;
 }
 
+export interface ConnectionRequest {
+  id: string;
+  from_user_id: string;
+  to_user_id: string;
+  status: "pending" | "accepted" | "declined";
+  created_at: string;
+  responded_at: string | null;
+}
+
+export interface ConnectionRequestWithProfile extends ConnectionRequest {
+  from_profile: {
+    id: string;
+    display_name: string;
+    avatar_url: string;
+  };
+}
+
 /** Display-oriented connection used in the dashboard view */
 export interface DashboardConnection {
   id: string;
