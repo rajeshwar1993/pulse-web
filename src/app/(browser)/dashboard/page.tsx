@@ -47,13 +47,6 @@ export default async function BrowserDashboard() {
     ? new Date(todayPulse.created_at)
     : null;
 
-  // Fetch pulse calendar (last 30 days) for Ghost Calendar
-  const { data: pulseCalendarData } = await supabase.rpc(
-    "get_pulse_calendar",
-    { p_days: 30 },
-  );
-  const pulsedDates: string[] = pulseCalendarData ?? [];
-
   // Fetch seats with connections (graceful fallback if seat system unavailable)
   let seats: import("@/lib/types/seat").DashboardSeat[] = [];
   let connections: DashboardConnection[] = [];
@@ -131,7 +124,6 @@ export default async function BrowserDashboard() {
       pulseTime={pulseTime}
       seats={seats}
       connections={connections}
-      pulsedDates={pulsedDates}
       missedPulseDate={missedPulseDate}
       pendingRequests={pendingRequests}
     />

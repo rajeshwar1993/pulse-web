@@ -4,7 +4,6 @@ import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { ToastProvider } from "@/components/providers/toast-provider";
 import {
   mockConnections,
-  mockPulsedDatesScattered,
   mockSeats,
   mockSeatsEmpty,
 } from "@/stories/mock-data";
@@ -40,7 +39,6 @@ export const Active: Story = {
     seats: mockSeats,
     connections: mockConnections,
     showWisdom: true,
-    pulsedDates: mockPulsedDatesScattered,
   },
   play: async ({ canvas, step }) => {
     await step("Verify greeting contains name", async () => {

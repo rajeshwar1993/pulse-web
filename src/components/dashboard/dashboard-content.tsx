@@ -17,12 +17,10 @@ import { useToast } from "@/components/providers/toast-provider";
 import type { ConnectionRequestWithProfile, DashboardConnection } from "@/lib/types/connection";
 import type { DashboardSeat } from "@/lib/types/seat";
 import { logger } from "@/lib/utils/logger";
-import { GhostCalendar } from "./ghost-calendar";
 import { MissedPulseSurveyModal } from "./missed-pulse-survey-modal";
 import { PendingRequestsBanner } from "./pending-requests-banner";
 import { PulseButton } from "./pulse-button";
 import { StatusCard } from "./status-card";
-import { StreakBadge } from "./streak-badge";
 import { WisdomCard } from "./wisdom-card";
 
 interface DashboardContentProps {
@@ -34,9 +32,6 @@ interface DashboardContentProps {
   connections: DashboardConnection[];
   showWisdom?: boolean;
   onPulse?: () => Promise<void>;
-  currentStreak?: number;
-  longestStreak?: number;
-  pulsedDates?: string[];
   missedPulseDate?: string | null;
   pendingRequests?: ConnectionRequestWithProfile[];
 }
@@ -58,9 +53,6 @@ export function DashboardContent({
   connections,
   showWisdom = true,
   onPulse,
-  currentStreak = 0,
-  longestStreak = 0,
-  pulsedDates = [],
   missedPulseDate,
   pendingRequests,
 }: DashboardContentProps) {
@@ -179,15 +171,6 @@ export function DashboardContent({
 
       {/* Status Card */}
       <StatusCard isActive={isActive} pulseTime={pulseTime} />
-
-      {/* Streak Badge */}
-      <StreakBadge
-        currentStreak={currentStreak}
-        longestStreak={longestStreak}
-      />
-
-      {/* Ghost Calendar */}
-      <GhostCalendar pulsedDates={pulsedDates} />
 
       {/* Seats Section */}
       <SeatGrid

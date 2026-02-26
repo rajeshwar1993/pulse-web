@@ -9,9 +9,9 @@ const NAV_ITEMS = [
   { href: "/appview/settings", labelKey: "settings", icon: "profile" },
   { href: "/appview/dashboard", labelKey: "dashboard", icon: "pulse" },
   {
-    href: "/appview/connections",
-    labelKey: "connections",
-    icon: "connections",
+    href: "/appview/activity",
+    labelKey: "activity",
+    icon: "activity",
   },
 ] as const;
 
@@ -84,7 +84,7 @@ function NavIcon({
     );
   }
 
-  // connections
+  // activity (bar chart icon)
   return (
     <svg
       width="24"
@@ -97,10 +97,9 @@ function NavIcon({
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      <path d="M12 20V10" />
+      <path d="M18 20V4" />
+      <path d="M6 20v-4" />
     </svg>
   );
 }

@@ -24,27 +24,6 @@ vi.mock("@/components/seats/seat-grid", () => ({
   ),
 }));
 
-vi.mock("../streak-badge", () => ({
-  // biome-ignore lint/suspicious/noExplicitAny: test mock props
-  StreakBadge: (props: any) => (
-    <div
-      data-testid="streak-badge"
-      data-current={props.currentStreak}
-      data-longest={props.longestStreak}
-    />
-  ),
-}));
-
-vi.mock("../ghost-calendar", () => ({
-  // biome-ignore lint/suspicious/noExplicitAny: test mock props
-  GhostCalendar: (props: any) => (
-    <div
-      data-testid="ghost-calendar"
-      data-dates={props.pulsedDates?.length ?? 0}
-    />
-  ),
-}));
-
 vi.mock("../missed-pulse-survey-modal", () => ({
   // biome-ignore lint/suspicious/noExplicitAny: test mock props
   MissedPulseSurveyModal: (props: any) => (
@@ -170,31 +149,6 @@ describe("DashboardContent", () => {
     render(<DashboardContent {...baseProps} />);
 
     expect(screen.getByTestId("status-card")).toBeInTheDocument();
-  });
-
-  it("should render StreakBadge with default values", () => {
-    vi.setSystemTime(new Date(2026, 1, 22, 9, 0));
-    render(<DashboardContent {...baseProps} />);
-
-    const badge = screen.getByTestId("streak-badge");
-    expect(badge).toBeInTheDocument();
-    expect(badge).toHaveAttribute("data-current", "0");
-    expect(badge).toHaveAttribute("data-longest", "0");
-  });
-
-  it("should pass streak values to StreakBadge", () => {
-    vi.setSystemTime(new Date(2026, 1, 22, 9, 0));
-    render(
-      <DashboardContent
-        {...baseProps}
-        currentStreak={7}
-        longestStreak={14}
-      />,
-    );
-
-    const badge = screen.getByTestId("streak-badge");
-    expect(badge).toHaveAttribute("data-current", "7");
-    expect(badge).toHaveAttribute("data-longest", "14");
   });
 
   it("should render SeatGrid with empty seats", () => {

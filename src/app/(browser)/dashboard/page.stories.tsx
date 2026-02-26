@@ -6,8 +6,6 @@ import type { DashboardConnection } from "@/lib/types/connection";
 import type { DashboardSeat } from "@/lib/types/seat";
 import {
   mockConnections,
-  mockPulsedDatesScattered,
-  mockPulsedDatesStreak,
   mockSeats,
   mockSeatsEmpty,
 } from "@/stories/mock-data";
@@ -18,14 +16,12 @@ function BrowserDashboardStory({
   pulseTime,
   seats,
   connections,
-  pulsedDates,
 }: {
   displayName: string;
   isActive: boolean;
   pulseTime?: Date | null;
   seats: DashboardSeat[];
   connections: DashboardConnection[];
-  pulsedDates?: string[];
 }) {
   return (
     <DashboardContent
@@ -35,7 +31,6 @@ function BrowserDashboardStory({
       seats={seats}
       connections={connections}
       showWisdom={isActive}
-      pulsedDates={pulsedDates}
     />
   );
 }
@@ -69,7 +64,6 @@ export const Active: Story = {
     pulseTime: new Date(Date.now() - 2 * 60 * 60 * 1000),
     seats: mockSeats,
     connections: mockConnections,
-    pulsedDates: mockPulsedDatesScattered,
   },
   play: async ({ canvas, step }) => {
     await step("Verify greeting contains name", async () => {
@@ -105,7 +99,6 @@ export const WithConnections: Story = {
     pulseTime: new Date(Date.now() - 30 * 60 * 1000),
     seats: mockSeats,
     connections: mockConnections,
-    pulsedDates: mockPulsedDatesStreak,
   },
 };
 

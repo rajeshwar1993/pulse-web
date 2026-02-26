@@ -20,7 +20,7 @@ interface NavHeaderProps {
 
 const NAV_LINKS = [
   { href: "/dashboard", labelKey: "dashboard" },
-  { href: "/connections", labelKey: "connections" },
+  { href: "/activity", labelKey: "activity" },
   { href: "/settings", labelKey: "settings" },
 ] as const;
 

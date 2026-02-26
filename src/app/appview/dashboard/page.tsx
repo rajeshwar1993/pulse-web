@@ -4,7 +4,6 @@ import { fetchSeatsWithConnections } from "@/lib/queries/seats";
 import { createClient } from "@/lib/supabase/server";
 import type { ConnectionRequestWithProfile, DashboardConnection } from "@/lib/types/connection";
 import {
-  getEffectiveStreak,
   getStartOfPulseDay,
   getTodayPulseDay,
 } from "@/lib/utils/streak";
@@ -47,20 +46,6 @@ export default async function Dashboard() {
   const pulseTime = todayPulse?.created_at
     ? new Date(todayPulse.created_at)
     : null;
-
-  // Compute effective streak (handles staleness)
-  const currentStreak = getEffectiveStreak(
-    profile.current_streak,
-    profile.last_pulse_date,
-  );
-  const longestStreak: number = profile.longest_streak;
-
-  // Fetch pulse calendar (last 30 days) for Ghost Calendar
-  const { data: pulseCalendarData } = await supabase.rpc(
-    "get_pulse_calendar",
-    { p_days: 30 },
-  );
-  const pulsedDates: string[] = pulseCalendarData ?? [];
 
   // Fetch seats with connections (graceful fallback if seat system unavailable)
   let seats: import("@/lib/types/seat").DashboardSeat[] = [];
@@ -143,9 +128,6 @@ export default async function Dashboard() {
           seats={seats}
           connections={connections}
           showWisdom={isActive}
-          currentStreak={currentStreak}
-          longestStreak={longestStreak}
-          pulsedDates={pulsedDates}
           missedPulseDate={missedPulseDate}
           pendingRequests={pendingRequests}
         />

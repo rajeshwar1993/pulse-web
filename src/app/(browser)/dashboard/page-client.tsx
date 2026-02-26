@@ -15,7 +15,6 @@ interface BrowserDashboardClientProps {
   pulseTime?: Date | null;
   seats: DashboardSeat[];
   connections: DashboardConnection[];
-  pulsedDates?: string[];
   missedPulseDate?: string | null;
   pendingRequests?: ConnectionRequestWithProfile[];
 }
@@ -26,7 +25,6 @@ export function BrowserDashboardClient({
   pulseTime,
   seats,
   connections,
-  pulsedDates = [],
   missedPulseDate,
   pendingRequests,
 }: BrowserDashboardClientProps) {
@@ -53,7 +51,6 @@ export function BrowserDashboardClient({
       connections={connections}
       showWisdom={isActive}
       onPulse={handlePulse}
-      pulsedDates={pulsedDates}
       missedPulseDate={missedPulseDate}
       pendingRequests={pendingRequests}
     />

@@ -13,7 +13,7 @@
   "nav": {
     "appName": "Pulse",
     "dashboard": "Dashboard",
-    "connections": "Connections",
+    "activity": "Activity",
     "settings": "Settings",
     "logout": "Log out",
     "menu": "Menu"
@@ -205,6 +205,15 @@
     "message": "Add your first connection to start sharing your daily pulse with family and friends.",
     "addButton": "Add Connection",
     "comingSoonNote": "Coming soon in Unit 3: Connections"
+  },
+  "activity": {
+    "title": "Activity",
+    "currentStreak": "Current Streak",
+    "longestStreak": "Longest Streak",
+    "memberSince": "Member Since",
+    "totalPulses": "Total Pulses",
+    "calendarTitle": "Last 30 Days",
+    "days": "{count, plural, =0 {days} =1 {day} other {days}}"
   },
   "pulse": {
     "sendPulse": "Send Pulse",
