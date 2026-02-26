@@ -17,6 +17,13 @@ vi.mock("../status-card", () => ({
   ),
 }));
 
+vi.mock("../streak-card", () => ({
+  // biome-ignore lint/suspicious/noExplicitAny: test mock props
+  StreakCard: (props: any) => (
+    <div data-testid="streak-card" data-streak={props.currentStreak} />
+  ),
+}));
+
 vi.mock("@/components/seats/seat-grid", () => ({
   // biome-ignore lint/suspicious/noExplicitAny: test mock props
   SeatGrid: (props: any) => (
@@ -79,6 +86,10 @@ const baseProps = {
   seats: [] as import("@/lib/types/seat").DashboardSeat[],
   connections: [] as import("@/lib/types/connection").DashboardConnection[],
   pulseTime: null,
+  currentStreak: 3,
+  pulsedDates: ["2026-02-24", "2026-02-25", "2026-02-26"],
+  totalDays: 15,
+  todayPulseDay: "2026-02-26",
 };
 
 describe("DashboardContent", () => {

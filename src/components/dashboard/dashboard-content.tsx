@@ -21,6 +21,7 @@ import { MissedPulseSurveyModal } from "./missed-pulse-survey-modal";
 import { PendingRequestsBanner } from "./pending-requests-banner";
 import { PulseButton } from "./pulse-button";
 import { StatusCard } from "./status-card";
+import { StreakCard } from "./streak-card";
 import { WisdomCard } from "./wisdom-card";
 
 interface DashboardContentProps {
@@ -34,6 +35,10 @@ interface DashboardContentProps {
   onPulse?: () => Promise<void>;
   missedPulseDate?: string | null;
   pendingRequests?: ConnectionRequestWithProfile[];
+  currentStreak: number;
+  pulsedDates: string[];
+  totalDays: number;
+  todayPulseDay: string;
 }
 
 /**
@@ -55,6 +60,10 @@ export function DashboardContent({
   onPulse,
   missedPulseDate,
   pendingRequests,
+  currentStreak,
+  pulsedDates,
+  totalDays,
+  todayPulseDay,
 }: DashboardContentProps) {
   const t = useTranslations("dashboard");
   const tConn = useTranslations("connections");
@@ -171,6 +180,15 @@ export function DashboardContent({
 
       {/* Status Card */}
       <StatusCard isActive={isActive} pulseTime={pulseTime} />
+
+      {/* Streak Card */}
+      <StreakCard
+        currentStreak={currentStreak}
+        isActive={isActive}
+        pulsedDates={pulsedDates}
+        totalDays={totalDays}
+        todayPulseDay={todayPulseDay}
+      />
 
       {/* Seats Section */}
       <SeatGrid

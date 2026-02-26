@@ -3,7 +3,10 @@ import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { fetchSeatsWithConnections } from "@/lib/queries/seats";
 import { createClient } from "@/lib/supabase/server";
 import type { ConnectionRequestWithProfile, DashboardConnection } from "@/lib/types/connection";
+import { PULSE_DAY_RESET_HOUR } from "@/lib/constants";
 import {
+  getEffectiveStreak,
+  getPulseDayDate,
   getStartOfPulseDay,
   getTodayPulseDay,
 } from "@/lib/utils/streak";
@@ -74,10 +77,41 @@ export default async function Dashboard() {
     // Seat system not yet available (migrations pending) — continue with empty seats
   }
 
+  // --- Streak data ---
+  const effectiveStreak = getEffectiveStreak(
+    profile.current_streak ?? 0,
+    profile.last_pulse_date ?? null,
+  );
+
+  const todayPulseDay = getTodayPulseDay();
+  const profileStartDay = getPulseDayDate(new Date(profile.created_at));
+  const totalDays =
+    Math.floor(
+      (new Date(`${todayPulseDay}T00:00:00`).getTime() -
+        new Date(`${profileStartDay}T00:00:00`).getTime()) /
+        (1000 * 60 * 60 * 24),
+    ) + 1;
+
+  const windowStartDate = new Date();
+  windowStartDate.setDate(windowStartDate.getDate() - 11);
+  windowStartDate.setHours(PULSE_DAY_RESET_HOUR, 0, 0, 0);
+
+  const { data: recentPulses } = await supabase
+    .from("daily_pulses")
+    .select("created_at")
+    .eq("user_id", user.id)
+    .gte("created_at", windowStartDate.toISOString())
+    .order("created_at", { ascending: true });
+
+  const pulsedDates = [
+    ...new Set(
+      (recentPulses ?? []).map((p) => getPulseDayDate(new Date(p.created_at))),
+    ),
+  ];
+
   // --- Missed pulse survey detection ---
   let missedPulseDate: string | null = null;
   if (profile.last_pulse_date) {
-    const todayPulseDay = getTodayPulseDay();
     const today = new Date(`${todayPulseDay}T00:00:00`);
     const yesterdayPulseDay = new Date(today.getTime() - 24 * 60 * 60 * 1000);
     const yStr = `${yesterdayPulseDay.getFullYear()}-${String(yesterdayPulseDay.getMonth() + 1).padStart(2, "0")}-${String(yesterdayPulseDay.getDate()).padStart(2, "0")}`;
@@ -130,6 +164,10 @@ export default async function Dashboard() {
           showWisdom={isActive}
           missedPulseDate={missedPulseDate}
           pendingRequests={pendingRequests}
+          currentStreak={effectiveStreak}
+          pulsedDates={pulsedDates}
+          totalDays={totalDays}
+          todayPulseDay={todayPulseDay}
         />
       </div>
     </div>

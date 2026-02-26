@@ -39,6 +39,10 @@ export const Active: Story = {
     seats: mockSeats,
     connections: mockConnections,
     showWisdom: true,
+    currentStreak: 3,
+    pulsedDates: ["2026-02-24", "2026-02-25", "2026-02-26"],
+    totalDays: 15,
+    todayPulseDay: "2026-02-26",
   },
   play: async ({ canvas, step }) => {
     await step("Verify greeting contains name", async () => {
@@ -65,5 +69,9 @@ export const Inactive: Story = {
     seats: mockSeatsEmpty,
     connections: [],
     showWisdom: false,
+    currentStreak: 0,
+    pulsedDates: [],
+    totalDays: 1,
+    todayPulseDay: "2026-02-26",
   },
 };

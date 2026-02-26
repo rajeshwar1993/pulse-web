@@ -99,6 +99,12 @@
       "startStreak": "Pulse daily to start a streak",
       "best": "Best"
     },
+    "streakCard": {
+      "days": "{count, plural, =0 {days} =1 {day} other {days}}",
+      "keepGoing": "Keep the streak alive!",
+      "startStreak": "Pulse daily to start a streak",
+      "dayLabel": "Day {number}"
+    },
     "wisdomCard": {
       "ariaLabel": "Wisdom card - click to dismiss"
     },

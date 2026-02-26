@@ -1,15 +1,22 @@
 import { PULSE_DAY_RESET_HOUR } from "@/lib/constants";
 
 /**
+ * Convert any Date to its logical pulse-day string (YYYY-MM-DD),
+ * accounting for the 4 AM boundary. A pulse at 3 AM belongs to the
+ * previous calendar day.
+ */
+export function getPulseDayDate(date: Date): string {
+  const adjusted = new Date(date.getTime());
+  adjusted.setHours(adjusted.getHours() - PULSE_DAY_RESET_HOUR);
+  return `${adjusted.getFullYear()}-${String(adjusted.getMonth() + 1).padStart(2, "0")}-${String(adjusted.getDate()).padStart(2, "0")}`;
+}
+
+/**
  * Get today's logical pulse-day date (accounting for 4 AM boundary).
  * A pulse at 3 AM belongs to the previous calendar day.
  */
 export function getTodayPulseDay(): string {
-  const now = new Date();
-  const adjusted = new Date(now.getTime());
-  adjusted.setHours(adjusted.getHours() - PULSE_DAY_RESET_HOUR);
-  // Return YYYY-MM-DD in local time
-  return `${adjusted.getFullYear()}-${String(adjusted.getMonth() + 1).padStart(2, "0")}-${String(adjusted.getDate()).padStart(2, "0")}`;
+  return getPulseDayDate(new Date());
 }
 
 /**

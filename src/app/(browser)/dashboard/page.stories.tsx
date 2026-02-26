@@ -16,12 +16,20 @@ function BrowserDashboardStory({
   pulseTime,
   seats,
   connections,
+  currentStreak = 3,
+  pulsedDates = ["2026-02-24", "2026-02-25", "2026-02-26"],
+  totalDays = 15,
+  todayPulseDay = "2026-02-26",
 }: {
   displayName: string;
   isActive: boolean;
   pulseTime?: Date | null;
   seats: DashboardSeat[];
   connections: DashboardConnection[];
+  currentStreak?: number;
+  pulsedDates?: string[];
+  totalDays?: number;
+  todayPulseDay?: string;
 }) {
   return (
     <DashboardContent
@@ -31,6 +39,10 @@ function BrowserDashboardStory({
       seats={seats}
       connections={connections}
       showWisdom={isActive}
+      currentStreak={currentStreak}
+      pulsedDates={pulsedDates}
+      totalDays={totalDays}
+      todayPulseDay={todayPulseDay}
     />
   );
 }

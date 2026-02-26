@@ -17,6 +17,10 @@ interface BrowserDashboardClientProps {
   connections: DashboardConnection[];
   missedPulseDate?: string | null;
   pendingRequests?: ConnectionRequestWithProfile[];
+  currentStreak: number;
+  pulsedDates: string[];
+  totalDays: number;
+  todayPulseDay: string;
 }
 
 export function BrowserDashboardClient({
@@ -27,6 +31,10 @@ export function BrowserDashboardClient({
   connections,
   missedPulseDate,
   pendingRequests,
+  currentStreak,
+  pulsedDates,
+  totalDays,
+  todayPulseDay,
 }: BrowserDashboardClientProps) {
   const router = useRouter();
   const { showToast } = useToast();
@@ -53,6 +61,10 @@ export function BrowserDashboardClient({
       onPulse={handlePulse}
       missedPulseDate={missedPulseDate}
       pendingRequests={pendingRequests}
+      currentStreak={currentStreak}
+      pulsedDates={pulsedDates}
+      totalDays={totalDays}
+      todayPulseDay={todayPulseDay}
     />
   );
 }
