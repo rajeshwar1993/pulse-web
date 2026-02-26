@@ -63,9 +63,7 @@ export function StreakCard({
     } else {
       state = "future";
       const futureOffset = i - currentDayIndex;
-      if (futureOffset === 1) opacity = 0.6;
-      else if (futureOffset === 2) opacity = 0.4;
-      else opacity = 0.2;
+      opacity = Math.max(1 - futureOffset * 0.1, 0.1);
     }
 
     dots.push({ date, state, opacity });
@@ -143,7 +141,7 @@ export function StreakCard({
             <div
               key={`seg-${dot.date}`}
               data-testid={`segment-${i}`}
-              className={`absolute top-1/2 -translate-y-1/2 h-0.5 ${bothFilled ? "bg-[var(--teal)]" : "bg-[var(--slate-200)]"}`}
+              className={`absolute top-1/2 -translate-y-1/2 h-0.5 ${bothFilled ? "bg-[var(--teal)]" : hasFuture ? "bg-[var(--slate-300)]" : "bg-[var(--slate-200)]"}`}
               style={{
                 left: `${(i / (DOT_COUNT - 1)) * 100}%`,
                 width: `${(1 / (DOT_COUNT - 1)) * 100}%`,
@@ -180,7 +178,7 @@ export function StreakCard({
                   w-3 h-3 rounded-full
                   ${isPulsed ? "bg-[var(--teal)]" : ""}
                   ${isMissed ? "border-2 border-[var(--error)] bg-transparent" : ""}
-                  ${isFuture ? "border border-[var(--slate-200)] bg-transparent" : ""}
+                  ${isFuture ? "bg-[var(--slate-300)]" : ""}
                   ${dot.state === "current-empty" ? "border-2 border-[var(--teal)] bg-transparent" : ""}
                 `}
               />

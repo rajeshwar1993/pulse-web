@@ -203,9 +203,9 @@ describe("StreakCard", () => {
       const dot10 = container.querySelector('[data-testid="dot-10"]') as HTMLElement;
       const dot11 = container.querySelector('[data-testid="dot-11"]') as HTMLElement;
 
-      expect(dot9.style.opacity).toBe("0.6");
-      expect(dot10.style.opacity).toBe("0.4");
-      expect(dot11.style.opacity).toBe("0.2");
+      expect(dot9.style.opacity).toBe("0.9");
+      expect(dot10.style.opacity).toBe("0.8");
+      expect(dot11.style.opacity).toBe("0.7");
     });
   });
 
