@@ -80,3 +80,36 @@ export const NotYetPulsed: Story = {
     pulsedDates: ["2026-02-23", "2026-02-24", "2026-02-25"],
   },
 };
+
+/** First day ever — 11 future dots with gradual opacity fade from 90% down to 10%. */
+export const FirstDay: Story = {
+  args: {
+    currentStreak: 1,
+    isActive: true,
+    totalDays: 1,
+    todayPulseDay: "2026-02-26",
+    pulsedDates: ["2026-02-26"],
+  },
+};
+
+/** Day 2 — 10 future dots showing the full gradient range. */
+export const SecondDay: Story = {
+  args: {
+    currentStreak: 2,
+    isActive: true,
+    totalDays: 2,
+    todayPulseDay: "2026-02-26",
+    pulsedDates: ["2026-02-25", "2026-02-26"],
+  },
+};
+
+/** First day, hasn't pulsed yet — empty current dot + 11 grey future dots. */
+export const FirstDayNotPulsed: Story = {
+  args: {
+    currentStreak: 0,
+    isActive: false,
+    totalDays: 1,
+    todayPulseDay: "2026-02-26",
+    pulsedDates: [],
+  },
+};

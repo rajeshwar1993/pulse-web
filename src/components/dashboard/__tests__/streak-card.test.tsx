@@ -207,6 +207,46 @@ describe("StreakCard", () => {
       expect(dot10.style.opacity).toBe("0.8");
       expect(dot11.style.opacity).toBe("0.7");
     });
+
+    it("should apply gradual 10% opacity fade across many future dots", () => {
+      // Day 1 user: currentDayIndex=0, 11 future dots
+      const { container } = render(
+        <StreakCard
+          currentStreak={1}
+          isActive={true}
+          totalDays={1}
+          todayPulseDay="2026-02-26"
+          pulsedDates={["2026-02-26"]}
+        />,
+      );
+
+      const expected = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.1, 0.1];
+      for (let i = 1; i <= 11; i++) {
+        const dot = container.querySelector(`[data-testid="dot-${i}"]`) as HTMLElement;
+        expect(Number.parseFloat(dot.style.opacity)).toBeCloseTo(expected[i - 1], 5);
+      }
+    });
+
+    it("should render future dots with solid grey fill", () => {
+      const { container } = render(<StreakCard {...baseProps} />);
+
+      // Future dots at indices 9, 10, 11 should have bg-[var(--slate-300)]
+      for (let i = 9; i < 12; i++) {
+        const dot = container.querySelector(`[data-testid="dot-${i}"]`);
+        const circle = dot?.querySelector(".bg-\\[var\\(--slate-300\\)\\]");
+        expect(circle).not.toBeNull();
+      }
+    });
+
+    it("should not render future dots with border class", () => {
+      const { container } = render(<StreakCard {...baseProps} />);
+
+      for (let i = 9; i < 12; i++) {
+        const dot = container.querySelector(`[data-testid="dot-${i}"]`);
+        const bordered = dot?.querySelector(".border");
+        expect(bordered).toBeNull();
+      }
+    });
   });
 
   describe("streak grouping (line segments)", () => {
@@ -242,6 +282,24 @@ describe("StreakCard", () => {
       // Segment between index 0 (missed) and index 1 (missed) → grey
       const seg0 = container.querySelector('[data-testid="segment-0"]');
       expect(seg0?.classList.contains("bg-[var(--slate-200)]")).toBe(true);
+    });
+
+    it("should use darker grey line for future segments", () => {
+      const { container } = render(<StreakCard {...baseProps} />);
+
+      // Segments 9 and 10 connect future dots → should use slate-300
+      const seg9 = container.querySelector('[data-testid="segment-9"]');
+      const seg10 = container.querySelector('[data-testid="segment-10"]');
+      expect(seg9?.classList.contains("bg-[var(--slate-300)]")).toBe(true);
+      expect(seg10?.classList.contains("bg-[var(--slate-300)]")).toBe(true);
+    });
+
+    it("should use darker grey for segment between current and first future dot", () => {
+      const { container } = render(<StreakCard {...baseProps} />);
+
+      // Segment 8 connects current (index 8) to future (index 9) → has future, so slate-300
+      const seg8 = container.querySelector('[data-testid="segment-8"]');
+      expect(seg8?.classList.contains("bg-[var(--slate-300)]")).toBe(true);
     });
   });
 
