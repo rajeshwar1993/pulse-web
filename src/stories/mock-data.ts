@@ -162,6 +162,77 @@ export const mockSeatsEmpty: DashboardSeat[] = [
   },
 ];
 
+export const mockSeatPending: DashboardSeat = {
+  id: "seat-pending-1",
+  seatNumber: 1,
+  state: "pending",
+  expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  pendingInfo: {
+    type: "invite_code",
+    label: "ABC123",
+    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
+  },
+};
+
+export const mockSeatPendingRequest: DashboardSeat = {
+  id: "seat-pending-2",
+  seatNumber: 2,
+  state: "pending",
+  expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  pendingInfo: {
+    type: "connection_request",
+    label: "mom@example.com",
+    createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
+  },
+};
+
+export const mockSeatExpired: DashboardSeat = {
+  id: "seat-expired-1",
+  seatNumber: 1,
+  state: "expired",
+  expiresAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+};
+
+export const mockSeatExpiredWithConnection: DashboardSeat = {
+  id: "seat-expired-2",
+  seatNumber: 2,
+  state: "expired",
+  expiresAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+  connection: {
+    id: "conn-1",
+    userId: "user-002",
+    name: "Mom",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=aneka",
+    timezone: "America/New_York",
+    status: "paused",
+    pulseTime: null,
+    currentStreak: 0,
+  },
+};
+
+export const mockSeatOccupiedPaused: DashboardSeat = {
+  id: "seat-paused-1",
+  seatNumber: 1,
+  state: "occupied",
+  expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  connection: {
+    id: "conn-paused",
+    userId: "user-005",
+    name: "Friend",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=friend",
+    timezone: "America/Chicago",
+    status: "paused",
+    pulseTime: null,
+    currentStreak: 0,
+  },
+};
+
+export const mockSeatsMixed: DashboardSeat[] = [
+  mockSeats[0],
+  mockSeatPending,
+  mockSeatExpired,
+];
+
 export const mockConnectionsWithProfile: ConnectionWithProfile[] = [
   {
     id: "conn-1",
