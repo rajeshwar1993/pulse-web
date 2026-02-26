@@ -60,7 +60,6 @@ export default function BrowserConnectionsPage() {
     }
   };
 
-  const hasEmptySeat = seats.some((s) => s.state === "empty");
   const occupiedCount = seats.filter((s) => s.state === "occupied").length;
 
   if (isLoading) {
@@ -73,24 +72,13 @@ export default function BrowserConnectionsPage() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <Heading as="h1" size="lg" className="text-teal-300 mb-2">
-            {t("title")}
-          </Heading>
-          <p className="text-slate-600">
-            {t("connectionCount", { count: occupiedCount })}
-          </p>
-        </div>
-        <Button
-          onClick={() => {
-            const emptySeat = seats.find((s) => s.state === "empty");
-            if (emptySeat) setInviteSeat(emptySeat);
-          }}
-          disabled={!hasEmptySeat}
-        >
-          {t("addConnection")}
-        </Button>
+      <div className="mb-8">
+        <Heading as="h1" size="lg" className="text-teal-300 mb-2">
+          {t("title")}
+        </Heading>
+        <p className="text-slate-600">
+          {t("connectionCount", { count: occupiedCount })}
+        </p>
       </div>
 
       {/* Seat Grid */}
