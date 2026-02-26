@@ -3,22 +3,27 @@ import { expect } from "storybook/test";
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { ToastProvider } from "@/components/providers/toast-provider";
 import type { DashboardConnection } from "@/lib/types/connection";
+import type { DashboardSeat } from "@/lib/types/seat";
 import {
   mockConnections,
   mockPulsedDatesScattered,
   mockPulsedDatesStreak,
+  mockSeats,
+  mockSeatsEmpty,
 } from "@/stories/mock-data";
 
 function BrowserDashboardStory({
   displayName,
   isActive,
   pulseTime,
+  seats,
   connections,
   pulsedDates,
 }: {
   displayName: string;
   isActive: boolean;
   pulseTime?: Date | null;
+  seats: DashboardSeat[];
   connections: DashboardConnection[];
   pulsedDates?: string[];
 }) {
@@ -27,6 +32,7 @@ function BrowserDashboardStory({
       displayName={displayName}
       isActive={isActive}
       pulseTime={pulseTime}
+      seats={seats}
       connections={connections}
       showWisdom={isActive}
       pulsedDates={pulsedDates}
@@ -61,6 +67,7 @@ export const Active: Story = {
     displayName: "Alice",
     isActive: true,
     pulseTime: new Date(Date.now() - 2 * 60 * 60 * 1000),
+    seats: mockSeats,
     connections: mockConnections,
     pulsedDates: mockPulsedDatesScattered,
   },
@@ -86,6 +93,7 @@ export const Inactive: Story = {
     displayName: "Alice",
     isActive: false,
     pulseTime: null,
+    seats: mockSeats,
     connections: mockConnections,
   },
 };
@@ -95,6 +103,7 @@ export const WithConnections: Story = {
     displayName: "Alice",
     isActive: true,
     pulseTime: new Date(Date.now() - 30 * 60 * 1000),
+    seats: mockSeats,
     connections: mockConnections,
     pulsedDates: mockPulsedDatesStreak,
   },
@@ -105,6 +114,7 @@ export const Empty: Story = {
     displayName: "Alice",
     isActive: false,
     pulseTime: null,
+    seats: mockSeatsEmpty,
     connections: [],
   },
 };

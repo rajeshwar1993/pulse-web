@@ -24,6 +24,7 @@ export async function fetchConnectionsWithPulseStatus(
     )
     .or(`user_a_id.eq.${userId},user_b_id.eq.${userId}`)
     .is("removed_at", null)
+    .eq("status", "active")
     .order("created_at", { ascending: false });
 
   if (error) throw error;

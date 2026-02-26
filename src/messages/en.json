@@ -183,6 +183,23 @@
     "account": "Account",
     "signOut": "Sign Out"
   },
+  "seats": {
+    "gridTitle": "Your Connections ({count})",
+    "addConnection": "Add Connection",
+    "seatLabel": "Seat {number}",
+    "expired": "Expired",
+    "inviteCodeShared": "Invite code shared",
+    "requestSent": "Request sent",
+    "tapToCancel": "Tap to cancel",
+    "tapToRenew": "Tap to renew",
+    "renewTitle": "Renew This Seat",
+    "renewDescription": "Extend this seat for another 7 days.",
+    "renewDescriptionWithConnection": "Extend this seat for another 7 days and reactivate your connection with {name}.",
+    "renewButton": "Renew",
+    "cancelTitle": "Cancel Invite",
+    "cancelDescription": "This will cancel the pending invite and free up this seat.",
+    "cancelInviteButton": "Cancel Invite"
+  },
   "emptyConnections": {
     "title": "No connections yet",
     "message": "Add your first connection to start sharing your daily pulse with family and friends.",

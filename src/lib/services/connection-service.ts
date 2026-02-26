@@ -76,6 +76,7 @@ export class ConnectionService {
       .update({
         removed_at: new Date().toISOString(),
         removed_by: user.id,
+        status: "removed",
       })
       .eq("id", connectionId);
 

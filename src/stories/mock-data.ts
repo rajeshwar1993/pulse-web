@@ -2,6 +2,7 @@ import type {
   ConnectionWithProfile,
   DashboardConnection,
 } from "@/lib/types/connection";
+import type { DashboardSeat } from "@/lib/types/seat";
 
 export const mockUser = {
   id: "user-001",
@@ -88,6 +89,78 @@ function generateMockPulsedDates(
 export const mockPulsedDatesStreak = generateMockPulsedDates("streak");
 export const mockPulsedDatesScattered = generateMockPulsedDates("scattered");
 export const mockPulsedDatesEmpty = generateMockPulsedDates("empty");
+
+export const mockSeats: DashboardSeat[] = [
+  {
+    id: "seat-1",
+    seatNumber: 1,
+    state: "occupied",
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    connection: {
+      id: "conn-1",
+      userId: "user-002",
+      name: "Mom",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=aneka",
+      timezone: "America/New_York",
+      status: "active",
+      pulseTime: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      currentStreak: 7,
+    },
+  },
+  {
+    id: "seat-2",
+    seatNumber: 2,
+    state: "occupied",
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    connection: {
+      id: "conn-2",
+      userId: "user-003",
+      name: "Dad",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sam",
+      timezone: "Europe/London",
+      status: "active",
+      pulseTime: null,
+      currentStreak: 0,
+    },
+  },
+  {
+    id: "seat-3",
+    seatNumber: 3,
+    state: "occupied",
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    connection: {
+      id: "conn-3",
+      userId: "user-004",
+      name: "Sibling",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=charlie",
+      timezone: "Asia/Tokyo",
+      status: "active",
+      pulseTime: new Date(Date.now() - 30 * 60 * 1000),
+      currentStreak: 21,
+    },
+  },
+];
+
+export const mockSeatsEmpty: DashboardSeat[] = [
+  {
+    id: "seat-1",
+    seatNumber: 1,
+    state: "empty",
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: "seat-2",
+    seatNumber: 2,
+    state: "empty",
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  },
+  {
+    id: "seat-3",
+    seatNumber: 3,
+    state: "empty",
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  },
+];
 
 export const mockConnectionsWithProfile: ConnectionWithProfile[] = [
   {

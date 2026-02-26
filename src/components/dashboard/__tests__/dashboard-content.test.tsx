@@ -17,10 +17,10 @@ vi.mock("../status-card", () => ({
   ),
 }));
 
-vi.mock("../connection-grid", () => ({
+vi.mock("@/components/seats/seat-grid", () => ({
   // biome-ignore lint/suspicious/noExplicitAny: test mock props
-  ConnectionGrid: (props: any) => (
-    <div data-testid="connection-grid" data-count={props.connections.length} />
+  SeatGrid: (props: any) => (
+    <div data-testid="seat-grid" data-count={props.seats.length} />
   ),
 }));
 
@@ -52,8 +52,28 @@ vi.mock("../missed-pulse-survey-modal", () => ({
   ),
 }));
 
-vi.mock("@/components/shared/empty-connections-view", () => ({
-  EmptyConnectionsView: () => <div data-testid="empty-connections" />,
+vi.mock("@/components/seats/cancel-invite-modal", () => ({
+  CancelInviteModal: () => null,
+}));
+
+vi.mock("@/components/seats/renew-seat-modal", () => ({
+  RenewSeatModal: () => null,
+}));
+
+vi.mock("@/components/connections/invite-modal", () => ({
+  InviteModal: () => null,
+}));
+
+vi.mock("@/lib/services/connection-service", () => ({
+  ConnectionService: { removeConnection: vi.fn() },
+}));
+
+vi.mock("@/components/providers/toast-provider", () => ({
+  useToast: () => ({ showToast: vi.fn() }),
+}));
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: vi.fn() }),
 }));
 
 const mockUseSeenReceipts = vi.fn();
@@ -77,7 +97,8 @@ vi.mock("next-intl", () => ({
 const baseProps = {
   displayName: "Alice",
   isActive: true,
-  connections: [],
+  seats: [] as import("@/lib/types/seat").DashboardSeat[],
+  connections: [] as import("@/lib/types/connection").DashboardConnection[],
   pulseTime: null,
 };
 
@@ -176,33 +197,36 @@ describe("DashboardContent", () => {
     expect(badge).toHaveAttribute("data-longest", "14");
   });
 
-  it("should render EmptyConnectionsView when no connections", () => {
+  it("should render SeatGrid with empty seats", () => {
     vi.setSystemTime(new Date(2026, 1, 22, 9, 0));
-    render(<DashboardContent {...baseProps} connections={[]} />);
+    render(<DashboardContent {...baseProps} seats={[]} />);
 
-    expect(screen.getByTestId("empty-connections")).toBeInTheDocument();
-    expect(screen.queryByTestId("connection-grid")).not.toBeInTheDocument();
+    expect(screen.getByTestId("seat-grid")).toBeInTheDocument();
   });
 
-  it("should render ConnectionGrid when connections exist", () => {
+  it("should render SeatGrid with seats", () => {
     vi.setSystemTime(new Date(2026, 1, 22, 9, 0));
-    const connections = [
+    const seats: import("@/lib/types/seat").DashboardSeat[] = [
       {
-        id: "1",
-        userId: "user-456",
-        avatar: "/a.png",
-        name: "Bob",
-        timezone: "America/New_York",
-        status: "active" as const,
-        pulseTime: null,
-        currentStreak: 3,
-        longestStreak: 5,
+        id: "seat-1",
+        seatNumber: 1,
+        state: "occupied",
+        expiresAt: new Date("2026-03-01"),
+        connection: {
+          id: "conn-1",
+          userId: "user-456",
+          name: "Bob",
+          avatar: "/a.png",
+          timezone: "America/New_York",
+          status: "active",
+          pulseTime: null,
+          currentStreak: 3,
+        },
       },
     ];
-    render(<DashboardContent {...baseProps} connections={connections} />);
+    render(<DashboardContent {...baseProps} seats={seats} />);
 
-    expect(screen.getByTestId("connection-grid")).toBeInTheDocument();
-    expect(screen.queryByTestId("empty-connections")).not.toBeInTheDocument();
+    expect(screen.getByTestId("seat-grid")).toBeInTheDocument();
   });
 
   it("should send FlutterBridge ready signal", () => {
@@ -253,7 +277,7 @@ describe("DashboardContent", () => {
 
   it("should call useSeenReceipts with connections", () => {
     vi.setSystemTime(new Date(2026, 1, 22, 9, 0));
-    const connections = [
+    const connections: import("@/lib/types/connection").DashboardConnection[] = [
       {
         id: "1",
         userId: "user-456",

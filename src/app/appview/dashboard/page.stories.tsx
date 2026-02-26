@@ -5,6 +5,8 @@ import { ToastProvider } from "@/components/providers/toast-provider";
 import {
   mockConnections,
   mockPulsedDatesScattered,
+  mockSeats,
+  mockSeatsEmpty,
 } from "@/stories/mock-data";
 
 const meta = {
@@ -35,6 +37,7 @@ export const Active: Story = {
     displayName: "Alice",
     isActive: true,
     pulseTime: new Date(Date.now() - 2 * 60 * 60 * 1000),
+    seats: mockSeats,
     connections: mockConnections,
     showWisdom: true,
     pulsedDates: mockPulsedDatesScattered,
@@ -61,6 +64,7 @@ export const Inactive: Story = {
     displayName: "Alice",
     isActive: false,
     pulseTime: null,
+    seats: mockSeatsEmpty,
     connections: [],
     showWisdom: false,
   },

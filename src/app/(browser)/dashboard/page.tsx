@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import type { Connection } from "@/components/dashboard/connection-grid";
-import {
-  fetchConnectionsWithPulseStatus,
-  toDashboardConnection,
-} from "@/lib/queries/connections";
+import { fetchSeatsWithConnections } from "@/lib/queries/seats";
 import { createClient } from "@/lib/supabase/server";
-import type { ConnectionRequestWithProfile } from "@/lib/types/connection";
+import type { ConnectionRequestWithProfile, DashboardConnection } from "@/lib/types/connection";
 import { getStartOfPulseDay, getTodayPulseDay } from "@/lib/utils/streak";
 import { BrowserDashboardClient } from "./page-client";
 
@@ -58,9 +54,32 @@ export default async function BrowserDashboard() {
   );
   const pulsedDates: string[] = pulseCalendarData ?? [];
 
-  // Fetch connections with pulse status via shared query
-  const connectionsWithProfile = await fetchConnectionsWithPulseStatus(supabase, user.id);
-  const connections: Connection[] = connectionsWithProfile.map(toDashboardConnection);
+  // Fetch seats with connections (graceful fallback if seat system unavailable)
+  let seats: import("@/lib/types/seat").DashboardSeat[] = [];
+  let connections: DashboardConnection[] = [];
+  try {
+    // Enforce seat expirations before fetching data
+    await supabase.rpc("enforce_seat_expirations", { p_user_id: user.id });
+
+    seats = await fetchSeatsWithConnections(supabase, user.id);
+
+    // Derive connections from occupied seats for useSeenReceipts
+    connections = seats
+      .filter((s) => s.state === "occupied" && s.connection)
+      .map((s) => ({
+        id: s.connection!.id,
+        userId: s.connection!.userId,
+        avatar: s.connection!.avatar,
+        name: s.connection!.name,
+        timezone: s.connection!.timezone,
+        status: s.connection!.pulseTime ? ("active" as const) : ("waiting" as const),
+        pulseTime: s.connection!.pulseTime,
+        currentStreak: s.connection!.currentStreak,
+        longestStreak: 0,
+      }));
+  } catch {
+    // Seat system not yet available (migrations pending) — continue with empty seats
+  }
 
   // --- Missed pulse survey detection ---
   let missedPulseDate: string | null = null;
@@ -110,6 +129,7 @@ export default async function BrowserDashboard() {
       displayName={profile.display_name}
       isActive={isActive}
       pulseTime={pulseTime}
+      seats={seats}
       connections={connections}
       pulsedDates={pulsedDates}
       missedPulseDate={missedPulseDate}

@@ -1,61 +1,67 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
-import { ConnectionGrid } from "@/components/connections/connection-grid";
+import { useCallback, useEffect, useState } from "react";
 import { InviteModal } from "@/components/connections/invite-modal";
 import { useToast } from "@/components/providers/toast-provider";
-import { EmptyConnectionsView } from "@/components/shared/empty-connections-view";
+import { CancelInviteModal } from "@/components/seats/cancel-invite-modal";
+import { RenewSeatModal } from "@/components/seats/renew-seat-modal";
+import { SeatGrid } from "@/components/seats/seat-grid";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Modal } from "@/components/ui/modal";
 import { Spinner } from "@/components/ui/spinner";
 import { ConnectionService } from "@/lib/services/connection-service";
-import type { ConnectionWithProfile } from "@/lib/types/connection";
+import { SeatService } from "@/lib/services/seat-service";
+import type { DashboardSeat } from "@/lib/types/seat";
 import { logger } from "@/lib/utils/logger";
 
 export default function BrowserConnectionsPage() {
   const t = useTranslations("connections");
   const tCommon = useTranslations("common");
-  const [connections, setConnections] = useState<ConnectionWithProfile[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [showInviteModal, setShowInviteModal] = useState(false);
+  const router = useRouter();
   const { showToast } = useToast();
-  const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
+  const [seats, setSeats] = useState<DashboardSeat[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: loadConnections is stable and only needed on mount
-  useEffect(() => {
-    loadConnections();
-  }, []);
+  // Modal state
+  const [inviteSeat, setInviteSeat] = useState<DashboardSeat | null>(null);
+  const [cancelSeat, setCancelSeat] = useState<DashboardSeat | null>(null);
+  const [renewSeat, setRenewSeat] = useState<DashboardSeat | null>(null);
+  const [removeSeat, setRemoveSeat] = useState<DashboardSeat | null>(null);
 
-  const loadConnections = async () => {
+  const loadSeats = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await ConnectionService.getActiveConnections();
-      setConnections(data);
+      const data = await SeatService.getSeats();
+      setSeats(data);
     } catch (error) {
-      logger.error("Failed to load connections", error);
+      logger.error("Failed to load seats", error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const handleRemoveConnection = (connectionId: string) => {
-    setConfirmRemoveId(connectionId);
-  };
+  // biome-ignore lint/correctness/useExhaustiveDependencies: loadSeats is stable and only needed on mount
+  useEffect(() => {
+    loadSeats();
+  }, []);
 
-  const confirmRemove = async () => {
-    if (!confirmRemoveId) return;
+  const handleRemoveConnection = async () => {
+    if (!removeSeat?.connection) return;
     try {
-      await ConnectionService.removeConnection(confirmRemoveId);
-      await loadConnections();
+      await ConnectionService.removeConnection(removeSeat.connection.id);
+      setRemoveSeat(null);
+      await loadSeats();
     } catch (error) {
       logger.error("Failed to remove connection", error);
       showToast(t("removeError"), "error");
-    } finally {
-      setConfirmRemoveId(null);
     }
   };
+
+  const hasEmptySeat = seats.some((s) => s.state === "empty");
+  const occupiedCount = seats.filter((s) => s.state === "occupied").length;
 
   if (isLoading) {
     return (
@@ -73,28 +79,68 @@ export default function BrowserConnectionsPage() {
             {t("title")}
           </Heading>
           <p className="text-slate-600">
-            {t("connectionCount", { count: connections.length })}
+            {t("connectionCount", { count: occupiedCount })}
           </p>
         </div>
-        <Button onClick={() => setShowInviteModal(true)}>
+        <Button
+          onClick={() => {
+            const emptySeat = seats.find((s) => s.state === "empty");
+            if (emptySeat) setInviteSeat(emptySeat);
+          }}
+          disabled={!hasEmptySeat}
+        >
           {t("addConnection")}
         </Button>
       </div>
 
-      {connections.length === 0 ? (
-        <EmptyConnectionsView
-          onAddConnection={() => setShowInviteModal(true)}
-        />
-      ) : (
-        <ConnectionGrid
-          connections={connections}
-          onRemoveConnection={handleRemoveConnection}
+      {/* Seat Grid */}
+      <SeatGrid
+        seats={seats}
+        onEmptyClick={(seat) => setInviteSeat(seat)}
+        onPendingClick={(seat) => setCancelSeat(seat)}
+        onOccupiedClick={(seat) => setRemoveSeat(seat)}
+        onExpiredClick={(seat) => setRenewSeat(seat)}
+      />
+
+      {/* Invite Modal */}
+      {inviteSeat && (
+        <InviteModal
+          seatId={inviteSeat.id}
+          onClose={() => {
+            setInviteSeat(null);
+            loadSeats();
+          }}
         />
       )}
 
+      {/* Cancel Invite Modal */}
+      {cancelSeat && (
+        <CancelInviteModal
+          seat={cancelSeat}
+          onClose={() => setCancelSeat(null)}
+          onCancelled={() => {
+            setCancelSeat(null);
+            loadSeats();
+          }}
+        />
+      )}
+
+      {/* Renew Seat Modal */}
+      {renewSeat && (
+        <RenewSeatModal
+          seat={renewSeat}
+          onClose={() => setRenewSeat(null)}
+          onRenewed={() => {
+            setRenewSeat(null);
+            loadSeats();
+          }}
+        />
+      )}
+
+      {/* Remove Connection Confirmation */}
       <Modal
-        open={!!confirmRemoveId}
-        onClose={() => setConfirmRemoveId(null)}
+        open={!!removeSeat}
+        onClose={() => setRemoveSeat(null)}
         maxWidth="sm"
       >
         <p className="text-[var(--slate-900)] font-medium mb-4">
@@ -105,7 +151,7 @@ export default function BrowserConnectionsPage() {
             variant="secondary"
             size="sm"
             className="flex-1"
-            onClick={() => setConfirmRemoveId(null)}
+            onClick={() => setRemoveSeat(null)}
           >
             {tCommon("cancel")}
           </Button>
@@ -113,16 +159,12 @@ export default function BrowserConnectionsPage() {
             variant="danger"
             size="sm"
             className="flex-1"
-            onClick={confirmRemove}
+            onClick={handleRemoveConnection}
           >
             {t("removeConnection")}
           </Button>
         </div>
       </Modal>
-
-      {showInviteModal && (
-        <InviteModal onClose={() => setShowInviteModal(false)} />
-      )}
     </div>
   );
 }

@@ -1,14 +1,22 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
-import { EmptyConnectionsView } from "@/components/shared/empty-connections-view";
+import { useCallback, useEffect, useState } from "react";
+import { CancelInviteModal } from "@/components/seats/cancel-invite-modal";
+import { InviteModal } from "@/components/connections/invite-modal";
+import { RenewSeatModal } from "@/components/seats/renew-seat-modal";
+import { SeatGrid } from "@/components/seats/seat-grid";
 import { Heading } from "@/components/ui/heading";
+import { Modal } from "@/components/ui/modal";
+import { Button } from "@/components/ui/button";
 import { FLUTTER_READY_SIGNAL_DELAY_MS } from "@/lib/constants";
 import { useSeenReceipts } from "@/hooks/use-seen-receipts";
-import type { ConnectionRequestWithProfile } from "@/lib/types/connection";
+import { ConnectionService } from "@/lib/services/connection-service";
+import { useToast } from "@/components/providers/toast-provider";
+import type { ConnectionRequestWithProfile, DashboardConnection } from "@/lib/types/connection";
+import type { DashboardSeat } from "@/lib/types/seat";
 import { logger } from "@/lib/utils/logger";
-import { type Connection, ConnectionGrid } from "./connection-grid";
 import { GhostCalendar } from "./ghost-calendar";
 import { MissedPulseSurveyModal } from "./missed-pulse-survey-modal";
 import { PendingRequestsBanner } from "./pending-requests-banner";
@@ -21,7 +29,9 @@ interface DashboardContentProps {
   displayName: string;
   isActive: boolean;
   pulseTime?: Date | null;
-  connections: Connection[];
+  seats: DashboardSeat[];
+  /** Derived from occupied seats for useSeenReceipts */
+  connections: DashboardConnection[];
   showWisdom?: boolean;
   onPulse?: () => Promise<void>;
   currentStreak?: number;
@@ -44,6 +54,7 @@ export function DashboardContent({
   displayName,
   isActive,
   pulseTime,
+  seats,
   connections,
   showWisdom = true,
   onPulse,
@@ -54,11 +65,37 @@ export function DashboardContent({
   pendingRequests,
 }: DashboardContentProps) {
   const t = useTranslations("dashboard");
+  const tConn = useTranslations("connections");
+  const tCommon = useTranslations("common");
+  const router = useRouter();
+  const { showToast } = useToast();
   useSeenReceipts(connections);
   const [showWisdomCard, setShowWisdomCard] = useState(showWisdom);
   const [showMissedPulseSurvey, setShowMissedPulseSurvey] = useState(
     !!missedPulseDate,
   );
+
+  // Seat interaction state
+  const [inviteSeat, setInviteSeat] = useState<DashboardSeat | null>(null);
+  const [cancelSeat, setCancelSeat] = useState<DashboardSeat | null>(null);
+  const [renewSeat, setRenewSeat] = useState<DashboardSeat | null>(null);
+  const [removeSeat, setRemoveSeat] = useState<DashboardSeat | null>(null);
+
+  const handleRefresh = useCallback(() => {
+    router.refresh();
+  }, [router]);
+
+  const handleRemoveConnection = async () => {
+    if (!removeSeat?.connection) return;
+    try {
+      await ConnectionService.removeConnection(removeSeat.connection.id);
+      setRemoveSeat(null);
+      handleRefresh();
+    } catch (error) {
+      logger.error("Failed to remove connection", error);
+      showToast(tConn("removeError"), "error");
+    }
+  };
 
   // Send window.isReady signal to Flutter WebView
   useEffect(() => {
@@ -152,14 +189,78 @@ export function DashboardContent({
       {/* Ghost Calendar */}
       <GhostCalendar pulsedDates={pulsedDates} />
 
-      {/* Connections Section */}
-      <div>
-        {connections.length > 0 ? (
-          <ConnectionGrid connections={connections} />
-        ) : (
-          <EmptyConnectionsView />
-        )}
-      </div>
+      {/* Seats Section */}
+      <SeatGrid
+        seats={seats}
+        onEmptyClick={(seat) => setInviteSeat(seat)}
+        onPendingClick={(seat) => setCancelSeat(seat)}
+        onOccupiedClick={(seat) => setRemoveSeat(seat)}
+        onExpiredClick={(seat) => setRenewSeat(seat)}
+      />
+
+      {/* Invite Modal */}
+      {inviteSeat && (
+        <InviteModal
+          seatId={inviteSeat.id}
+          onClose={() => {
+            setInviteSeat(null);
+            handleRefresh();
+          }}
+        />
+      )}
+
+      {/* Cancel Invite Modal */}
+      {cancelSeat && (
+        <CancelInviteModal
+          seat={cancelSeat}
+          onClose={() => setCancelSeat(null)}
+          onCancelled={() => {
+            setCancelSeat(null);
+            handleRefresh();
+          }}
+        />
+      )}
+
+      {/* Renew Seat Modal */}
+      {renewSeat && (
+        <RenewSeatModal
+          seat={renewSeat}
+          onClose={() => setRenewSeat(null)}
+          onRenewed={() => {
+            setRenewSeat(null);
+            handleRefresh();
+          }}
+        />
+      )}
+
+      {/* Remove Connection Confirmation */}
+      <Modal
+        open={!!removeSeat}
+        onClose={() => setRemoveSeat(null)}
+        maxWidth="sm"
+      >
+        <p className="text-[var(--slate-900)] font-medium mb-4">
+          {tConn("removeConfirm")}
+        </p>
+        <div className="flex gap-3">
+          <Button
+            variant="secondary"
+            size="sm"
+            className="flex-1"
+            onClick={() => setRemoveSeat(null)}
+          >
+            {tCommon("cancel")}
+          </Button>
+          <Button
+            variant="danger"
+            size="sm"
+            className="flex-1"
+            onClick={handleRemoveConnection}
+          >
+            {tConn("removeConnection")}
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

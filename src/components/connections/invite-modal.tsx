@@ -10,11 +10,14 @@ import { Spinner } from "@/components/ui/spinner";
 import { getInviteUrl } from "@/lib/constants";
 import { ConnectionRequestService } from "@/lib/services/connection-request-service";
 import { ConnectionService } from "@/lib/services/connection-service";
+import { SeatService } from "@/lib/services/seat-service";
 import type { InviteCode } from "@/lib/types/connection";
 import { logger } from "@/lib/utils/logger";
 
 interface InviteModalProps {
   onClose: () => void;
+  /** When provided, routes invite operations through the seat system */
+  seatId?: string;
 }
 
 /**
@@ -24,7 +27,7 @@ interface InviteModalProps {
  * 1. Send via Email — targeted connection request
  * 2. Share using other apps — generates invite code + native share sheet
  */
-export function InviteModal({ onClose }: InviteModalProps) {
+export function InviteModal({ onClose, seatId }: InviteModalProps) {
   const t = useTranslations("connections.invite");
   const { showToast } = useToast();
   const contentRef = useRef<HTMLDivElement>(null);
@@ -81,7 +84,11 @@ export function InviteModal({ onClose }: InviteModalProps) {
 
     setEmailSending(true);
     try {
-      await ConnectionRequestService.sendRequest(email.trim());
+      if (seatId) {
+        await SeatService.sendRequestForSeat(seatId, email.trim());
+      } else {
+        await ConnectionRequestService.sendRequest(email.trim());
+      }
       // Always show success toast regardless of whether user was found (privacy)
       showToast(t("inviteSent"), "success");
       setEmail("");
@@ -98,8 +105,9 @@ export function InviteModal({ onClose }: InviteModalProps) {
   const handleShare = async () => {
     setSharing(true);
     try {
-      const inviteCode: InviteCode =
-        await ConnectionService.generateInviteCode();
+      const inviteCode: InviteCode = seatId
+        ? await SeatService.generateInviteForSeat(seatId)
+        : await ConnectionService.generateInviteCode();
       const inviteUrl = getInviteUrl(inviteCode.code);
       const shareText = t("shareText", {
         code: inviteCode.code,

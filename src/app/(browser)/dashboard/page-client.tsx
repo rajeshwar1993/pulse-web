@@ -3,17 +3,18 @@
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useCallback } from "react";
-import type { Connection } from "@/components/dashboard/connection-grid";
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { useToast } from "@/components/providers/toast-provider";
 import { sendPulse } from "@/lib/services/pulse-service";
-import type { ConnectionRequestWithProfile } from "@/lib/types/connection";
+import type { ConnectionRequestWithProfile, DashboardConnection } from "@/lib/types/connection";
+import type { DashboardSeat } from "@/lib/types/seat";
 
 interface BrowserDashboardClientProps {
   displayName: string;
   isActive: boolean;
   pulseTime?: Date | null;
-  connections: Connection[];
+  seats: DashboardSeat[];
+  connections: DashboardConnection[];
   pulsedDates?: string[];
   missedPulseDate?: string | null;
   pendingRequests?: ConnectionRequestWithProfile[];
@@ -23,6 +24,7 @@ export function BrowserDashboardClient({
   displayName,
   isActive,
   pulseTime,
+  seats,
   connections,
   pulsedDates = [],
   missedPulseDate,
@@ -47,6 +49,7 @@ export function BrowserDashboardClient({
       displayName={displayName}
       isActive={isActive}
       pulseTime={pulseTime}
+      seats={seats}
       connections={connections}
       showWisdom={isActive}
       onPulse={handlePulse}

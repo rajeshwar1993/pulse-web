@@ -52,6 +52,16 @@ export const WISDOM_SESSION_KEY = "pulse_last_wisdom";
 export const WISDOM_MAX_ATTEMPTS = 10;
 
 // ---------------------------------------------------------------------------
+// Connection Seats
+// ---------------------------------------------------------------------------
+
+/** Number of seats each free user gets */
+export const DEFAULT_SEAT_COUNT = 3;
+
+/** Duration in days before a seat expires */
+export const SEAT_DURATION_DAYS = 7;
+
+// ---------------------------------------------------------------------------
 // Missed Pulse Survey
 // ---------------------------------------------------------------------------
 

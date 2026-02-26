@@ -5,6 +5,7 @@ export interface Connection {
   created_at: string;
   removed_at: string | null;
   removed_by: string | null;
+  status: "active" | "paused" | "removed";
 }
 
 export interface InviteCode {
