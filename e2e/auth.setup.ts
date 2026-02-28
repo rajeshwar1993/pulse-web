@@ -1,34 +1,41 @@
 import { test as setup, expect } from '@playwright/test';
-import { TEST_USER_A, TEST_USER_B, AUTH_STATE_PATH } from './config';
-import { setupTestUser } from './helpers/supabase-admin';
+import {
+  TEST_USER_A,
+  TEST_USER_B,
+  AUTH_STATE_USER_A,
+  AUTH_STATE_USER_B,
+} from './config';
 
 /**
  * Playwright auth setup project.
  *
- * 1. Creates test users on the remote Supabase server via Admin API
- *    (skips if they already exist).
- * 2. Signs in as Test User A via the login page so cookies are set
- *    correctly by the app's own @supabase/ssr client.
- * 3. Saves the authenticated browser state to a file that all test
- *    projects reuse.
+ * Authenticates User A and User B via the login UI and saves
+ * their browser states to separate files. All subsequent test
+ * projects reuse these saved states.
  *
- * This runs once per test suite, not per test.
+ * Seed users are already created by global-setup.ts.
  */
-setup('create test users and authenticate', async ({ page }) => {
-  // Ensure both test users exist on the remote server (idempotent)
-  await setupTestUser(TEST_USER_A);
-  await setupTestUser(TEST_USER_B);
 
-  // Sign in as User A via the login page
+setup('authenticate User A', async ({ page }) => {
   await page.goto('/auth/login');
   await page.locator('#login-email').fill(TEST_USER_A.email);
   await page.locator('#login-password').fill(TEST_USER_A.password);
   await page.locator('button[type="submit"]').click();
 
-  // Wait for redirect to dashboard (profile exists)
   await page.waitForURL('**/dashboard', { timeout: 15_000 });
   await expect(page.locator('h1').first()).toBeVisible();
 
-  // Save authenticated browser state for all tests to reuse
-  await page.context().storageState({ path: AUTH_STATE_PATH });
+  await page.context().storageState({ path: AUTH_STATE_USER_A });
+});
+
+setup('authenticate User B', async ({ page }) => {
+  await page.goto('/auth/login');
+  await page.locator('#login-email').fill(TEST_USER_B.email);
+  await page.locator('#login-password').fill(TEST_USER_B.password);
+  await page.locator('button[type="submit"]').click();
+
+  await page.waitForURL('**/dashboard', { timeout: 15_000 });
+  await expect(page.locator('h1').first()).toBeVisible();
+
+  await page.context().storageState({ path: AUTH_STATE_USER_B });
 });

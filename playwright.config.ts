@@ -30,13 +30,15 @@ function loadEnvFile(filePath: string): void {
 loadEnvFile(path.resolve(__dirname, '.env.local'));
 
 export default defineConfig({
-  testDir: './e2e/tests',
-  fullyParallel: true,
+  testDir: './e2e/flows',
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: 1,
   reporter: process.env.CI ? 'github' : 'html',
   timeout: 30_000,
+
+  globalSetup: './e2e/global-setup.ts',
 
   use: {
     baseURL: process.env.BASE_URL || 'http://localhost:3000',
@@ -45,31 +47,38 @@ export default defineConfig({
   },
 
   projects: [
-    // Auth setup — runs first, creates test users + signs in
+    // Auth setup — runs first, authenticates User A + User B
     {
       name: 'setup',
       testMatch: /auth\.setup\.ts/,
       testDir: './e2e',
     },
 
-    // Desktop Chrome — depends on auth setup
+    // Desktop Chrome — browser-route flows (all except appview-only)
     {
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        storageState: 'e2e/.auth/user.json',
+        storageState: 'e2e/.auth/user-a.json',
       },
       dependencies: ['setup'],
+      testIgnore: /10-appview\.flow\.spec\.ts/,
     },
 
-    // Mobile Chrome — depends on auth setup
+    // Mobile Chrome — appview + mixed + mobile nav flows
     {
       name: 'mobile-chrome',
       use: {
         ...devices['Pixel 7'],
-        storageState: 'e2e/.auth/user.json',
+        storageState: 'e2e/.auth/user-a.json',
       },
       dependencies: ['setup'],
+      testMatch: [
+        /07-profile-settings\.flow\.spec\.ts/,
+        /08-activity-streaks\.flow\.spec\.ts/,
+        /09-navigation\.flow\.spec\.ts/,
+        /10-appview\.flow\.spec\.ts/,
+      ],
     },
   ],
 
