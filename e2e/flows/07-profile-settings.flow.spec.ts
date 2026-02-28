@@ -93,7 +93,7 @@ test.describe('07 — Profile & Settings Flow', () => {
 
     // Wait for form to load and prefill
     await expect(profileSetup.displayNameInput).toBeVisible();
-    await page.waitForTimeout(500);
+    await expect(profileSetup.displayNameInput).not.toHaveValue('');
 
     const newName = 'AppView Updated A';
     await profileSetup.fillDisplayName(newName);

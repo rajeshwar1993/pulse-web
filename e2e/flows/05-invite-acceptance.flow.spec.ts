@@ -6,7 +6,7 @@ import { deleteUserConnections, getActiveConnections } from '../admin/connection
 import { deleteUserInviteCodes, createInviteCode } from '../admin/invites';
 import { verifyConnectionCount } from '../admin/verify';
 
-test.describe('05 — Invite Acceptance Flow', () => {
+test.describe('05 — Invite Acceptance Flow @smoke', () => {
   test.describe.configure({ mode: 'serial' });
 
   let userAId: string;

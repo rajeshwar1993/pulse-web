@@ -5,7 +5,7 @@ import { getUserIdByEmail } from '../admin/auth';
 import { deleteUserPulses, insertPulse } from '../admin/pulses';
 import { verifyPulseExists, verifyNoPulseToday } from '../admin/verify';
 
-test.describe('03 — Dashboard Pulse Flow', () => {
+test.describe('03 — Dashboard Pulse Flow @smoke', () => {
   test.describe.configure({ mode: 'serial' });
 
   let userAId: string;
@@ -45,13 +45,12 @@ test.describe('03 — Dashboard Pulse Flow', () => {
     await expect(dashboard.pulseButton).toBeVisible();
     await dashboard.sendPulse();
 
-    // Wait for the page to refresh after pulse (server component re-renders)
-    // The button text changes to "Sending..." and then the page reloads
-    await page.waitForLoadState('networkidle');
+    // Button text changes to "Sending...", then the page re-renders after the server processes the pulse.
+    // Wait for the "Sending..." state to resolve — this confirms the full re-render completed.
+    await expect(page.getByRole('button', { name: /sending/i })).toBeHidden({ timeout: 15_000 });
 
-    // After page refresh, pulse button should be gone
-    // Use a longer timeout since router.refresh() triggers server re-render
-    await expect(dashboard.pulseButton).toBeHidden({ timeout: 15_000 });
+    // After re-render, the original pulse button should also be gone
+    await expect(dashboard.pulseButton).toBeHidden();
 
     // DB verify: pulse exists
     await verifyPulseExists(userAId);

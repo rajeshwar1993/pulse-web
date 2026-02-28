@@ -5,7 +5,7 @@ import { DashboardPage } from '../pages/dashboard.page';
 import { getUserIdByEmail } from '../admin/auth';
 import { getProfile } from '../admin/profiles';
 
-test.describe('01 — Auth Login Flow', () => {
+test.describe('01 — Auth Login Flow @smoke', () => {
   test.describe.configure({ mode: 'serial' });
 
   test('User A logs in successfully and reaches dashboard', async ({ browser }) => {
