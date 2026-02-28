@@ -10,6 +10,11 @@ import { FormInput } from "@/components/ui/form-input";
 import { Heading } from "@/components/ui/heading";
 import { supabase } from "@/lib/supabase/client";
 import { logger } from "@/lib/utils/logger";
+import {
+  DISPLAY_NAME_MAX_LENGTH,
+  sanitizeDisplayName,
+  validateDisplayName,
+} from "@/lib/utils/validation";
 
 const AVATAR_SEEDS = [
   "felix",
@@ -78,7 +83,7 @@ export default function ProfileSetup() {
     loadProfile();
   }, [isEditMode, t]);
 
-  const isValid = displayName.trim().length >= 2 && selectedAvatar;
+  const isValid = validateDisplayName(displayName) === null && selectedAvatar;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,6 +93,14 @@ export default function ProfileSetup() {
     setError(null);
 
     try {
+      const sanitizedName = sanitizeDisplayName(displayName);
+      const nameError = validateDisplayName(sanitizedName);
+      if (nameError) {
+        setError(nameError);
+        setIsLoading(false);
+        return;
+      }
+
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -97,7 +110,7 @@ export default function ProfileSetup() {
         const { error: updateError } = await supabase
           .from("profiles")
           .update({
-            display_name: displayName.trim(),
+            display_name: sanitizedName,
             avatar_url: selectedAvatar,
           })
           .eq("id", user.id);
@@ -108,7 +121,7 @@ export default function ProfileSetup() {
         const { error: insertError } = await supabase.from("profiles").insert({
           id: user.id,
           email: user.email ?? "",
-          display_name: displayName.trim(),
+          display_name: sanitizedName,
           avatar_url: selectedAvatar,
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         });
@@ -159,7 +172,7 @@ export default function ProfileSetup() {
                 type="text"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                maxLength={50}
+                maxLength={DISPLAY_NAME_MAX_LENGTH}
                 placeholder={t("displayNamePlaceholder")}
                 disabled={isLoading}
               />

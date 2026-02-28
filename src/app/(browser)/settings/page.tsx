@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { getLocale } from "next-intl/server";
 import { SettingsPage } from "@/components/settings/settings-page";
+import { fetchSettingsData } from "@/lib/queries/settings";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -20,20 +20,13 @@ export default async function BrowserSettings() {
     redirect("/auth/login");
   }
 
-  const [locale, { data: profile }] = await Promise.all([
-    getLocale(),
-    supabase
-      .from("profiles")
-      .select("display_name, avatar_url")
-      .eq("id", user.id)
-      .single(),
-  ]);
+  const { locale, profile } = await fetchSettingsData(supabase, user.id);
 
   return (
     <SettingsPage
       currentLocale={locale}
       dashboardHref="/dashboard"
-      profile={profile ?? undefined}
+      profile={profile}
       profileSetupHref="/profile-setup?mode=edit"
     />
   );
