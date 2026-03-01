@@ -4,7 +4,7 @@
  * Table deletion order respects foreign key constraints:
  * 1. seen_receipts (FK → profiles)
  * 2. connection_seats (FK → connections, invite_codes, connection_requests, profiles)
- * 3. missed_pulse_surveys (FK → profiles)
+ * 3. missed_pulses (FK → profiles)
  * 4. daily_pulses (FK → profiles)
  * 5. connections (FK → profiles)
  * 6. connection_requests (FK → profiles)

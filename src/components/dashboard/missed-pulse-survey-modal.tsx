@@ -7,7 +7,7 @@ import { Heading } from "@/components/ui/heading";
 import { Modal } from "@/components/ui/modal";
 import { MISSED_PULSE_RESPONSES } from "@/lib/constants";
 import { submitMissedPulseSurvey } from "@/lib/services/missed-pulse-service";
-import type { MissedPulseResponse } from "@/lib/types/missed-pulse-survey";
+import type { MissedPulseResponse } from "@/lib/types/missed-pulse";
 
 interface MissedPulseSurveyModalProps {
   missedDate: string;

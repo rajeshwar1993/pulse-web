@@ -1,5 +1,4 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { PULSE_DAY_RESET_HOUR } from "@/lib/constants";
 import type {
   ConnectionRequestWithProfile,
   DashboardConnection,
@@ -105,42 +104,28 @@ export async function fetchDashboardData(
         (1000 * 60 * 60 * 24),
     ) + 1;
 
-  const windowStartDate = new Date();
-  windowStartDate.setDate(windowStartDate.getDate() - 11);
-  windowStartDate.setHours(PULSE_DAY_RESET_HOUR, 0, 0, 0);
-
-  const { data: recentPulses } = await supabase
-    .from("daily_pulses")
-    .select("created_at")
-    .eq("user_id", userId)
-    .gte("created_at", windowStartDate.toISOString())
-    .order("created_at", { ascending: true });
-
-  const pulsedDates = [
-    ...new Set(
-      (recentPulses ?? []).map((p) => getPulseDayDate(new Date(p.created_at))),
-    ),
-  ];
+  const { data: pulsedDatesData } = await supabase.rpc("get_pulsed_dates", {
+    p_days: 12,
+  });
+  const pulsedDates: string[] = (pulsedDatesData ?? []).map(String);
 
   // --- Missed pulse survey detection ---
+  // Check if yesterday has an unresponded miss (auto-recorded by trigger)
   let missedPulseDate: string | null = null;
-  if (profile.last_pulse_date) {
-    const today = new Date(`${todayPulseDay}T00:00:00`);
-    const yesterdayPulseDay = new Date(today.getTime() - 24 * 60 * 60 * 1000);
-    const yStr = `${yesterdayPulseDay.getFullYear()}-${String(yesterdayPulseDay.getMonth() + 1).padStart(2, "0")}-${String(yesterdayPulseDay.getDate()).padStart(2, "0")}`;
+  const today = new Date(`${todayPulseDay}T00:00:00`);
+  const yesterdayPulseDay = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+  const yStr = `${yesterdayPulseDay.getFullYear()}-${String(yesterdayPulseDay.getMonth() + 1).padStart(2, "0")}-${String(yesterdayPulseDay.getDate()).padStart(2, "0")}`;
 
-    if (profile.last_pulse_date < yStr) {
-      const { data: existingSurvey } = await supabase
-        .from("missed_pulse_surveys")
-        .select("id")
-        .eq("user_id", userId)
-        .eq("missed_date", yStr)
-        .maybeSingle();
+  const { data: unrespondedMiss } = await supabase
+    .from("missed_pulses")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("missed_date", yStr)
+    .is("response", null)
+    .maybeSingle();
 
-      if (!existingSurvey) {
-        missedPulseDate = yStr;
-      }
-    }
+  if (unrespondedMiss) {
+    missedPulseDate = yStr;
   }
 
   // --- Fetch pending connection requests ---

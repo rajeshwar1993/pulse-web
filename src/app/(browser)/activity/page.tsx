@@ -41,18 +41,13 @@ export default async function BrowserActivityPage() {
   });
   const pulsedDates: string[] = pulseCalendarData ?? [];
 
-  const { count: totalPulses } = await supabase
-    .from("daily_pulses")
-    .select("*", { count: "exact", head: true })
-    .eq("user_id", user.id);
-
   return (
     <ActivityContent
       currentStreak={currentStreak}
       longestStreak={longestStreak}
       pulsedDates={pulsedDates}
       memberSince={profile.created_at}
-      totalPulses={totalPulses ?? 0}
+      totalPulses={profile.total_pulse_count ?? 0}
     />
   );
 }

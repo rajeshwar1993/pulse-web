@@ -6,11 +6,11 @@ export type MissedPulseResponse =
   | "not_feeling_it"
   | "skipped";
 
-/** Row shape returned from the `missed_pulse_surveys` table. */
-export interface MissedPulseSurveyRow {
+/** Row shape returned from the `missed_pulses` table. */
+export interface MissedPulseRow {
   id: string;
   user_id: string;
   missed_date: string;
-  response: MissedPulseResponse;
+  response: MissedPulseResponse | null;
   created_at: string;
 }

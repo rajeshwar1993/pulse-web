@@ -1,9 +1,10 @@
 import { supabase } from "@/lib/supabase/client";
-import type { MissedPulseResponse } from "@/lib/types/missed-pulse-survey";
+import type { MissedPulseResponse } from "@/lib/types/missed-pulse";
 
 /**
  * Submit a missed-pulse survey response.
- * Returns `true` on success, `false` on any error (including duplicates).
+ * Uses upsert because the trigger may have auto-created the row with a NULL response.
+ * Returns `true` on success, `false` on any error.
  */
 export async function submitMissedPulseSurvey(
   missedDate: string,
@@ -14,11 +15,14 @@ export async function submitMissedPulseSurvey(
   } = await supabase.auth.getUser();
   if (!user) return false;
 
-  const { error } = await supabase.from("missed_pulse_surveys").insert({
-    user_id: user.id,
-    missed_date: missedDate,
-    response,
-  });
+  const { error } = await supabase.from("missed_pulses").upsert(
+    {
+      user_id: user.id,
+      missed_date: missedDate,
+      response,
+    },
+    { onConflict: "user_id,missed_date" },
+  );
 
   return !error;
 }
