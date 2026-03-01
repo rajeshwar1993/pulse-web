@@ -4,7 +4,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("next-intl", () => ({
   useTranslations: () => (key: string) => {
     const translations: Record<string, string> = {
-      sendingOverlay: "Sending your pulse...",
       count: "60",
       "phrases.0": "Test wisdom phrase",
       "phrases.42": "Another wisdom phrase",
@@ -67,7 +66,7 @@ describe("PulseOverlay", () => {
   });
 
   it("should render overlay content when isOpen is true", () => {
-    render(
+    const { container } = render(
       <PulseOverlay
         isOpen={true}
         onComplete={vi.fn()}
@@ -75,11 +74,12 @@ describe("PulseOverlay", () => {
       />,
     );
 
-    expect(screen.getByText("Sending your pulse...")).toBeInTheDocument();
+    expect(container.querySelector(".animate-heartbeat")).toBeInTheDocument();
+    expect(screen.queryByText(/Test wisdom phrase/)).not.toBeInTheDocument();
   });
 
   it("should not render overlay content when isOpen is false", () => {
-    render(
+    const { container } = render(
       <PulseOverlay
         isOpen={false}
         onComplete={vi.fn()}
@@ -87,9 +87,7 @@ describe("PulseOverlay", () => {
       />,
     );
 
-    expect(
-      screen.queryByText("Sending your pulse..."),
-    ).not.toBeInTheDocument();
+    expect(container.querySelector(".animate-heartbeat")).not.toBeInTheDocument();
   });
 
   it("should apply heartbeat animation class to logo wrapper", () => {
@@ -118,8 +116,10 @@ describe("PulseOverlay", () => {
     expect(overlay).toBeInTheDocument();
   });
 
-  it("should show wisdom phrase when pulseResult resolves before 1.5s", async () => {
-    const pulseResult = Promise.resolve(true);
+  it("should show wisdom phrase at 1.5s", async () => {
+    const pulseResult = new Promise<boolean>((resolve) =>
+      setTimeout(() => resolve(true), 10000),
+    );
 
     render(
       <PulseOverlay
@@ -129,18 +129,15 @@ describe("PulseOverlay", () => {
       />,
     );
 
-    // Initially shows "Sending your pulse..."
-    expect(screen.getByText("Sending your pulse...")).toBeInTheDocument();
+    // No text initially
+    expect(screen.queryByText(/Test wisdom phrase/)).not.toBeInTheDocument();
 
-    // Let the resolved promise flush
+    // Advance past 1.5s
     await act(async () => {
-      await pulseResult;
+      vi.advanceTimersByTime(1600);
     });
 
-    // Wisdom should now be visible (replacing the sending text)
-    expect(
-      screen.queryByText("Sending your pulse..."),
-    ).not.toBeInTheDocument();
+    // Wisdom should appear
     expect(screen.getByText(/Test wisdom phrase/)).toBeInTheDocument();
   });
 
@@ -157,7 +154,8 @@ describe("PulseOverlay", () => {
       />,
     );
 
-    expect(screen.getByText("Sending your pulse...")).toBeInTheDocument();
+    // No text initially
+    expect(screen.queryByText(/Test wisdom phrase/)).not.toBeInTheDocument();
 
     // Advance past 1.5s
     await act(async () => {
@@ -165,13 +163,10 @@ describe("PulseOverlay", () => {
     });
 
     // Wisdom should appear even though pulseResult hasn't resolved
-    expect(
-      screen.queryByText("Sending your pulse..."),
-    ).not.toBeInTheDocument();
     expect(screen.getByText(/Test wisdom phrase/)).toBeInTheDocument();
   });
 
-  it("should exit 3s after wisdom appears", async () => {
+  it("should exit at 4s when sendPulse has resolved", async () => {
     const pulseResult = Promise.resolve(true);
 
     render(
@@ -182,19 +177,47 @@ describe("PulseOverlay", () => {
       />,
     );
 
-    // Let promise resolve and show wisdom
+    // Let promise resolve
     await act(async () => {
       await pulseResult;
     });
 
-    expect(screen.getByText(/Test wisdom phrase/)).toBeInTheDocument();
-
-    // Advance 3s — overlay should exit
+    // Advance past 4s — overlay should exit
     await act(async () => {
-      vi.advanceTimersByTime(3100);
+      vi.advanceTimersByTime(4100);
     });
 
     expect(screen.queryByText(/Test wisdom phrase/)).not.toBeInTheDocument();
+  });
+
+  it("should wait for slow sendPulse past 4s", async () => {
+    let resolvePromise: (value: boolean) => void;
+    const pulseResult = new Promise<boolean>((resolve) => {
+      resolvePromise = resolve;
+    });
+
+    const { container } = render(
+      <PulseOverlay
+        isOpen={true}
+        onComplete={vi.fn()}
+        pulseResult={pulseResult}
+      />,
+    );
+
+    // Advance past 4s — overlay should still be visible (sendPulse not resolved)
+    await act(async () => {
+      vi.advanceTimersByTime(4100);
+    });
+
+    expect(container.querySelector(".animate-heartbeat")).toBeInTheDocument();
+
+    // Now resolve sendPulse — overlay should exit
+    await act(async () => {
+      resolvePromise!(true);
+      await pulseResult;
+    });
+
+    expect(container.querySelector(".animate-heartbeat")).not.toBeInTheDocument();
   });
 
   it("should call onComplete with success=true when pulse succeeds", async () => {
@@ -209,14 +232,14 @@ describe("PulseOverlay", () => {
       />,
     );
 
-    // Let promise resolve and show wisdom
+    // Let promise resolve
     await act(async () => {
       await pulseResult;
     });
 
-    // Advance past 3s fade-out
+    // Advance past 4s exit
     await act(async () => {
-      vi.advanceTimersByTime(3100);
+      vi.advanceTimersByTime(4100);
     });
 
     // Simulate framer-motion's onExitComplete
@@ -244,7 +267,7 @@ describe("PulseOverlay", () => {
     });
 
     await act(async () => {
-      vi.advanceTimersByTime(3100);
+      vi.advanceTimersByTime(4100);
     });
 
     act(() => {

@@ -17,11 +17,14 @@ export function PulseOverlay({
   onComplete,
   pulseResult,
 }: PulseOverlayProps) {
-  const t = useTranslations("pulse");
   const tWisdom = useTranslations("wisdom");
+  const tWisdomRef = useRef(tWisdom);
+  tWisdomRef.current = tWisdom;
   const [wisdomText, setWisdomText] = useState<string | null>(null);
   const [shouldExit, setShouldExit] = useState(false);
   const successRef = useRef(false);
+  const pulseResolvedRef = useRef(false);
+  const readyToExitRef = useRef(false);
 
   // Reset state when overlay opens
   useEffect(() => {
@@ -29,59 +32,51 @@ export function PulseOverlay({
       setWisdomText(null);
       setShouldExit(false);
       successRef.current = false;
+      pulseResolvedRef.current = false;
+      readyToExitRef.current = false;
     }
   }, [isOpen]);
 
-  // Phased timing: race pulseResult vs 1.5s delay for wisdom, then 3s fade-out
+  // Fixed timing: wisdom at 1.5s, exit at 4s (or when sendPulse resolves, whichever is later)
   useEffect(() => {
     if (!isOpen || !pulseResult) return;
 
     let cancelled = false;
-    let fadeTimer: ReturnType<typeof setTimeout>;
 
-    const showWisdom = () => {
+    // Show wisdom at 1.5s (no dependency on pulseResult)
+    const wisdomTimer = setTimeout(() => {
       if (cancelled) return;
-      const count = Number(tWisdom("count"));
+      const count = Number(tWisdomRef.current("count"));
       const index = getRandomWisdomIndex(count);
-      const phrase = tWisdom(`phrases.${index}`);
+      const phrase = tWisdomRef.current(`phrases.${index}`);
       setWisdomText(phrase);
-
-      // Start 3s fade-out timer after wisdom appears
-      fadeTimer = setTimeout(() => {
-        if (!cancelled) setShouldExit(true);
-      }, 3000);
-    };
-
-    // Race: show wisdom when pulseResult resolves OR after 1.5s, whichever is sooner
-    let wisdomShown = false;
-
-    const earlyTimer = setTimeout(() => {
-      if (!wisdomShown) {
-        wisdomShown = true;
-        showWisdom();
-      }
     }, 1500);
 
+    // Ready to exit at 4s, but only if sendPulse has resolved
+    const exitTimer = setTimeout(() => {
+      if (cancelled) return;
+      readyToExitRef.current = true;
+      if (pulseResolvedRef.current) {
+        setShouldExit(true);
+      }
+    }, 4000);
+
+    // Track pulse resolution; exit immediately if 4s already passed
     pulseResult.then((success) => {
       if (cancelled) return;
       successRef.current = success;
-      if (!wisdomShown) {
-        wisdomShown = true;
-        showWisdom();
+      pulseResolvedRef.current = true;
+      if (readyToExitRef.current) {
+        setShouldExit(true);
       }
-    });
-
-    // Also capture result even if wisdom was shown by timer
-    pulseResult.then((success) => {
-      if (!cancelled) successRef.current = success;
     });
 
     return () => {
       cancelled = true;
-      clearTimeout(earlyTimer);
-      clearTimeout(fadeTimer);
+      clearTimeout(wisdomTimer);
+      clearTimeout(exitTimer);
     };
-  }, [isOpen, pulseResult, tWisdom]);
+  }, [isOpen, pulseResult]);
 
   const handleExitComplete = () => {
     onComplete(successRef.current);
@@ -102,7 +97,7 @@ export function PulseOverlay({
             <PulseLogo className="w-24 h-24" />
           </div>
 
-          {wisdomText ? (
+          {wisdomText && (
             <motion.p
               key="wisdom"
               initial={{ opacity: 0, y: 8 }}
@@ -111,16 +106,6 @@ export function PulseOverlay({
               className="mt-8 max-w-sm px-6 text-center text-lg font-medium text-[var(--slate-700)] leading-relaxed"
             >
               &ldquo;{wisdomText}&rdquo;
-            </motion.p>
-          ) : (
-            <motion.p
-              key="sending"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.3 }}
-              className="mt-8 text-lg font-medium text-slate-500"
-            >
-              {t("sendingOverlay")}
             </motion.p>
           )}
         </motion.div>

@@ -21,7 +21,6 @@ vi.mock("next-intl", () => ({
       sending: "Sending...",
       sent: "Pulse sent!",
       alreadySent: "You've already pulsed today",
-      sendingOverlay: "Sending your pulse...",
       count: "60",
       "phrases.0": "Test wisdom phrase",
     };
@@ -116,25 +115,19 @@ describe("BrowserDashboardClient – pulse overlay", () => {
   it("should show pulse overlay when pulse button is clicked", async () => {
     mockSendPulse.mockReturnValue(new Promise(() => {})); // never resolves
 
-    render(<BrowserDashboardClient {...baseProps} />);
+    const { container } = render(<BrowserDashboardClient {...baseProps} />);
 
-    expect(
-      screen.queryByText("Sending your pulse..."),
-    ).not.toBeInTheDocument();
+    expect(container.querySelector(".animate-heartbeat")).not.toBeInTheDocument();
 
     await act(async () => {
       screen.getByTestId("pulse-btn").click();
     });
 
-    expect(screen.getByText("Sending your pulse...")).toBeInTheDocument();
+    expect(container.querySelector(".animate-heartbeat")).toBeInTheDocument();
   });
 
-  it("should show wisdom after pulseResult resolves then exit after 3s", async () => {
-    let resolvePromise: (value: boolean) => void;
-    const promise = new Promise<boolean>((resolve) => {
-      resolvePromise = resolve;
-    });
-    mockSendPulse.mockReturnValue(promise);
+  it("should show wisdom at 1.5s then exit after 4s", async () => {
+    mockSendPulse.mockResolvedValue(true);
 
     render(<BrowserDashboardClient {...baseProps} />);
 
@@ -142,20 +135,24 @@ describe("BrowserDashboardClient – pulse overlay", () => {
       screen.getByTestId("pulse-btn").click();
     });
 
-    expect(screen.getByText("Sending your pulse...")).toBeInTheDocument();
-
-    // Resolve the pulse
+    // Let promise resolve
     await act(async () => {
-      resolvePromise!(true);
-      await promise;
+      await Promise.resolve();
     });
 
-    // Wisdom should be shown
+    // No wisdom yet
+    expect(screen.queryByText(/Test wisdom phrase/)).not.toBeInTheDocument();
+
+    // Advance past 1.5s — wisdom should appear
+    await act(async () => {
+      vi.advanceTimersByTime(1600);
+    });
+
     expect(screen.getByText(/Test wisdom phrase/)).toBeInTheDocument();
 
-    // Advance 3s — overlay should exit
+    // Advance to 4s total — overlay should exit
     await act(async () => {
-      vi.advanceTimersByTime(3100);
+      vi.advanceTimersByTime(2500);
     });
 
     expect(screen.queryByText(/Test wisdom phrase/)).not.toBeInTheDocument();
@@ -172,7 +169,8 @@ describe("BrowserDashboardClient – pulse overlay", () => {
       screen.getByTestId("pulse-btn").click();
     });
 
-    expect(screen.getByText("Sending your pulse...")).toBeInTheDocument();
+    // No text initially
+    expect(screen.queryByText(/Test wisdom phrase/)).not.toBeInTheDocument();
 
     // Advance past 1.5s
     await act(async () => {
@@ -197,9 +195,9 @@ describe("BrowserDashboardClient – pulse overlay", () => {
       await Promise.resolve();
     });
 
-    // Advance past 3s fade-out
+    // Advance past 4s exit
     await act(async () => {
-      vi.advanceTimersByTime(3100);
+      vi.advanceTimersByTime(4100);
     });
 
     // Simulate framer-motion exit complete
@@ -225,9 +223,9 @@ describe("BrowserDashboardClient – pulse overlay", () => {
       await Promise.resolve();
     });
 
-    // Advance past 3s fade-out
+    // Advance past 4s exit
     await act(async () => {
-      vi.advanceTimersByTime(3100);
+      vi.advanceTimersByTime(4100);
     });
 
     // Simulate framer-motion exit complete
