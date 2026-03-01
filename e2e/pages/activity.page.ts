@@ -7,6 +7,11 @@ export class ActivityPage {
   readonly ghostCalendar: Locator;
   readonly memberSince: Locator;
   readonly totalPulses: Locator;
+  readonly calendarLegend: Locator;
+  readonly milestoneBadges: Locator;
+  readonly pulseRate: Locator;
+  readonly pulseRateLabel: Locator;
+  readonly milestonesTitle: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -16,7 +21,12 @@ export class ActivityPage {
       '[class*="calendar"], [class*="Calendar"]',
     );
     this.memberSince = page.getByText(/member since/i);
-    this.totalPulses = page.getByText(/total pulses/i);
+    this.totalPulses = page.getByText(/total pulses/i).first();
+    this.calendarLegend = page.locator('[data-testid="calendar-legend"]');
+    this.milestoneBadges = page.locator('[data-testid="milestone-badges"]');
+    this.pulseRate = page.locator('[data-testid="pulse-rate"]');
+    this.pulseRateLabel = page.getByText("Pulse Rate");
+    this.milestonesTitle = page.getByText("Milestones");
   }
 
   async goto() {
