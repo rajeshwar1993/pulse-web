@@ -1,10 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect } from "storybook/test";
 import {
-  mockPulsedDatesEmpty,
-  mockPulsedDatesScattered,
-  mockPulsedDatesStreak,
+  mockCalendarEmpty,
+  mockCalendarScattered,
+  mockCalendarStreak,
 } from "@/stories/mock-data";
+
+function todayStr(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 import { ActivityContent } from "./activity-content";
 
 const meta = {
@@ -32,9 +37,10 @@ export const WithStreak: Story = {
   args: {
     currentStreak: 14,
     longestStreak: 21,
-    pulsedDates: mockPulsedDatesStreak,
+    pulsedDates: mockCalendarStreak,
     memberSince: "2025-06-15T10:30:00Z",
     totalPulses: 142,
+    todayPulseDay: todayStr(),
   },
   play: async ({ canvas, step }) => {
     await step("Verify title is visible", async () => {
@@ -57,9 +63,10 @@ export const ScatteredActivity: Story = {
   args: {
     currentStreak: 3,
     longestStreak: 14,
-    pulsedDates: mockPulsedDatesScattered,
+    pulsedDates: mockCalendarScattered,
     memberSince: "2025-01-01T00:00:00Z",
     totalPulses: 87,
+    todayPulseDay: todayStr(),
   },
 };
 
@@ -67,9 +74,10 @@ export const NoStreak: Story = {
   args: {
     currentStreak: 0,
     longestStreak: 7,
-    pulsedDates: mockPulsedDatesEmpty,
+    pulsedDates: mockCalendarEmpty,
     memberSince: "2026-02-01T00:00:00Z",
     totalPulses: 12,
+    todayPulseDay: todayStr(),
   },
 };
 
@@ -77,8 +85,9 @@ export const NewUser: Story = {
   args: {
     currentStreak: 1,
     longestStreak: 1,
-    pulsedDates: [new Date().toISOString().slice(0, 10)],
+    pulsedDates: [todayStr()],
     memberSince: new Date().toISOString(),
     totalPulses: 1,
+    todayPulseDay: todayStr(),
   },
 };

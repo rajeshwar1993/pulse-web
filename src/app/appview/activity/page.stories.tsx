@@ -2,9 +2,14 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { expect } from "storybook/test";
 import { ActivityContent } from "@/components/activity/activity-content";
 import {
-  mockPulsedDatesScattered,
-  mockPulsedDatesStreak,
+  mockCalendarScattered,
+  mockCalendarStreak,
 } from "@/stories/mock-data";
+
+function todayStr(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 
 const meta = {
   title: "Pages/AppView/Activity",
@@ -31,9 +36,10 @@ export const Active: Story = {
   args: {
     currentStreak: 14,
     longestStreak: 21,
-    pulsedDates: mockPulsedDatesStreak,
+    pulsedDates: mockCalendarStreak,
     memberSince: "2025-06-15T10:30:00Z",
     totalPulses: 142,
+    todayPulseDay: todayStr(),
   },
   play: async ({ canvas, step }) => {
     await step("Verify title is visible", async () => {
@@ -50,8 +56,9 @@ export const Inactive: Story = {
   args: {
     currentStreak: 0,
     longestStreak: 7,
-    pulsedDates: mockPulsedDatesScattered,
+    pulsedDates: mockCalendarScattered,
     memberSince: "2025-01-01T00:00:00Z",
     totalPulses: 45,
+    todayPulseDay: todayStr(),
   },
 };

@@ -90,6 +90,52 @@ export const mockPulsedDatesStreak = generateMockPulsedDates("streak");
 export const mockPulsedDatesScattered = generateMockPulsedDates("scattered");
 export const mockPulsedDatesEmpty = generateMockPulsedDates("empty");
 
+/** Generate mock pulsed dates within the current calendar month. */
+function generateMockCalendarDates(
+  pattern: "streak" | "scattered" | "empty" | "perfect",
+): string[] {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+  const dayOfMonth = today.getDate();
+  const fmt = (d: Date) => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  };
+
+  if (pattern === "empty") return [];
+
+  if (pattern === "perfect") {
+    return Array.from({ length: dayOfMonth }, (_, i) =>
+      fmt(new Date(year, month, i + 1)),
+    );
+  }
+
+  if (pattern === "streak") {
+    // Last 10 consecutive days pulsed (within this month)
+    const streakLength = Math.min(10, dayOfMonth);
+    return Array.from({ length: streakLength }, (_, i) =>
+      fmt(new Date(year, month, dayOfMonth - i)),
+    );
+  }
+
+  // Scattered: ~60% of days pulsed with some gaps
+  const dates: string[] = [];
+  for (let day = 1; day <= dayOfMonth; day++) {
+    if (day % 5 !== 3 && day % 7 !== 0) {
+      dates.push(fmt(new Date(year, month, day)));
+    }
+  }
+  return dates;
+}
+
+export const mockCalendarStreak = generateMockCalendarDates("streak");
+export const mockCalendarScattered = generateMockCalendarDates("scattered");
+export const mockCalendarEmpty = generateMockCalendarDates("empty");
+export const mockCalendarPerfect = generateMockCalendarDates("perfect");
+
 export const mockSeats: DashboardSeat[] = [
   {
     id: "seat-1",

@@ -1,24 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect } from "storybook/test";
 import {
-  mockPulsedDatesEmpty,
-  mockPulsedDatesScattered,
-  mockPulsedDatesStreak,
+  mockCalendarEmpty,
+  mockCalendarPerfect,
+  mockCalendarScattered,
+  mockCalendarStreak,
 } from "@/stories/mock-data";
 import { GhostCalendar } from "./ghost-calendar";
-
-/** Generate all 30 dates (today backwards). */
-function allDates(): string[] {
-  const today = new Date();
-  return Array.from({ length: 30 }, (_, i) => {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${y}-${m}-${day}`;
-  });
-}
 
 const meta = {
   title: "Dashboard/GhostCalendar",
@@ -30,43 +18,58 @@ const meta = {
       description:
         "Array of YYYY-MM-DD date strings representing days the user pulsed",
     },
+    memberSince: {
+      control: "text",
+      description: "ISO timestamp of when the user joined",
+    },
+    todayPulseDay: {
+      control: "text",
+      description:
+        "YYYY-MM-DD override for today's pulse day (falls back to getTodayPulseDay())",
+    },
   },
 } satisfies Meta<typeof GhostCalendar>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** Default memberSince — long-time user. */
+const defaultMemberSince = "2025-01-01T00:00:00Z";
+
 /** Most days pulsed with a few gaps — typical active user. */
 export const Scattered: Story = {
   args: {
-    pulsedDates: mockPulsedDatesScattered,
+    pulsedDates: mockCalendarScattered,
+    memberSince: defaultMemberSince,
   },
   play: async ({ canvas, step }) => {
-    await step("Renders filled and ghost dots", async () => {
+    await step("Renders filled and missed dots", async () => {
       const filled = canvas.getAllByTestId("dot-filled");
-      const ghost = canvas.getAllByTestId("dot-ghost");
       await expect(filled.length).toBeGreaterThan(0);
-      await expect(ghost.length).toBeGreaterThan(0);
+    });
+    await step("Renders month title", async () => {
+      const title = canvas.getByTestId("month-title");
+      await expect(title).toBeTruthy();
     });
   },
 };
 
-/** Last 14 consecutive days pulsed — streak pattern. */
+/** Last 10 consecutive days pulsed — streak pattern. */
 export const Streak: Story = {
   args: {
-    pulsedDates: mockPulsedDatesStreak,
+    pulsedDates: mockCalendarStreak,
+    memberSince: defaultMemberSince,
   },
 };
 
 /** No pulses at all — brand new or lapsed user. */
 export const Empty: Story = {
   args: {
-    pulsedDates: mockPulsedDatesEmpty,
+    pulsedDates: mockCalendarEmpty,
+    memberSince: defaultMemberSince,
   },
   play: async ({ canvas, step }) => {
-    await step("All dots are ghost dots", async () => {
-      const ghost = canvas.getAllByTestId("dot-ghost");
-      await expect(ghost.length).toBe(30);
+    await step("All past dots are missed", async () => {
       await expect(canvas.queryAllByTestId("dot-filled").length).toBe(0);
     });
   },
@@ -75,13 +78,60 @@ export const Empty: Story = {
 /** Every single day pulsed — perfect record. */
 export const PerfectMonth: Story = {
   args: {
-    pulsedDates: allDates(),
+    pulsedDates: mockCalendarPerfect,
+    memberSince: defaultMemberSince,
   },
   play: async ({ canvas, step }) => {
-    await step("All dots are filled", async () => {
+    await step("All past days are filled", async () => {
       const filled = canvas.getAllByTestId("dot-filled");
-      await expect(filled.length).toBe(30);
-      await expect(canvas.queryAllByTestId("dot-ghost").length).toBe(0);
+      await expect(filled.length).toBeGreaterThan(0);
+      await expect(canvas.queryAllByTestId("dot-missed").length).toBe(0);
     });
+  },
+};
+
+/** User who joined very recently — only a few days of data. */
+export const NewUser: Story = {
+  args: {
+    pulsedDates: (() => {
+      const today = new Date();
+      const fmt = (d: Date) =>
+        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      // Joined 3 days ago, pulsed first 2 days
+      return [
+        fmt(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 2)),
+        fmt(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)),
+      ];
+    })(),
+    memberSince: (() => {
+      const d = new Date();
+      d.setDate(d.getDate() - 2);
+      return d.toISOString();
+    })(),
+  },
+};
+
+/** User who joined this month — pre-join days are neutral. */
+export const JoinedThisMonth: Story = {
+  args: {
+    pulsedDates: (() => {
+      const today = new Date();
+      const joinDay = 10;
+      const fmt = (d: Date) =>
+        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      const dates: string[] = [];
+      for (let day = joinDay; day <= today.getDate(); day++) {
+        if (day % 2 === 0) {
+          dates.push(fmt(new Date(today.getFullYear(), today.getMonth(), day)));
+        }
+      }
+      return dates;
+    })(),
+    memberSince: (() => {
+      const d = new Date();
+      d.setDate(10);
+      d.setHours(0, 0, 0, 0);
+      return d.toISOString();
+    })(),
   },
 };

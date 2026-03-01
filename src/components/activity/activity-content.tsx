@@ -12,6 +12,7 @@ interface ActivityContentProps {
   pulsedDates: string[];
   memberSince: string;
   totalPulses: number;
+  todayPulseDay: string;
 }
 
 export function ActivityContent({
@@ -20,6 +21,7 @@ export function ActivityContent({
   pulsedDates,
   memberSince,
   totalPulses,
+  todayPulseDay,
 }: ActivityContentProps) {
   const t = useTranslations("activity");
 
@@ -42,7 +44,11 @@ export function ActivityContent({
       />
 
       {/* Ghost Calendar */}
-      <GhostCalendar pulsedDates={pulsedDates} />
+      <GhostCalendar
+        pulsedDates={pulsedDates}
+        memberSince={memberSince}
+        todayPulseDay={todayPulseDay}
+      />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-4">

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { ActivityContent } from "@/components/activity/activity-content";
 import { createClient } from "@/lib/supabase/server";
-import { getEffectiveStreak } from "@/lib/utils/streak";
+import { getEffectiveStreak, getTodayPulseDay } from "@/lib/utils/streak";
 
 export const metadata: Metadata = {
   title: "Activity - Pulse",
@@ -30,6 +30,9 @@ export default async function BrowserActivityPage() {
     redirect("/profile-setup");
   }
 
+  const todayPulseDay = getTodayPulseDay();
+  const dayOfMonth = Number(todayPulseDay.split("-")[2]);
+
   const currentStreak = getEffectiveStreak(
     profile.current_streak,
     profile.last_pulse_date,
@@ -37,7 +40,7 @@ export default async function BrowserActivityPage() {
   const longestStreak: number = profile.longest_streak;
 
   const { data: pulseCalendarData } = await supabase.rpc("get_pulse_calendar", {
-    p_days: 30,
+    p_days: dayOfMonth,
   });
   const pulsedDates: string[] = pulseCalendarData ?? [];
 
@@ -48,6 +51,7 @@ export default async function BrowserActivityPage() {
       pulsedDates={pulsedDates}
       memberSince={profile.created_at}
       totalPulses={profile.total_pulse_count ?? 0}
+      todayPulseDay={todayPulseDay}
     />
   );
 }
