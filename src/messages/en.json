@@ -227,7 +227,19 @@
       "fri": "F",
       "sat": "S"
     },
-    "days": "{count, plural, =0 {days} =1 {day} other {days}}"
+    "days": "{count, plural, =0 {days} =1 {day} other {days}}",
+    "pulseRate": "Pulse Rate",
+    "legend": {
+      "pulsed": "Pulsed",
+      "missed": "Missed",
+      "today": "Today",
+      "streak": "Streak"
+    },
+    "milestones": {
+      "title": "Milestones",
+      "pulseLabel": "Total Pulses",
+      "streakLabel": "Best Streak"
+    }
   },
   "pulse": {
     "sendPulse": "Send Pulse",

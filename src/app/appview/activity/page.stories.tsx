@@ -47,7 +47,20 @@ export const Active: Story = {
     });
 
     await step("Verify streak is displayed", async () => {
-      await expect(canvas.getByText("14")).toBeVisible();
+      await expect(canvas.getAllByText("14").length).toBeGreaterThanOrEqual(1);
+    });
+
+    await step("Verify pulse rate", async () => {
+      await expect(canvas.getByText("Pulse Rate")).toBeVisible();
+      await expect(canvas.getByTestId("pulse-rate")).toBeVisible();
+    });
+
+    await step("Verify calendar legend", async () => {
+      await expect(canvas.getByTestId("calendar-legend")).toBeVisible();
+    });
+
+    await step("Verify milestone badges", async () => {
+      await expect(canvas.getByTestId("milestone-badges")).toBeVisible();
     });
   },
 };

@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/ui/card";
 import { getTodayPulseDay } from "@/lib/utils/streak";
@@ -8,6 +9,7 @@ interface GhostCalendarProps {
   pulsedDates: string[];
   memberSince: string;
   todayPulseDay?: string;
+  children?: React.ReactNode;
 }
 
 const COLUMNS = 7;
@@ -95,6 +97,7 @@ export function GhostCalendar({
   pulsedDates,
   memberSince,
   todayPulseDay: todayPulseDayProp,
+  children,
 }: GhostCalendarProps) {
   const t = useTranslations("activity");
   const today = todayPulseDayProp ?? getTodayPulseDay();
@@ -210,6 +213,7 @@ export function GhostCalendar({
           );
         })}
       </div>
+      {children}
     </Card>
   );
 }
