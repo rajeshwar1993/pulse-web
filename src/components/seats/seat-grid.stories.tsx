@@ -1,10 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "storybook/test";
-import {
-  mockSeats,
-  mockSeatsEmpty,
-  mockSeatsMixed,
-} from "@/stories/mock-data";
+import { mockSeats, mockSeatsEmpty, mockSeatsMixed } from "@/stories/mock-data";
 import { SeatGrid } from "./seat-grid";
 
 const meta = {

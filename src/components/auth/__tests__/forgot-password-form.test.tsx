@@ -50,7 +50,10 @@ describe("ForgotPasswordForm", () => {
   it("should render back to login link", () => {
     render(<ForgotPasswordForm />);
 
-    expect(screen.getByText("Back to login")).toHaveAttribute("href", "/auth/login");
+    expect(screen.getByText("Back to login")).toHaveAttribute(
+      "href",
+      "/auth/login",
+    );
   });
 
   it("should call resetPasswordForEmail with email and redirectTo", async () => {
@@ -88,7 +91,10 @@ describe("ForgotPasswordForm", () => {
 
     // Form should be replaced by success view with back to login link
     expect(screen.queryByLabelText("Email")).not.toBeInTheDocument();
-    expect(screen.getByText("Back to login")).toHaveAttribute("href", "/auth/login");
+    expect(screen.getByText("Back to login")).toHaveAttribute(
+      "href",
+      "/auth/login",
+    );
   });
 
   it("should show error on failure", async () => {

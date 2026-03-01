@@ -4,19 +4,22 @@
  * Each function queries the database via the admin client and
  * throws a descriptive error if the assertion fails.
  */
-import { expect } from '@playwright/test';
-import { getTodayPulses } from './pulses';
-import { getActiveConnections } from './connections';
-import { getProfile } from './profiles';
-import { getInviteCodes } from './invites';
-import { getPendingRequests } from './connection-requests';
+import { expect } from "@playwright/test";
+import { getTodayPulses } from "./pulses";
+import { getActiveConnections } from "./connections";
+import { getProfile } from "./profiles";
+import { getInviteCodes } from "./invites";
+import { getPendingRequests } from "./connection-requests";
 
 /**
  * Verify that a pulse exists for the user today.
  */
 export async function verifyPulseExists(userId: string): Promise<void> {
   const pulses = await getTodayPulses(userId);
-  expect(pulses.length, `Expected at least 1 pulse for user ${userId}`).toBeGreaterThan(0);
+  expect(
+    pulses.length,
+    `Expected at least 1 pulse for user ${userId}`,
+  ).toBeGreaterThan(0);
 }
 
 /**

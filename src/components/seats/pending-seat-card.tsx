@@ -12,9 +12,7 @@ export function PendingSeatCard({ seat, onClick }: PendingSeatCardProps) {
   const t = useTranslations("seats");
 
   const isInviteCode = seat.pendingInfo?.type === "invite_code";
-  const label = isInviteCode
-    ? t("inviteCodeShared")
-    : t("requestSent");
+  const label = isInviteCode ? t("inviteCodeShared") : t("requestSent");
 
   return (
     <button
@@ -50,9 +48,7 @@ export function PendingSeatCard({ seat, onClick }: PendingSeatCardProps) {
           )}
         </div>
       </div>
-      <p className="text-xs text-[var(--slate-400)] mt-2">
-        {t("tapToCancel")}
-      </p>
+      <p className="text-xs text-[var(--slate-400)] mt-2">{t("tapToCancel")}</p>
     </button>
   );
 }

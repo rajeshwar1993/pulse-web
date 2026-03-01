@@ -1,14 +1,14 @@
 /**
  * Invite code admin utilities — CRUD on the invite_codes table.
  */
-import { getAdmin } from './client';
+import { getAdmin } from "./client";
 
 /**
  * Create an invite code for a user. Returns the created record.
  */
 export async function createInviteCode(userId: string) {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
-  let code = '';
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+  let code = "";
   for (let i = 0; i < 8; i++) {
     code += chars.charAt(Math.floor(Math.random() * chars.length));
   }
@@ -17,7 +17,7 @@ export async function createInviteCode(userId: string) {
   expiresAt.setDate(expiresAt.getDate() + 30);
 
   const { data, error } = await getAdmin()
-    .from('invite_codes')
+    .from("invite_codes")
     .insert({
       creator_id: userId,
       code,
@@ -35,10 +35,10 @@ export async function createInviteCode(userId: string) {
  */
 export async function getInviteCodes(userId: string) {
   const { data, error } = await getAdmin()
-    .from('invite_codes')
-    .select('*')
-    .eq('creator_id', userId)
-    .order('created_at', { ascending: false });
+    .from("invite_codes")
+    .select("*")
+    .eq("creator_id", userId)
+    .order("created_at", { ascending: false });
   if (error) throw new Error(`Failed to get invite codes: ${error.message}`);
   return data;
 }
@@ -48,9 +48,9 @@ export async function getInviteCodes(userId: string) {
  */
 export async function deleteUserInviteCodes(userId: string): Promise<void> {
   const { error } = await getAdmin()
-    .from('invite_codes')
+    .from("invite_codes")
     .delete()
-    .eq('creator_id', userId);
+    .eq("creator_id", userId);
   if (error) throw new Error(`Failed to delete invite codes: ${error.message}`);
 }
 
@@ -59,8 +59,9 @@ export async function deleteUserInviteCodes(userId: string): Promise<void> {
  */
 export async function deleteAllInviteCodes(): Promise<void> {
   const { error } = await getAdmin()
-    .from('invite_codes')
+    .from("invite_codes")
     .delete()
-    .neq('creator_id', '00000000-0000-0000-0000-000000000000');
-  if (error) throw new Error(`Failed to delete all invite codes: ${error.message}`);
+    .neq("creator_id", "00000000-0000-0000-0000-000000000000");
+  if (error)
+    throw new Error(`Failed to delete all invite codes: ${error.message}`);
 }

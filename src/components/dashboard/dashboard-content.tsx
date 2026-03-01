@@ -14,7 +14,10 @@ import { FLUTTER_READY_SIGNAL_DELAY_MS } from "@/lib/constants";
 import { useSeenReceipts } from "@/hooks/use-seen-receipts";
 import { ConnectionService } from "@/lib/services/connection-service";
 import { useToast } from "@/components/providers/toast-provider";
-import type { ConnectionRequestWithProfile, DashboardConnection } from "@/lib/types/connection";
+import type {
+  ConnectionRequestWithProfile,
+  DashboardConnection,
+} from "@/lib/types/connection";
 import type { DashboardSeat } from "@/lib/types/seat";
 import { logger } from "@/lib/utils/logger";
 import { MissedPulseSurveyModal } from "./missed-pulse-survey-modal";

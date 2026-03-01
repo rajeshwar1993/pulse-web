@@ -1,4 +1,4 @@
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator, expect } from "@playwright/test";
 
 export class InvitePage {
   readonly page: Page;
@@ -9,10 +9,12 @@ export class InvitePage {
 
   constructor(page: Page) {
     this.page = page;
-    this.codeDisplay = page.locator('[class*="monospace"], [class*="font-mono"]');
-    this.acceptButton = page.getByRole('button', { name: /accept/i });
-    this.declineButton = page.getByRole('button', { name: /decline/i });
-    this.errorAlert = page.getByRole('alert');
+    this.codeDisplay = page.locator(
+      '[class*="monospace"], [class*="font-mono"]',
+    );
+    this.acceptButton = page.getByRole("button", { name: /accept/i });
+    this.declineButton = page.getByRole("button", { name: /decline/i });
+    this.errorAlert = page.getByRole("alert");
   }
 
   async gotoWithCode(code: string) {

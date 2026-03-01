@@ -226,9 +226,7 @@ describe("DashboardContent", () => {
     vi.setSystemTime(new Date(2026, 1, 22, 9, 0));
     render(<DashboardContent {...baseProps} missedPulseDate="2026-02-21" />);
 
-    expect(
-      screen.getByTestId("missed-pulse-survey-modal"),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId("missed-pulse-survey-modal")).toBeInTheDocument();
   });
 
   it("should not show missed pulse survey modal when missedPulseDate is null", () => {
@@ -242,19 +240,20 @@ describe("DashboardContent", () => {
 
   it("should call useSeenReceipts with connections", () => {
     vi.setSystemTime(new Date(2026, 1, 22, 9, 0));
-    const connections: import("@/lib/types/connection").DashboardConnection[] = [
-      {
-        id: "1",
-        userId: "user-456",
-        avatar: "/a.png",
-        name: "Bob",
-        timezone: "America/New_York",
-        status: "active" as const,
-        pulseTime: null,
-        currentStreak: 3,
-        longestStreak: 5,
-      },
-    ];
+    const connections: import("@/lib/types/connection").DashboardConnection[] =
+      [
+        {
+          id: "1",
+          userId: "user-456",
+          avatar: "/a.png",
+          name: "Bob",
+          timezone: "America/New_York",
+          status: "active" as const,
+          pulseTime: null,
+          currentStreak: 3,
+          longestStreak: 5,
+        },
+      ];
     render(<DashboardContent {...baseProps} connections={connections} />);
 
     expect(mockUseSeenReceipts).toHaveBeenCalledWith(connections);

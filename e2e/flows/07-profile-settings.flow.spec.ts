@@ -1,13 +1,13 @@
-import { test, expect } from '@playwright/test';
-import { TEST_USER_A } from '../config';
-import { SettingsPage } from '../pages/settings.page';
-import { ProfileSetupPage } from '../pages/profile-setup.page';
-import { getUserIdByEmail } from '../admin/auth';
-import { getProfile, updateProfile } from '../admin/profiles';
-import { verifyProfileField } from '../admin/verify';
+import { test, expect } from "@playwright/test";
+import { TEST_USER_A } from "../config";
+import { SettingsPage } from "../pages/settings.page";
+import { ProfileSetupPage } from "../pages/profile-setup.page";
+import { getUserIdByEmail } from "../admin/auth";
+import { getProfile, updateProfile } from "../admin/profiles";
+import { verifyProfileField } from "../admin/verify";
 
-test.describe('07 — Profile & Settings Flow', () => {
-  test.describe.configure({ mode: 'serial' });
+test.describe("07 — Profile & Settings Flow", () => {
+  test.describe.configure({ mode: "serial" });
 
   let userAId: string;
   let originalDisplayName: string;
@@ -22,8 +22,13 @@ test.describe('07 — Profile & Settings Flow', () => {
     await updateProfile(userAId, { display_name: originalDisplayName });
   });
 
-  test('settings page shows profile card (browser)', async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name === 'mobile-chrome', 'Browser route — desktop only');
+  test("settings page shows profile card (browser)", async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      testInfo.project.name === "mobile-chrome",
+      "Browser route — desktop only",
+    );
     const settings = new SettingsPage(page);
     await settings.gotoBrowser();
 
@@ -33,69 +38,97 @@ test.describe('07 — Profile & Settings Flow', () => {
     expect(name?.trim()).toBe(originalDisplayName);
   });
 
-  test('language radio group with English selected', async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name === 'mobile-chrome', 'Browser route — desktop only');
+  test("language radio group with English selected", async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      testInfo.project.name === "mobile-chrome",
+      "Browser route — desktop only",
+    );
     const settings = new SettingsPage(page);
     await settings.gotoBrowser();
 
     await expect(settings.languageSection).toBeVisible();
-    const englishRadio = page.getByRole('radio', { name: /english/i });
+    const englishRadio = page.getByRole("radio", { name: /english/i });
     await expect(englishRadio).toBeChecked();
   });
 
-  test('back link navigates to /dashboard', async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name === 'mobile-chrome', 'Browser route — desktop only');
+  test("back link navigates to /dashboard", async ({ page }, testInfo) => {
+    test.skip(
+      testInfo.project.name === "mobile-chrome",
+      "Browser route — desktop only",
+    );
     const settings = new SettingsPage(page);
     await settings.gotoBrowser();
 
     await settings.navigateBack();
-    await page.waitForURL('**/dashboard', { timeout: 10_000 });
+    await page.waitForURL("**/dashboard", { timeout: 10_000 });
   });
 
-  test('edit profile link navigates to /profile-setup?mode=edit', async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name === 'mobile-chrome', 'Browser route — desktop only');
+  test("edit profile link navigates to /profile-setup?mode=edit", async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      testInfo.project.name === "mobile-chrome",
+      "Browser route — desktop only",
+    );
     const settings = new SettingsPage(page);
     await settings.gotoBrowser();
 
     await settings.navigateToEditProfile();
-    await page.waitForURL('**/profile-setup?mode=edit', { timeout: 10_000 });
+    await page.waitForURL("**/profile-setup?mode=edit", { timeout: 10_000 });
   });
 
-  test('profile-setup prefills existing name in edit mode', async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name === 'mobile-chrome', 'Browser route — desktop only');
+  test("profile-setup prefills existing name in edit mode", async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      testInfo.project.name === "mobile-chrome",
+      "Browser route — desktop only",
+    );
     const profileSetup = new ProfileSetupPage(page);
-    await profileSetup.gotoBrowser('edit');
+    await profileSetup.gotoBrowser("edit");
 
     const value = await profileSetup.displayNameInput.inputValue();
     expect(value).toBe(originalDisplayName);
   });
 
-  test('edit + save → redirect to /settings + DB verify: name updated', async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name === 'mobile-chrome', 'Browser route — desktop only');
+  test("edit + save → redirect to /settings + DB verify: name updated", async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      testInfo.project.name === "mobile-chrome",
+      "Browser route — desktop only",
+    );
     const profileSetup = new ProfileSetupPage(page);
-    await profileSetup.gotoBrowser('edit');
+    await profileSetup.gotoBrowser("edit");
 
-    const newName = 'Updated User A';
+    const newName = "Updated User A";
     await profileSetup.fillDisplayName(newName);
     await profileSetup.submit();
 
-    await page.waitForURL('**/settings', { timeout: 15_000 });
-    await verifyProfileField(userAId, 'display_name', newName);
+    await page.waitForURL("**/settings", { timeout: 15_000 });
+    await verifyProfileField(userAId, "display_name", newName);
 
     // Restore for next tests
     await updateProfile(userAId, { display_name: originalDisplayName });
   });
 
-  test('appview edit → redirect to /appview/settings + DB verify', async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name === 'chromium', 'Appview route — mobile only');
+  test("appview edit → redirect to /appview/settings + DB verify", async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      testInfo.project.name === "chromium",
+      "Appview route — mobile only",
+    );
     const profileSetup = new ProfileSetupPage(page);
-    await profileSetup.goto('edit');
+    await profileSetup.goto("edit");
 
     // Wait for form to load and prefill
     await expect(profileSetup.displayNameInput).toBeVisible();
-    await expect(profileSetup.displayNameInput).not.toHaveValue('');
+    await expect(profileSetup.displayNameInput).not.toHaveValue("");
 
-    const newName = 'AppView Updated A';
+    const newName = "AppView Updated A";
     await profileSetup.fillDisplayName(newName);
 
     // Wait for profile to fully load (avatar must be set for button to be enabled)
@@ -103,12 +136,12 @@ test.describe('07 — Profile & Settings Flow', () => {
 
     // Submit the form programmatically to avoid the bottom nav bar overlapping the button
     await page.evaluate(() => {
-      const form = document.querySelector('form');
+      const form = document.querySelector("form");
       if (form) form.requestSubmit();
     });
 
-    await page.waitForURL('**/appview/settings', { timeout: 15_000 });
-    await verifyProfileField(userAId, 'display_name', newName);
+    await page.waitForURL("**/appview/settings", { timeout: 15_000 });
+    await verifyProfileField(userAId, "display_name", newName);
 
     await updateProfile(userAId, { display_name: originalDisplayName });
   });

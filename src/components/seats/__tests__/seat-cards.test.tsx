@@ -7,26 +7,25 @@ import { PendingSeatCard } from "../pending-seat-card";
 import { SeatCard } from "../seat-card";
 
 vi.mock("next-intl", () => ({
-  useTranslations:
-    () => (key: string, params?: Record<string, unknown>) => {
-      const translations: Record<string, string> = {
-        addConnection: "Add Connection",
-        inviteCodeShared: "Invite code shared",
-        requestSent: "Request sent",
-        tapToCancel: "Tap to cancel",
-        seatLabel: "Seat {number}",
-        expired: "Expired",
-        tapToRenew: "Tap to renew",
-        gridTitle: "Your Connections ({count})",
-      };
-      let result = translations[key] || key;
-      if (params) {
-        for (const [k, v] of Object.entries(params)) {
-          result = result.replace(`{${k}}`, String(v));
-        }
+  useTranslations: () => (key: string, params?: Record<string, unknown>) => {
+    const translations: Record<string, string> = {
+      addConnection: "Add Connection",
+      inviteCodeShared: "Invite code shared",
+      requestSent: "Request sent",
+      tapToCancel: "Tap to cancel",
+      seatLabel: "Seat {number}",
+      expired: "Expired",
+      tapToRenew: "Tap to renew",
+      gridTitle: "Your Connections ({count})",
+    };
+    let result = translations[key] || key;
+    if (params) {
+      for (const [k, v] of Object.entries(params)) {
+        result = result.replace(`{${k}}`, String(v));
       }
-      return result;
-    },
+    }
+    return result;
+  },
   useLocale: () => "en",
 }));
 

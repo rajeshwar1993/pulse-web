@@ -1,4 +1,4 @@
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator, expect } from "@playwright/test";
 
 export class SignupPage {
   readonly page: Page;
@@ -12,17 +12,17 @@ export class SignupPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.emailInput = page.locator('#signup-email');
-    this.passwordInput = page.locator('#signup-password');
-    this.confirmPasswordInput = page.locator('#signup-confirm-password');
+    this.emailInput = page.locator("#signup-email");
+    this.passwordInput = page.locator("#signup-password");
+    this.confirmPasswordInput = page.locator("#signup-confirm-password");
     this.submitButton = page.locator('button[type="submit"]');
-    this.errorAlert = page.getByRole('alert').first();
-    this.loginLink = page.getByRole('link', { name: /log in/i });
+    this.errorAlert = page.getByRole("alert").first();
+    this.loginLink = page.getByRole("link", { name: /log in/i });
     this.successMessage = page.getByText(/verification/i);
   }
 
   async goto() {
-    await this.page.goto('/auth/signup');
+    await this.page.goto("/auth/signup");
   }
 
   async signup(email: string, password: string, confirmPassword?: string) {

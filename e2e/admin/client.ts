@@ -6,15 +6,15 @@
  * - Verify database state after user actions
  * - Clean up test data between tests
  */
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from '../config';
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from "../config";
 
 function createAdminClient(): SupabaseClient {
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
     throw new Error(
-      'Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY. ' +
-        'Add SUPABASE_SERVICE_ROLE_KEY to pulse-web/.env.local ' +
-        '(find it in Supabase Dashboard > Project Settings > API).',
+      "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY. " +
+        "Add SUPABASE_SERVICE_ROLE_KEY to pulse-web/.env.local " +
+        "(find it in Supabase Dashboard > Project Settings > API).",
     );
   }
   return createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {

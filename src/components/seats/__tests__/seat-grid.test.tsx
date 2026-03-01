@@ -4,25 +4,24 @@ import type { DashboardSeat } from "@/lib/types/seat";
 import { SeatGrid } from "../seat-grid";
 
 vi.mock("next-intl", () => ({
-  useTranslations:
-    () => (key: string, params?: Record<string, unknown>) => {
-      const translations: Record<string, string> = {
-        gridTitle: "Your Connections ({count})",
-        addConnection: "Add Connection",
-        inviteCodeShared: "Invite code shared",
-        tapToCancel: "Tap to cancel",
-        seatLabel: "Seat {number}",
-        expired: "Expired",
-        tapToRenew: "Tap to renew",
-      };
-      let result = translations[key] || key;
-      if (params) {
-        for (const [k, v] of Object.entries(params)) {
-          result = result.replace(`{${k}}`, String(v));
-        }
+  useTranslations: () => (key: string, params?: Record<string, unknown>) => {
+    const translations: Record<string, string> = {
+      gridTitle: "Your Connections ({count})",
+      addConnection: "Add Connection",
+      inviteCodeShared: "Invite code shared",
+      tapToCancel: "Tap to cancel",
+      seatLabel: "Seat {number}",
+      expired: "Expired",
+      tapToRenew: "Tap to renew",
+    };
+    let result = translations[key] || key;
+    if (params) {
+      for (const [k, v] of Object.entries(params)) {
+        result = result.replace(`{${k}}`, String(v));
       }
-      return result;
-    },
+    }
+    return result;
+  },
   useLocale: () => "en",
 }));
 

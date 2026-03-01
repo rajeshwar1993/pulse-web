@@ -3,19 +3,17 @@ import { describe, expect, it, vi } from "vitest";
 import { ConnectionCard } from "../connection-card";
 
 vi.mock("next-intl", () => ({
-  useTranslations:
-    () =>
-    (key: string, params?: Record<string, string>) => {
-      const translations: Record<string, string> = {
-        active: "Active",
-        waiting: "Waiting...",
-        earlyMorning: "Morning there",
-      };
-      if (key === "localTime" && params) {
-        return `${params.time} for ${params.name}`;
-      }
-      return translations[key] || key;
-    },
+  useTranslations: () => (key: string, params?: Record<string, string>) => {
+    const translations: Record<string, string> = {
+      active: "Active",
+      waiting: "Waiting...",
+      earlyMorning: "Morning there",
+    };
+    if (key === "localTime" && params) {
+      return `${params.time} for ${params.name}`;
+    }
+    return translations[key] || key;
+  },
   useLocale: () => "en",
 }));
 
@@ -177,9 +175,7 @@ describe("ConnectionCard", () => {
         />,
       );
 
-      expect(
-        screen.getByText("10:00 PM for John Doe"),
-      ).toBeInTheDocument();
+      expect(screen.getByText("10:00 PM for John Doe")).toBeInTheDocument();
     });
   });
 
@@ -349,9 +345,7 @@ describe("ConnectionCard", () => {
         />,
       );
 
-      expect(
-        screen.getByText("10:00 PM for John Doe"),
-      ).toBeInTheDocument();
+      expect(screen.getByText("10:00 PM for John Doe")).toBeInTheDocument();
     });
   });
 

@@ -1,5 +1,5 @@
-import { test as baseTest, expect } from '@playwright/test';
-import { FlutterBridgeMock } from './flutter-bridge';
+import { test as baseTest, expect } from "@playwright/test";
+import { FlutterBridgeMock } from "./flutter-bridge";
 
 /**
  * Extended Playwright test fixture that provides:

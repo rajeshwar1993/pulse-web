@@ -1,4 +1,4 @@
-import { type Page, type Locator } from '@playwright/test';
+import { type Page, type Locator } from "@playwright/test";
 
 export class ActivityPage {
   readonly page: Page;
@@ -10,18 +10,20 @@ export class ActivityPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.heading = page.getByRole('heading').first();
+    this.heading = page.getByRole("heading").first();
     this.streakBadge = page.getByText(/streak/i);
-    this.ghostCalendar = page.locator('[class*="calendar"], [class*="Calendar"]');
+    this.ghostCalendar = page.locator(
+      '[class*="calendar"], [class*="Calendar"]',
+    );
     this.memberSince = page.getByText(/member since/i);
     this.totalPulses = page.getByText(/total pulses/i);
   }
 
   async goto() {
-    await this.page.goto('/appview/activity');
+    await this.page.goto("/appview/activity");
   }
 
   async gotoBrowser() {
-    await this.page.goto('/activity');
+    await this.page.goto("/activity");
   }
 }

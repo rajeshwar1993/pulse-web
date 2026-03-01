@@ -16,8 +16,7 @@ export const LOCALE_COOKIE_NAME = "pulse-locale";
 // ---------------------------------------------------------------------------
 
 /** Base URL for invite links (defaults to current origin) */
-export const INVITE_BASE_URL =
-  process.env.NEXT_PUBLIC_INVITE_BASE_URL || "";
+export const INVITE_BASE_URL = process.env.NEXT_PUBLIC_INVITE_BASE_URL || "";
 
 /** Build a full invite URL for the given code */
 export function getInviteUrl(code: string): string {

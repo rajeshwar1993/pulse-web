@@ -22,7 +22,12 @@ function addDays(dateStr: string, days: number): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-type DotState = "pulsed" | "missed" | "current-pulsed" | "current-empty" | "future";
+type DotState =
+  | "pulsed"
+  | "missed"
+  | "current-pulsed"
+  | "current-empty"
+  | "future";
 
 /**
  * StreakCard Component
@@ -126,13 +131,17 @@ export function StreakCard({
       </div>
 
       {/* Bottom section: 12-day dot timeline */}
-      <div className="relative flex items-center justify-between" data-testid="streak-timeline">
+      <div
+        className="relative flex items-center justify-between"
+        data-testid="streak-timeline"
+      >
         {/* Line segments (behind dots) */}
         {dots.map((dot, i) => {
           if (i === DOT_COUNT - 1) return null;
           const nextDot = dots[i + 1];
           const bothFilled = isFilled(dot.state) && isFilled(nextDot.state);
-          const hasFuture = dot.state === "future" || nextDot.state === "future";
+          const hasFuture =
+            dot.state === "future" || nextDot.state === "future";
           const segmentOpacity = hasFuture
             ? Math.min(dot.opacity, nextDot.opacity)
             : 1;

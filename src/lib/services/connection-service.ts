@@ -47,9 +47,7 @@ export class ConnectionService {
 
     // Compute canonical ordering client-side for a single exact index lookup
     const [a, b] =
-      user.id < otherUserId
-        ? [user.id, otherUserId]
-        : [otherUserId, user.id];
+      user.id < otherUserId ? [user.id, otherUserId] : [otherUserId, user.id];
 
     const { count, error } = await supabase
       .from("connections")

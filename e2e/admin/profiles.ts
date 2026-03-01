@@ -1,7 +1,7 @@
 /**
  * Profile admin utilities — CRUD operations on the profiles table.
  */
-import { getAdmin } from './client';
+import { getAdmin } from "./client";
 
 /**
  * Create a profile for a user.
@@ -11,13 +11,15 @@ export async function createProfile(
   email: string,
   displayName: string,
 ): Promise<void> {
-  const { error } = await getAdmin().from('profiles').insert({
-    id: userId,
-    email,
-    display_name: displayName,
-    avatar_url: `https://api.dicebear.com/7.x/bottts/svg?seed=${email}`,
-    timezone: 'UTC',
-  });
+  const { error } = await getAdmin()
+    .from("profiles")
+    .insert({
+      id: userId,
+      email,
+      display_name: displayName,
+      avatar_url: `https://api.dicebear.com/7.x/bottts/svg?seed=${email}`,
+      timezone: "UTC",
+    });
   if (error) {
     throw new Error(`Failed to create profile for ${email}: ${error.message}`);
   }
@@ -28,9 +30,9 @@ export async function createProfile(
  */
 export async function getProfile(userId: string) {
   const { data, error } = await getAdmin()
-    .from('profiles')
-    .select('*')
-    .eq('id', userId)
+    .from("profiles")
+    .select("*")
+    .eq("id", userId)
     .single();
   if (error) throw new Error(`Failed to get profile: ${error.message}`);
   return data;
@@ -44,9 +46,9 @@ export async function updateProfile(
   fields: { display_name?: string; avatar_url?: string },
 ): Promise<void> {
   const { error } = await getAdmin()
-    .from('profiles')
+    .from("profiles")
     .update(fields)
-    .eq('id', userId);
+    .eq("id", userId);
   if (error) throw new Error(`Failed to update profile: ${error.message}`);
 }
 
@@ -59,9 +61,9 @@ export async function ensureProfile(
   displayName: string,
 ): Promise<void> {
   const { data: existing } = await getAdmin()
-    .from('profiles')
-    .select('id')
-    .eq('id', userId)
+    .from("profiles")
+    .select("id")
+    .eq("id", userId)
     .maybeSingle();
 
   if (existing) return;
@@ -73,8 +75,8 @@ export async function ensureProfile(
  */
 export async function deleteAllProfiles(): Promise<void> {
   const { error } = await getAdmin()
-    .from('profiles')
+    .from("profiles")
     .delete()
-    .neq('id', '00000000-0000-0000-0000-000000000000'); // match all
+    .neq("id", "00000000-0000-0000-0000-000000000000"); // match all
   if (error) throw new Error(`Failed to delete all profiles: ${error.message}`);
 }

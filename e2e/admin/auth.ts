@@ -1,7 +1,7 @@
 /**
  * Auth admin utilities — create/delete users via Supabase Admin API.
  */
-import { getAdmin } from './client';
+import { getAdmin } from "./client";
 
 /**
  * Create a new auth user with email confirmed.

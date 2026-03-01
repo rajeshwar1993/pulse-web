@@ -1,4 +1,4 @@
-import { type Page } from '@playwright/test';
+import { type Page } from "@playwright/test";
 
 export interface FlutterBridgeMessage {
   type: string;
@@ -42,13 +42,18 @@ export class FlutterBridgeMock {
    * Retrieve all messages sent to FlutterBridge so far.
    */
   async getMessages(): Promise<FlutterBridgeMessage[]> {
-    return this.page.evaluate(() => (window as any).__flutterBridgeMessages || []);
+    return this.page.evaluate(
+      () => (window as any).__flutterBridgeMessages || [],
+    );
   }
 
   /**
    * Wait for a specific message type to be sent to FlutterBridge.
    */
-  async waitForMessage(type: string, timeout = 10_000): Promise<FlutterBridgeMessage> {
+  async waitForMessage(
+    type: string,
+    timeout = 10_000,
+  ): Promise<FlutterBridgeMessage> {
     return this.page.waitForFunction(
       (t) => {
         const msgs = (window as any).__flutterBridgeMessages || [];
@@ -65,7 +70,7 @@ export class FlutterBridgeMock {
   async sendLocaleChanged(locale: string): Promise<void> {
     await this.page.evaluate((loc) => {
       window.dispatchEvent(
-        new CustomEvent('flutter-locale-changed', {
+        new CustomEvent("flutter-locale-changed", {
           detail: { locale: loc },
         }),
       );

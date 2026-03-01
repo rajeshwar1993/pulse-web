@@ -47,10 +47,7 @@ describe("seen-receipt-service", () => {
     it("should return false when not authenticated", async () => {
       mockGetUser.mockResolvedValue({ data: { user: null } });
 
-      const result = await recordSeenReceipts(
-        ["user-002"],
-        "2026-02-22",
-      );
+      const result = await recordSeenReceipts(["user-002"], "2026-02-22");
 
       expect(result).toBe(false);
       expect(mockFrom).not.toHaveBeenCalled();
@@ -60,10 +57,7 @@ describe("seen-receipt-service", () => {
       const upsertMock = createUpsertMock({ data: null, error: null });
       mockFrom.mockReturnValue(upsertMock);
 
-      const result = await recordSeenReceipts(
-        ["user-002"],
-        "2026-02-22",
-      );
+      const result = await recordSeenReceipts(["user-002"], "2026-02-22");
 
       expect(result).toBe(true);
       expect(mockFrom).toHaveBeenCalledWith("seen_receipts");
@@ -118,10 +112,7 @@ describe("seen-receipt-service", () => {
       });
       mockFrom.mockReturnValue(upsertMock);
 
-      const result = await recordSeenReceipts(
-        ["user-002"],
-        "2026-02-22",
-      );
+      const result = await recordSeenReceipts(["user-002"], "2026-02-22");
 
       expect(result).toBe(false);
     });

@@ -168,7 +168,10 @@ describe("InviteModal", () => {
       expect(writeText).toHaveBeenCalled();
     });
 
-    expect(mockShowToast).toHaveBeenCalledWith("Invite link copied!", "success");
+    expect(mockShowToast).toHaveBeenCalledWith(
+      "Invite link copied!",
+      "success",
+    );
   });
 
   it("should show error toast when share code generation fails", async () => {

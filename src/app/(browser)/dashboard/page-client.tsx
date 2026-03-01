@@ -6,7 +6,10 @@ import { useCallback } from "react";
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { useToast } from "@/components/providers/toast-provider";
 import { sendPulse } from "@/lib/services/pulse-service";
-import type { ConnectionRequestWithProfile, DashboardConnection } from "@/lib/types/connection";
+import type {
+  ConnectionRequestWithProfile,
+  DashboardConnection,
+} from "@/lib/types/connection";
 import type { DashboardSeat } from "@/lib/types/seat";
 
 interface BrowserDashboardClientProps {

@@ -1,4 +1,4 @@
-import { type Page, type Locator, expect } from '@playwright/test';
+import { type Page, type Locator, expect } from "@playwright/test";
 
 export class ForgotPasswordPage {
   readonly page: Page;
@@ -9,14 +9,16 @@ export class ForgotPasswordPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.emailInput = page.locator('#forgot-email');
+    this.emailInput = page.locator("#forgot-email");
     this.submitButton = page.locator('button[type="submit"]');
     this.successMessage = page.getByText(/check your email/i);
-    this.backToLoginLink = page.getByRole('link', { name: /back to login|login/i });
+    this.backToLoginLink = page.getByRole("link", {
+      name: /back to login|login/i,
+    });
   }
 
   async goto() {
-    await this.page.goto('/auth/forgot-password');
+    await this.page.goto("/auth/forgot-password");
   }
 
   async submitEmail(email: string) {

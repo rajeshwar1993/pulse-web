@@ -12,22 +12,22 @@
  * 8. profiles (FK → auth.users)
  * 9. auth.users (via Admin API)
  */
-import { getAdmin } from './client';
-import { deleteAllSeenReceipts } from './seen-receipts';
-import { deleteAllSurveys } from './surveys';
-import { deleteAllPulses } from './pulses';
-import { deleteAllConnectionRequests } from './connection-requests';
-import { deleteAllInviteCodes } from './invites';
-import { deleteAllConnections } from './connections';
-import { deleteAllSeats } from './seats';
-import { deleteAllProfiles } from './profiles';
-import { deleteAllAuthUsers } from './auth';
+import { getAdmin } from "./client";
+import { deleteAllSeenReceipts } from "./seen-receipts";
+import { deleteAllSurveys } from "./surveys";
+import { deleteAllPulses } from "./pulses";
+import { deleteAllConnectionRequests } from "./connection-requests";
+import { deleteAllInviteCodes } from "./invites";
+import { deleteAllConnections } from "./connections";
+import { deleteAllSeats } from "./seats";
+import { deleteAllProfiles } from "./profiles";
+import { deleteAllAuthUsers } from "./auth";
 
 async function deleteAllConnectionHistory(): Promise<void> {
   const { error } = await getAdmin()
-    .from('connection_history')
+    .from("connection_history")
     .delete()
-    .neq('user_a_id', '00000000-0000-0000-0000-000000000000');
+    .neq("user_a_id", "00000000-0000-0000-0000-000000000000");
   if (error) console.warn(`[wipe] connection_history: ${error.message}`);
 }
 
@@ -36,7 +36,7 @@ async function deleteAllConnectionHistory(): Promise<void> {
  * Call this in global-setup before creating seed users.
  */
 export async function wipeAllData(): Promise<void> {
-  console.log('[wipe] Deleting all data from all tables...');
+  console.log("[wipe] Deleting all data from all tables...");
 
   // Delete in FK-safe order (children first)
   await deleteAllSeenReceipts();
@@ -50,5 +50,5 @@ export async function wipeAllData(): Promise<void> {
   await deleteAllProfiles();
   await deleteAllAuthUsers();
 
-  console.log('[wipe] All data wiped successfully.');
+  console.log("[wipe] All data wiped successfully.");
 }

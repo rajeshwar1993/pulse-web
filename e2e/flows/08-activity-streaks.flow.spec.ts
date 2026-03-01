@@ -1,11 +1,11 @@
-import { test, expect } from '@playwright/test';
-import { TEST_USER_A } from '../config';
-import { ActivityPage } from '../pages/activity.page';
-import { getUserIdByEmail } from '../admin/auth';
-import { insertPulseAt, deleteUserPulses } from '../admin/pulses';
+import { test, expect } from "@playwright/test";
+import { TEST_USER_A } from "../config";
+import { ActivityPage } from "../pages/activity.page";
+import { getUserIdByEmail } from "../admin/auth";
+import { insertPulseAt, deleteUserPulses } from "../admin/pulses";
 
-test.describe('08 — Activity & Streaks Flow', () => {
-  test.describe.configure({ mode: 'serial' });
+test.describe("08 — Activity & Streaks Flow", () => {
+  test.describe.configure({ mode: "serial" });
 
   let userAId: string;
 
@@ -27,8 +27,11 @@ test.describe('08 — Activity & Streaks Flow', () => {
     await deleteUserPulses(userAId);
   });
 
-  test('activity page renders all sections', async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name === 'mobile-chrome', 'Browser route — desktop only');
+  test("activity page renders all sections", async ({ page }, testInfo) => {
+    test.skip(
+      testInfo.project.name === "mobile-chrome",
+      "Browser route — desktop only",
+    );
     const activity = new ActivityPage(page);
     await activity.gotoBrowser();
 
@@ -41,8 +44,11 @@ test.describe('08 — Activity & Streaks Flow', () => {
     await expect(page.getByText(/total pulses/i)).toBeVisible();
   });
 
-  test('total pulses count is correct', async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name === 'mobile-chrome', 'Browser route — desktop only');
+  test("total pulses count is correct", async ({ page }, testInfo) => {
+    test.skip(
+      testInfo.project.name === "mobile-chrome",
+      "Browser route — desktop only",
+    );
     const activity = new ActivityPage(page);
     await activity.gotoBrowser();
 
@@ -51,12 +57,17 @@ test.describe('08 — Activity & Streaks Flow', () => {
     const totalPulsesLabel = page.getByText(/total pulses/i);
     await expect(totalPulsesLabel).toBeVisible();
     // The count is a sibling <p> in the same card container
-    const card = totalPulsesLabel.locator('..');
-    await expect(card.getByText('5')).toBeVisible();
+    const card = totalPulsesLabel.locator("..");
+    await expect(card.getByText("5")).toBeVisible();
   });
 
-  test('appview activity page renders correctly', async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name === 'chromium', 'Appview route — mobile only');
+  test("appview activity page renders correctly", async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      testInfo.project.name === "chromium",
+      "Appview route — mobile only",
+    );
     const activity = new ActivityPage(page);
     await activity.goto();
 

@@ -117,9 +117,7 @@ export const PasswordTooShort: Story = {
       });
       await userEvent.click(submitButton);
 
-      await waitFor(() =>
-        expect(canvas.getByRole("alert")).toBeVisible(),
-      );
+      await waitFor(() => expect(canvas.getByRole("alert")).toBeVisible());
     });
   },
 };

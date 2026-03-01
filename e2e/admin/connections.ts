@@ -4,7 +4,7 @@
  * The connections table uses canonical UUID ordering:
  * user_a_id < user_b_id (single row per relationship).
  */
-import { getAdmin } from './client';
+import { getAdmin } from "./client";
 
 /**
  * Compute canonical ordering for two user IDs.
@@ -21,7 +21,7 @@ export async function createConnection(
   userId2: string,
 ): Promise<void> {
   const [a, b] = canonical(userId1, userId2);
-  const { error } = await getAdmin().from('connections').insert({
+  const { error } = await getAdmin().from("connections").insert({
     user_a_id: a,
     user_b_id: b,
   });
@@ -33,10 +33,10 @@ export async function createConnection(
  */
 export async function getActiveConnections(userId: string) {
   const { data, error } = await getAdmin()
-    .from('connections')
-    .select('*')
+    .from("connections")
+    .select("*")
     .or(`user_a_id.eq.${userId},user_b_id.eq.${userId}`)
-    .is('removed_at', null);
+    .is("removed_at", null);
   if (error) throw new Error(`Failed to get connections: ${error.message}`);
   return data;
 }
@@ -46,7 +46,7 @@ export async function getActiveConnections(userId: string) {
  */
 export async function deleteUserConnections(userId: string): Promise<void> {
   const { error } = await getAdmin()
-    .from('connections')
+    .from("connections")
     .delete()
     .or(`user_a_id.eq.${userId},user_b_id.eq.${userId}`);
   if (error) throw new Error(`Failed to delete connections: ${error.message}`);
@@ -57,8 +57,9 @@ export async function deleteUserConnections(userId: string): Promise<void> {
  */
 export async function deleteAllConnections(): Promise<void> {
   const { error } = await getAdmin()
-    .from('connections')
+    .from("connections")
     .delete()
-    .neq('user_a_id', '00000000-0000-0000-0000-000000000000');
-  if (error) throw new Error(`Failed to delete all connections: ${error.message}`);
+    .neq("user_a_id", "00000000-0000-0000-0000-000000000000");
+  if (error)
+    throw new Error(`Failed to delete all connections: ${error.message}`);
 }

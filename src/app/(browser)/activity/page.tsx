@@ -36,10 +36,9 @@ export default async function BrowserActivityPage() {
   );
   const longestStreak: number = profile.longest_streak;
 
-  const { data: pulseCalendarData } = await supabase.rpc(
-    "get_pulse_calendar",
-    { p_days: 30 },
-  );
+  const { data: pulseCalendarData } = await supabase.rpc("get_pulse_calendar", {
+    p_days: 30,
+  });
   const pulsedDates: string[] = pulseCalendarData ?? [];
 
   const { count: totalPulses } = await supabase

@@ -163,10 +163,7 @@ describe("StreakCard", () => {
 
     it("should mark missed days with red border", () => {
       const { container } = render(
-        <StreakCard
-          {...baseProps}
-          pulsedDates={["2026-02-26"]}
-        />,
+        <StreakCard {...baseProps} pulsedDates={["2026-02-26"]} />,
       );
 
       // startDate = 2026-02-18, dot at index 0 = 2026-02-18 → missed (not in pulsedDates)
@@ -174,7 +171,9 @@ describe("StreakCard", () => {
       expect(dot0?.getAttribute("data-dot-state")).toBe("missed");
 
       // Check it has the red border class
-      const missedCircle = dot0?.querySelector(".border-\\[var\\(--error\\)\\]");
+      const missedCircle = dot0?.querySelector(
+        ".border-\\[var\\(--error\\)\\]",
+      );
       expect(missedCircle).not.toBeNull();
     });
 
@@ -199,9 +198,15 @@ describe("StreakCard", () => {
       const { container } = render(<StreakCard {...baseProps} />);
 
       // Future dots are at indices 9, 10, 11
-      const dot9 = container.querySelector('[data-testid="dot-9"]') as HTMLElement;
-      const dot10 = container.querySelector('[data-testid="dot-10"]') as HTMLElement;
-      const dot11 = container.querySelector('[data-testid="dot-11"]') as HTMLElement;
+      const dot9 = container.querySelector(
+        '[data-testid="dot-9"]',
+      ) as HTMLElement;
+      const dot10 = container.querySelector(
+        '[data-testid="dot-10"]',
+      ) as HTMLElement;
+      const dot11 = container.querySelector(
+        '[data-testid="dot-11"]',
+      ) as HTMLElement;
 
       expect(dot9.style.opacity).toBe("0.9");
       expect(dot10.style.opacity).toBe("0.8");
@@ -222,8 +227,13 @@ describe("StreakCard", () => {
 
       const expected = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.1, 0.1];
       for (let i = 1; i <= 11; i++) {
-        const dot = container.querySelector(`[data-testid="dot-${i}"]`) as HTMLElement;
-        expect(Number.parseFloat(dot.style.opacity)).toBeCloseTo(expected[i - 1], 5);
+        const dot = container.querySelector(
+          `[data-testid="dot-${i}"]`,
+        ) as HTMLElement;
+        expect(Number.parseFloat(dot.style.opacity)).toBeCloseTo(
+          expected[i - 1],
+          5,
+        );
       }
     });
 
@@ -254,11 +264,7 @@ describe("StreakCard", () => {
       const { container } = render(
         <StreakCard
           {...baseProps}
-          pulsedDates={[
-            "2026-02-24",
-            "2026-02-25",
-            "2026-02-26",
-          ]}
+          pulsedDates={["2026-02-24", "2026-02-25", "2026-02-26"]}
         />,
       );
 
@@ -273,10 +279,7 @@ describe("StreakCard", () => {
 
     it("should use grey line when one dot is missed", () => {
       const { container } = render(
-        <StreakCard
-          {...baseProps}
-          pulsedDates={["2026-02-26"]}
-        />,
+        <StreakCard {...baseProps} pulsedDates={["2026-02-26"]} />,
       );
 
       // Segment between index 0 (missed) and index 1 (missed) → grey

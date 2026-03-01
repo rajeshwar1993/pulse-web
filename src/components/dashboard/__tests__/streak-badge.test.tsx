@@ -3,29 +3,27 @@ import { describe, expect, it, vi } from "vitest";
 import { StreakBadge } from "../streak-badge";
 
 vi.mock("next-intl", () => ({
-  useTranslations:
-    () =>
-    (key: string, params?: Record<string, unknown>) => {
-      const translations: Record<string, string> = {
-        days: "{count, plural, =0 {days} =1 {day} other {days}}",
-        keepGoing: "Keep the streak alive!",
-        startStreak: "Pulse daily to start a streak",
-        best: "Best",
-      };
-      let result = translations[key] || key;
-      if (params?.count !== undefined) {
-        const count = Number(params.count);
-        if (key === "days") {
-          return count === 1 ? "day" : "days";
-        }
+  useTranslations: () => (key: string, params?: Record<string, unknown>) => {
+    const translations: Record<string, string> = {
+      days: "{count, plural, =0 {days} =1 {day} other {days}}",
+      keepGoing: "Keep the streak alive!",
+      startStreak: "Pulse daily to start a streak",
+      best: "Best",
+    };
+    let result = translations[key] || key;
+    if (params?.count !== undefined) {
+      const count = Number(params.count);
+      if (key === "days") {
+        return count === 1 ? "day" : "days";
       }
-      if (params) {
-        for (const [k, v] of Object.entries(params)) {
-          result = result.replace(`{${k}}`, String(v));
-        }
+    }
+    if (params) {
+      for (const [k, v] of Object.entries(params)) {
+        result = result.replace(`{${k}}`, String(v));
       }
-      return result;
-    },
+    }
+    return result;
+  },
 }));
 
 describe("StreakBadge", () => {
@@ -51,9 +49,7 @@ describe("StreakBadge", () => {
     it("should show motivational message when streak is active", () => {
       render(<StreakBadge currentStreak={3} longestStreak={5} />);
 
-      expect(
-        screen.getByText("Keep the streak alive!"),
-      ).toBeInTheDocument();
+      expect(screen.getByText("Keep the streak alive!")).toBeInTheDocument();
     });
 
     it("should show flame emoji when streak is active", () => {
@@ -70,9 +66,7 @@ describe("StreakBadge", () => {
         <StreakBadge currentStreak={5} longestStreak={10} />,
       );
 
-      const gradientCircle = container.querySelector(
-        ".bg-gradient-to-br",
-      );
+      const gradientCircle = container.querySelector(".bg-gradient-to-br");
       expect(gradientCircle).toBeInTheDocument();
     });
 

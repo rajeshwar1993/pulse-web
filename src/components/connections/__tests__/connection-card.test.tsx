@@ -66,9 +66,7 @@ describe("ConnectionCard (Connections page)", () => {
     it("should render remove button", () => {
       render(<ConnectionCard connection={baseConnection} onRemove={vi.fn()} />);
 
-      expect(
-        screen.getByText("Remove Connection"),
-      ).toBeInTheDocument();
+      expect(screen.getByText("Remove Connection")).toBeInTheDocument();
     });
   });
 
@@ -113,7 +111,9 @@ describe("ConnectionCard (Connections page)", () => {
       const user = userEvent.setup();
       const onRemove = vi.fn();
 
-      render(<ConnectionCard connection={baseConnection} onRemove={onRemove} />);
+      render(
+        <ConnectionCard connection={baseConnection} onRemove={onRemove} />,
+      );
 
       await user.click(screen.getByText("Remove Connection"));
 

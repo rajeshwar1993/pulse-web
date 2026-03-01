@@ -196,11 +196,7 @@ export function InviteModal({ onClose, seatId }: InviteModalProps) {
                 if (e.key === "Enter") handleSendEmail();
               }}
             />
-            <Button
-              onClick={handleSendEmail}
-              loading={emailSending}
-              size="md"
-            >
+            <Button onClick={handleSendEmail} loading={emailSending} size="md">
               {t("sendRequest")}
             </Button>
           </div>
