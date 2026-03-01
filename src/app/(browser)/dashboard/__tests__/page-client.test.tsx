@@ -5,8 +5,9 @@ import { BrowserDashboardClient } from "../page-client";
 // --- Mocks ---
 
 const mockRefresh = vi.fn();
+const mockRouter = { refresh: mockRefresh };
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ refresh: mockRefresh }),
+  useRouter: () => mockRouter,
 }));
 
 const mockShowToast = vi.fn();
@@ -36,6 +37,23 @@ const mockSendPulse = vi.fn<() => Promise<boolean>>();
 vi.mock("@/lib/services/pulse-service", () => ({
   sendPulse: () => mockSendPulse(),
 }));
+
+// Mock useTransition to avoid scheduler issues with fake timers.
+// React's scheduler uses MessageChannel (not intercepted by fake timers),
+// causing act() to hang waiting for the transition to complete.
+vi.mock("react", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("react")>();
+  // Stable reference so useEffect dependency doesn't change between renders
+  const stableStartTransition = (fn: () => void) => fn();
+  return {
+    ...actual,
+    useTransition: () =>
+      [false, stableStartTransition] as [
+        boolean,
+        (fn: () => void) => void,
+      ],
+  };
+});
 
 // Mock framer-motion: render children synchronously, track onExitComplete
 let exitCompleteCallback: (() => void) | undefined;
@@ -181,7 +199,24 @@ describe("BrowserDashboardClient – pulse overlay", () => {
     expect(screen.getByText(/Test wisdom phrase/)).toBeInTheDocument();
   });
 
-  it("should show success toast and refresh after overlay exit on success", async () => {
+  it("should call router.refresh during overlay display on success", async () => {
+    mockSendPulse.mockResolvedValue(true);
+
+    render(<BrowserDashboardClient {...baseProps} />);
+
+    await act(async () => {
+      screen.getByTestId("pulse-btn").click();
+    });
+
+    // Let promise resolve — refresh should be triggered immediately
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(mockRefresh).toHaveBeenCalledOnce();
+  });
+
+  it("should show success toast after overlay exit on success", async () => {
     mockSendPulse.mockResolvedValue(true);
 
     render(<BrowserDashboardClient {...baseProps} />);
@@ -206,7 +241,6 @@ describe("BrowserDashboardClient – pulse overlay", () => {
     });
 
     expect(mockShowToast).toHaveBeenCalledWith("Pulse sent!", "success");
-    expect(mockRefresh).toHaveBeenCalledOnce();
   });
 
   it("should show info toast without refresh after overlay exit on failure", async () => {

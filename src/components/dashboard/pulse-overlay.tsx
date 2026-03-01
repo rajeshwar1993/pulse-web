@@ -10,16 +10,20 @@ interface PulseOverlayProps {
   isOpen: boolean;
   onComplete: (success: boolean) => void;
   pulseResult: Promise<boolean> | null;
+  dashboardReady?: boolean;
 }
 
 export function PulseOverlay({
   isOpen,
   onComplete,
   pulseResult,
+  dashboardReady,
 }: PulseOverlayProps) {
   const tWisdom = useTranslations("wisdom");
   const tWisdomRef = useRef(tWisdom);
   tWisdomRef.current = tWisdom;
+  const dashboardReadyRef = useRef(dashboardReady ?? true);
+  dashboardReadyRef.current = dashboardReady ?? true;
   const [wisdomText, setWisdomText] = useState<string | null>(null);
   const [shouldExit, setShouldExit] = useState(false);
   const successRef = useRef(false);
@@ -52,21 +56,21 @@ export function PulseOverlay({
       setWisdomText(phrase);
     }, 1500);
 
-    // Ready to exit at 4s, but only if sendPulse has resolved
+    // Ready to exit at 4s, but only if sendPulse has resolved and dashboard is ready
     const exitTimer = setTimeout(() => {
       if (cancelled) return;
       readyToExitRef.current = true;
-      if (pulseResolvedRef.current) {
+      if (pulseResolvedRef.current && dashboardReadyRef.current) {
         setShouldExit(true);
       }
     }, 4000);
 
-    // Track pulse resolution; exit immediately if 4s already passed
+    // Track pulse resolution; exit immediately if 4s already passed and dashboard is ready
     pulseResult.then((success) => {
       if (cancelled) return;
       successRef.current = success;
       pulseResolvedRef.current = true;
-      if (readyToExitRef.current) {
+      if (readyToExitRef.current && dashboardReadyRef.current) {
         setShouldExit(true);
       }
     });
@@ -77,6 +81,17 @@ export function PulseOverlay({
       clearTimeout(exitTimer);
     };
   }, [isOpen, pulseResult]);
+
+  // When dashboardReady transitions to true after other conditions are already met
+  useEffect(() => {
+    if (
+      (dashboardReady ?? true) &&
+      readyToExitRef.current &&
+      pulseResolvedRef.current
+    ) {
+      setShouldExit(true);
+    }
+  }, [dashboardReady]);
 
   const handleExitComplete = () => {
     onComplete(successRef.current);

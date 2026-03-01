@@ -250,6 +250,47 @@ describe("PulseOverlay", () => {
     expect(onComplete).toHaveBeenCalledWith(true);
   });
 
+  it("should wait for dashboardReady before exiting", async () => {
+    const pulseResult = Promise.resolve(true);
+
+    const { container, rerender } = render(
+      <PulseOverlay
+        isOpen={true}
+        onComplete={vi.fn()}
+        pulseResult={pulseResult}
+        dashboardReady={false}
+      />,
+    );
+
+    // Let promise resolve
+    await act(async () => {
+      await pulseResult;
+    });
+
+    // Advance past 4s — overlay should still be visible (dashboardReady blocks exit)
+    await act(async () => {
+      vi.advanceTimersByTime(4100);
+    });
+
+    expect(container.querySelector(".animate-heartbeat")).toBeInTheDocument();
+
+    // Now set dashboardReady to true — overlay should exit
+    rerender(
+      <PulseOverlay
+        isOpen={true}
+        onComplete={vi.fn()}
+        pulseResult={pulseResult}
+        dashboardReady={true}
+      />,
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(container.querySelector(".animate-heartbeat")).not.toBeInTheDocument();
+  });
+
   it("should call onComplete with success=false when pulse fails", async () => {
     const onComplete = vi.fn();
     const pulseResult = Promise.resolve(false);

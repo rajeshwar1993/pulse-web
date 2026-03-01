@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { PulseOverlay } from "@/components/dashboard/pulse-overlay";
 import { useToast } from "@/components/providers/toast-provider";
@@ -46,25 +46,48 @@ export function BrowserDashboardClient({
   const [showPulseOverlay, setShowPulseOverlay] = useState(false);
   const [pulseResultPromise, setPulseResultPromise] =
     useState<Promise<boolean> | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const [refreshStarted, setRefreshStarted] = useState(false);
+
+  // Trigger router.refresh() as soon as pulse resolves (while overlay is still visible)
+  useEffect(() => {
+    if (!pulseResultPromise) return;
+    let cancelled = false;
+    pulseResultPromise.then((success) => {
+      if (cancelled) return;
+      setRefreshStarted(true);
+      if (success) {
+        startTransition(() => {
+          router.refresh();
+        });
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [pulseResultPromise, router, startTransition]);
+
+  const dashboardReady = refreshStarted && !isPending;
 
   const handlePulse = useCallback(async () => {
     const promise = sendPulse();
     setPulseResultPromise(promise);
     setShowPulseOverlay(true);
+    setRefreshStarted(false);
   }, []);
 
   const handleOverlayComplete = useCallback(
     (success: boolean) => {
       setShowPulseOverlay(false);
       setPulseResultPromise(null);
+      setRefreshStarted(false);
       if (success) {
         showToast(t("sent"), "success");
-        router.refresh();
       } else {
         showToast(t("alreadySent"), "info");
       }
     },
-    [showToast, t, router],
+    [showToast, t],
   );
 
   return (
@@ -73,6 +96,7 @@ export function BrowserDashboardClient({
         isOpen={showPulseOverlay}
         onComplete={handleOverlayComplete}
         pulseResult={pulseResultPromise}
+        dashboardReady={dashboardReady}
       />
       <DashboardContent
         displayName={displayName}
