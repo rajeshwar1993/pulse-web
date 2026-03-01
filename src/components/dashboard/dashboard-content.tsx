@@ -164,11 +164,11 @@ export function DashboardContent({
         <PendingRequestsBanner pendingRequests={pendingRequests} />
       )}
 
-      {/* Pulse Button (browser only, when not pulsed) */}
-      {!isActive && onPulse && <PulseButton onPulse={onPulse} />}
-
       {/* Status Card */}
       <StatusCard isActive={isActive} pulseTime={pulseTime} />
+
+      {/* Pulse Button (browser only, when not pulsed) */}
+      {!isActive && onPulse && <PulseButton onPulse={onPulse} />}
 
       {/* Streak Card */}
       <StreakCard
