@@ -42,18 +42,14 @@ describe("StatusCard", () => {
       expect(screen.getByText(/2 hours ago/)).toBeInTheDocument();
     });
 
-    it("should show green indicator for active state", () => {
+    it("should show white indicator for active state", () => {
       const pulseTime = new Date();
 
-      const { container } = render(
-        <StatusCard isActive={true} pulseTime={pulseTime} />,
-      );
+      render(<StatusCard isActive={true} pulseTime={pulseTime} />);
 
-      // Check for green background color (var(--green))
-      const greenIndicator = container.querySelector(
-        ".bg-\\[var\\(--green\\)\\]",
-      );
-      expect(greenIndicator).toBeInTheDocument();
+      const indicator = screen.getByTestId("status-indicator");
+      expect(indicator).toBeInTheDocument();
+      expect(indicator).toHaveClass("bg-white");
     });
 
     it("should show checkmark icon for active state", () => {
@@ -93,16 +89,12 @@ describe("StatusCard", () => {
       ).toBeInTheDocument();
     });
 
-    it("should show grey indicator for inactive state", () => {
-      const { container } = render(
-        <StatusCard isActive={false} pulseTime={null} />,
-      );
+    it("should show translucent indicator for inactive state", () => {
+      render(<StatusCard isActive={false} pulseTime={null} />);
 
-      // Check for grey background color (var(--slate-300))
-      const greyIndicator = container.querySelector(
-        ".bg-\\[var\\(--slate-300\\)\\]",
-      );
-      expect(greyIndicator).toBeInTheDocument();
+      const indicator = screen.getByTestId("status-indicator");
+      expect(indicator).toBeInTheDocument();
+      expect(indicator).toHaveClass("bg-white/30");
     });
 
     it("should show clock icon for inactive state", () => {
@@ -140,14 +132,12 @@ describe("StatusCard", () => {
       expect(screen.getByText("Your Status")).toBeInTheDocument();
     });
 
-    it("should have white background and border", () => {
-      const { container } = render(
-        <StatusCard isActive={false} pulseTime={null} />,
-      );
+    it("should have gradient background", () => {
+      render(<StatusCard isActive={false} pulseTime={null} />);
 
-      const card = container.querySelector(".bg-white");
+      const card = screen.getByTestId("status-card");
       expect(card).toBeInTheDocument();
-      expect(card).toHaveClass("border");
+      expect(card).toHaveClass("bg-gradient-to-r");
     });
   });
 });

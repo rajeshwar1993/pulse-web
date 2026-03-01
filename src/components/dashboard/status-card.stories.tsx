@@ -5,10 +5,21 @@ const meta = {
   title: "Dashboard/StatusCard",
   component: StatusCard,
   tags: ["autodocs"],
+  decorators: [
+    (Story) => (
+      <div className="bg-[var(--off-white)] p-6 max-w-md">
+        <Story />
+      </div>
+    ),
+  ],
   argTypes: {
     isActive: {
       control: "boolean",
       description: "Whether the user has an active pulse today",
+    },
+    pulseTime: {
+      control: "date",
+      description: "The timestamp when the user pulsed",
     },
   },
 } satisfies Meta<typeof StatusCard>;
