@@ -35,7 +35,6 @@ export default async function Dashboard() {
           pulseTime={data.pulseTime}
           seats={data.seats}
           connections={data.connections}
-          showWisdom={data.isActive}
           missedPulseDate={data.missedPulseDate}
           pendingRequests={data.pendingRequests}
           currentStreak={data.currentStreak}

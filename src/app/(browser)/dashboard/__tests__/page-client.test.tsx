@@ -1,5 +1,4 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { act, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { BrowserDashboardClient } from "../page-client";
 
@@ -23,9 +22,15 @@ vi.mock("next-intl", () => ({
       sent: "Pulse sent!",
       alreadySent: "You've already pulsed today",
       sendingOverlay: "Sending your pulse...",
+      count: "60",
+      "phrases.0": "Test wisdom phrase",
     };
     return translations[key] || key;
   },
+}));
+
+vi.mock("@/lib/services/wisdom-service", () => ({
+  getRandomWisdomIndex: () => 0,
 }));
 
 const mockSendPulse = vi.fn<() => Promise<boolean>>();
@@ -124,8 +129,12 @@ describe("BrowserDashboardClient – pulse overlay", () => {
     expect(screen.getByText("Sending your pulse...")).toBeInTheDocument();
   });
 
-  it("should hide overlay after sendPulse resolves and 3s elapse", async () => {
-    mockSendPulse.mockResolvedValue(true);
+  it("should show wisdom after pulseResult resolves then exit after 3s", async () => {
+    let resolvePromise: (value: boolean) => void;
+    const promise = new Promise<boolean>((resolve) => {
+      resolvePromise = resolve;
+    });
+    mockSendPulse.mockReturnValue(promise);
 
     render(<BrowserDashboardClient {...baseProps} />);
 
@@ -135,15 +144,43 @@ describe("BrowserDashboardClient – pulse overlay", () => {
 
     expect(screen.getByText("Sending your pulse...")).toBeInTheDocument();
 
-    // Advance past the 3-second minimum
+    // Resolve the pulse
+    await act(async () => {
+      resolvePromise!(true);
+      await promise;
+    });
+
+    // Wisdom should be shown
+    expect(screen.getByText(/Test wisdom phrase/)).toBeInTheDocument();
+
+    // Advance 3s — overlay should exit
     await act(async () => {
       vi.advanceTimersByTime(3100);
     });
 
-    // Overlay should be gone (isOpen=false, mock AnimatePresence removes children)
-    expect(
-      screen.queryByText("Sending your pulse..."),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/Test wisdom phrase/)).not.toBeInTheDocument();
+  });
+
+  it("should show wisdom after 1.5s even if pulseResult is slow", async () => {
+    mockSendPulse.mockImplementation(
+      () => new Promise((resolve) => setTimeout(() => resolve(true), 10000)),
+    );
+
+    render(<BrowserDashboardClient {...baseProps} />);
+
+    await act(async () => {
+      screen.getByTestId("pulse-btn").click();
+    });
+
+    expect(screen.getByText("Sending your pulse...")).toBeInTheDocument();
+
+    // Advance past 1.5s
+    await act(async () => {
+      vi.advanceTimersByTime(1600);
+    });
+
+    // Wisdom should appear
+    expect(screen.getByText(/Test wisdom phrase/)).toBeInTheDocument();
   });
 
   it("should show success toast and refresh after overlay exit on success", async () => {
@@ -155,6 +192,12 @@ describe("BrowserDashboardClient – pulse overlay", () => {
       screen.getByTestId("pulse-btn").click();
     });
 
+    // Let promise resolve
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    // Advance past 3s fade-out
     await act(async () => {
       vi.advanceTimersByTime(3100);
     });
@@ -177,6 +220,12 @@ describe("BrowserDashboardClient – pulse overlay", () => {
       screen.getByTestId("pulse-btn").click();
     });
 
+    // Let promise resolve
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    // Advance past 3s fade-out
     await act(async () => {
       vi.advanceTimersByTime(3100);
     });
@@ -191,61 +240,5 @@ describe("BrowserDashboardClient – pulse overlay", () => {
       "info",
     );
     expect(mockRefresh).not.toHaveBeenCalled();
-  });
-
-  it("should wait for 3s minimum even if sendPulse resolves instantly", async () => {
-    mockSendPulse.mockResolvedValue(true);
-
-    render(<BrowserDashboardClient {...baseProps} />);
-
-    await act(async () => {
-      screen.getByTestId("pulse-btn").click();
-    });
-
-    // sendPulse resolved instantly, but only 1s has passed
-    await act(async () => {
-      vi.advanceTimersByTime(1000);
-    });
-
-    // Overlay should still be visible
-    expect(screen.getByText("Sending your pulse...")).toBeInTheDocument();
-
-    // Advance remaining time
-    await act(async () => {
-      vi.advanceTimersByTime(2100);
-    });
-
-    expect(
-      screen.queryByText("Sending your pulse..."),
-    ).not.toBeInTheDocument();
-  });
-
-  it("should wait for slow sendPulse even after 3s", async () => {
-    // sendPulse takes 5 seconds
-    mockSendPulse.mockImplementation(
-      () => new Promise((resolve) => setTimeout(() => resolve(true), 5000)),
-    );
-
-    render(<BrowserDashboardClient {...baseProps} />);
-
-    await act(async () => {
-      screen.getByTestId("pulse-btn").click();
-    });
-
-    // After 3 seconds, overlay should still show (sendPulse hasn't resolved)
-    await act(async () => {
-      vi.advanceTimersByTime(3100);
-    });
-
-    expect(screen.getByText("Sending your pulse...")).toBeInTheDocument();
-
-    // After 5 seconds total, sendPulse resolves and overlay dismisses
-    await act(async () => {
-      vi.advanceTimersByTime(2000);
-    });
-
-    expect(
-      screen.queryByText("Sending your pulse..."),
-    ).not.toBeInTheDocument();
   });
 });

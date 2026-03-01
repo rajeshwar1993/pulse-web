@@ -25,7 +25,6 @@ import { PendingRequestsBanner } from "./pending-requests-banner";
 import { PulseButton } from "./pulse-button";
 import { StatusCard } from "./status-card";
 import { StreakCard } from "./streak-card";
-import { WisdomCard } from "./wisdom-card";
 
 interface DashboardContentProps {
   displayName: string;
@@ -34,7 +33,6 @@ interface DashboardContentProps {
   seats: DashboardSeat[];
   /** Derived from occupied seats for useSeenReceipts */
   connections: DashboardConnection[];
-  showWisdom?: boolean;
   onPulse?: () => Promise<void>;
   missedPulseDate?: string | null;
   pendingRequests?: ConnectionRequestWithProfile[];
@@ -50,7 +48,6 @@ interface DashboardContentProps {
  * Client-side wrapper for the Dashboard page.
  * Handles:
  * - window.isReady signal to Flutter
- * - Interactive components (WisdomCard)
  * - Dynamic greeting based on time of day
  */
 export function DashboardContent({
@@ -59,7 +56,6 @@ export function DashboardContent({
   pulseTime,
   seats,
   connections,
-  showWisdom = true,
   onPulse,
   missedPulseDate,
   pendingRequests,
@@ -74,7 +70,6 @@ export function DashboardContent({
   const router = useRouter();
   const { showToast } = useToast();
   useSeenReceipts(connections);
-  const [showWisdomCard, setShowWisdomCard] = useState(showWisdom);
   const [showMissedPulseSurvey, setShowMissedPulseSurvey] = useState(
     !!missedPulseDate,
   );
@@ -167,15 +162,6 @@ export function DashboardContent({
       {/* Pending Connection Requests */}
       {pendingRequests && pendingRequests.length > 0 && (
         <PendingRequestsBanner pendingRequests={pendingRequests} />
-      )}
-
-      {/* Wisdom Card (conditional) */}
-      {showWisdomCard && (
-        <WisdomCard
-          autoDismiss={true}
-          dismissDelay={3000}
-          onDismiss={() => setShowWisdomCard(false)}
-        />
       )}
 
       {/* Pulse Button (browser only, when not pulsed) */}

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { PulseOverlay } from "@/components/dashboard/pulse-overlay";
 import { useToast } from "@/components/providers/toast-provider";
@@ -44,32 +44,35 @@ export function BrowserDashboardClient({
   const { showToast } = useToast();
   const t = useTranslations("pulse");
   const [showPulseOverlay, setShowPulseOverlay] = useState(false);
-  const pulseSuccessRef = useRef(false);
+  const [pulseResultPromise, setPulseResultPromise] =
+    useState<Promise<boolean> | null>(null);
 
   const handlePulse = useCallback(async () => {
+    const promise = sendPulse();
+    setPulseResultPromise(promise);
     setShowPulseOverlay(true);
-    const [success] = await Promise.all([
-      sendPulse(),
-      new Promise((r) => setTimeout(r, 3000)),
-    ]);
-    pulseSuccessRef.current = success;
-    setShowPulseOverlay(false);
   }, []);
 
-  const handleOverlayComplete = useCallback(() => {
-    if (pulseSuccessRef.current) {
-      showToast(t("sent"), "success");
-      router.refresh();
-    } else {
-      showToast(t("alreadySent"), "info");
-    }
-  }, [showToast, t, router]);
+  const handleOverlayComplete = useCallback(
+    (success: boolean) => {
+      setShowPulseOverlay(false);
+      setPulseResultPromise(null);
+      if (success) {
+        showToast(t("sent"), "success");
+        router.refresh();
+      } else {
+        showToast(t("alreadySent"), "info");
+      }
+    },
+    [showToast, t, router],
+  );
 
   return (
     <>
       <PulseOverlay
         isOpen={showPulseOverlay}
         onComplete={handleOverlayComplete}
+        pulseResult={pulseResultPromise}
       />
       <DashboardContent
         displayName={displayName}
@@ -77,7 +80,6 @@ export function BrowserDashboardClient({
         pulseTime={pulseTime}
         seats={seats}
         connections={connections}
-        showWisdom={isActive}
         onPulse={handlePulse}
         missedPulseDate={missedPulseDate}
         pendingRequests={pendingRequests}

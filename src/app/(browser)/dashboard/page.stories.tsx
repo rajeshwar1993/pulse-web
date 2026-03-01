@@ -38,7 +38,6 @@ function BrowserDashboardStory({
       pulseTime={pulseTime}
       seats={seats}
       connections={connections}
-      showWisdom={isActive}
       currentStreak={currentStreak}
       pulsedDates={pulsedDates}
       totalDays={totalDays}

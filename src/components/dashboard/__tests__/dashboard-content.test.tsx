@@ -3,13 +3,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DashboardContent } from "../dashboard-content";
 
 // Mock child components to isolate unit tests
-vi.mock("../wisdom-card", () => ({
-  // biome-ignore lint/suspicious/noExplicitAny: test mock props
-  WisdomCard: (props: any) => (
-    <div data-testid="wisdom-card" data-auto-dismiss={props.autoDismiss} />
-  ),
-}));
-
 vi.mock("../status-card", () => ({
   // biome-ignore lint/suspicious/noExplicitAny: test mock props
   StatusCard: (props: any) => (
@@ -139,20 +132,6 @@ describe("DashboardContent", () => {
     render(<DashboardContent {...baseProps} isActive={false} />);
 
     expect(screen.getByText("Welcome back!")).toBeInTheDocument();
-  });
-
-  it("should render WisdomCard when showWisdom is true", () => {
-    vi.setSystemTime(new Date(2026, 1, 22, 9, 0));
-    render(<DashboardContent {...baseProps} showWisdom={true} />);
-
-    expect(screen.getByTestId("wisdom-card")).toBeInTheDocument();
-  });
-
-  it("should not render WisdomCard when showWisdom is false", () => {
-    vi.setSystemTime(new Date(2026, 1, 22, 9, 0));
-    render(<DashboardContent {...baseProps} showWisdom={false} />);
-
-    expect(screen.queryByTestId("wisdom-card")).not.toBeInTheDocument();
   });
 
   it("should render StatusCard", () => {
