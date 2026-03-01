@@ -43,16 +43,9 @@ vi.mock("@/components/connections/invite-modal", () => ({
   InviteModal: () => null,
 }));
 
-vi.mock("@/lib/services/connection-service", () => ({
-  ConnectionService: { removeConnection: vi.fn() },
-}));
-
-vi.mock("@/components/providers/toast-provider", () => ({
-  useToast: () => ({ showToast: vi.fn() }),
-}));
-
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ refresh: vi.fn() }),
+  useRouter: () => ({ refresh: vi.fn(), push: vi.fn() }),
+  usePathname: () => "/dashboard",
 }));
 
 const mockUseSeenReceipts = vi.fn();

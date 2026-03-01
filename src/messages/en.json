@@ -289,6 +289,20 @@
     "notFound": "Page not found",
     "unauthorized": "You are not authorized to view this page."
   },
+  "connectionDetail": {
+    "back": "Back",
+    "connectedSince": "Connected since {date}",
+    "daysConnected": "{count, plural, =1 {# day} other {# days}}",
+    "sharedStreak": "Shared Streak",
+    "current": "Current",
+    "longest": "Longest",
+    "syncRate": "Pulse Sync",
+    "syncRateDescription": "Both pulsed on {synced} of {total} days",
+    "removeConnection": "Remove Connection",
+    "removeConfirm": "Remove your connection with {name}? You can restore it within 30 days.",
+    "removeError": "Failed to remove connection",
+    "partnerStreak": "{name}'s Streak"
+  },
   "wisdom": {
     "count": "60",
     "phrases": {
