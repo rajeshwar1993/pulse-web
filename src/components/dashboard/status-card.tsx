@@ -37,8 +37,6 @@ export function StatusCard({ isActive, pulseTime }: StatusCardProps) {
         isActive ? "from-teal-400 to-teal-200" : "from-slate-400 to-slate-300"
       }`}
     >
-      <h2 className="text-lg font-semibold text-white mb-4">{t("title")}</h2>
-
       <div className="flex items-center gap-3">
         {/* Status indicator */}
         <div className="relative flex items-center justify-center">

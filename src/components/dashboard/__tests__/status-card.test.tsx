@@ -126,12 +126,6 @@ describe("StatusCard", () => {
   });
 
   describe("Component structure", () => {
-    it("should render with correct title", () => {
-      render(<StatusCard isActive={false} pulseTime={null} />);
-
-      expect(screen.getByText("Your Status")).toBeInTheDocument();
-    });
-
     it("should have gradient background", () => {
       render(<StatusCard isActive={false} pulseTime={null} />);
 

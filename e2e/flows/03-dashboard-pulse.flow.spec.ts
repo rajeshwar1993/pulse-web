@@ -1,12 +1,12 @@
-import { test, expect } from '@playwright/test';
-import { TEST_USER_A } from '../config';
-import { DashboardPage } from '../pages/dashboard.page';
-import { getUserIdByEmail } from '../admin/auth';
-import { deleteUserPulses, insertPulse } from '../admin/pulses';
-import { verifyPulseExists, verifyNoPulseToday } from '../admin/verify';
+import { test, expect } from "@playwright/test";
+import { TEST_USER_A } from "../config";
+import { DashboardPage } from "../pages/dashboard.page";
+import { getUserIdByEmail } from "../admin/auth";
+import { deleteUserPulses, insertPulse } from "../admin/pulses";
+import { verifyPulseExists, verifyNoPulseToday } from "../admin/verify";
 
-test.describe('03 — Dashboard Pulse Flow @smoke', () => {
-  test.describe.configure({ mode: 'serial' });
+test.describe("03 — Dashboard Pulse Flow @smoke", () => {
+  test.describe.configure({ mode: "serial" });
 
   let userAId: string;
 
@@ -18,7 +18,7 @@ test.describe('03 — Dashboard Pulse Flow @smoke', () => {
     await deleteUserPulses(userAId);
   });
 
-  test('greeting shows time-of-day and user name', async ({ page }) => {
+  test("greeting shows time-of-day and user name", async ({ page }) => {
     const dashboard = new DashboardPage(page);
     await dashboard.gotoBrowser();
 
@@ -27,18 +27,20 @@ test.describe('03 — Dashboard Pulse Flow @smoke', () => {
     expect(greeting).toMatch(/Good (morning|afternoon|evening)/i);
   });
 
-  test('shows inactive status when not pulsed + DB verify', async ({ page }) => {
+  test("shows inactive status when not pulsed + DB verify", async ({
+    page,
+  }) => {
     const dashboard = new DashboardPage(page);
     await dashboard.gotoBrowser();
 
-    await expect(dashboard.statusTitle).toBeVisible();
+    await expect(dashboard.statusCard).toBeVisible();
     // Pulse button should be visible when inactive
     await expect(dashboard.pulseButton).toBeVisible();
 
     await verifyNoPulseToday(userAId);
   });
 
-  test('send pulse → status updates + DB verify', async ({ page }) => {
+  test("send pulse → status updates + DB verify", async ({ page }) => {
     const dashboard = new DashboardPage(page);
     await dashboard.gotoBrowser();
 
@@ -47,7 +49,9 @@ test.describe('03 — Dashboard Pulse Flow @smoke', () => {
 
     // Button text changes to "Sending...", then the page re-renders after the server processes the pulse.
     // Wait for the "Sending..." state to resolve — this confirms the full re-render completed.
-    await expect(page.getByRole('button', { name: /sending/i })).toBeHidden({ timeout: 15_000 });
+    await expect(page.getByRole("button", { name: /sending/i })).toBeHidden({
+      timeout: 15_000,
+    });
 
     // After re-render, the original pulse button should also be gone
     await expect(dashboard.pulseButton).toBeHidden();
@@ -56,17 +60,19 @@ test.describe('03 — Dashboard Pulse Flow @smoke', () => {
     await verifyPulseExists(userAId);
   });
 
-  test('already-pulsed: active status, no button', async ({ page }) => {
+  test("already-pulsed: active status, no button", async ({ page }) => {
     await insertPulse(userAId);
 
     const dashboard = new DashboardPage(page);
     await dashboard.gotoBrowser();
 
-    await expect(dashboard.statusTitle).toBeVisible();
+    await expect(dashboard.statusCard).toBeVisible();
     await expect(dashboard.pulseButton).toBeHidden();
   });
 
-  test('wisdom card appears when pulsed and auto-dismisses', async ({ page }) => {
+  test("wisdom card appears when pulsed and auto-dismisses", async ({
+    page,
+  }) => {
     // Insert a pulse via admin so the dashboard loads with showWisdom=true on first render
     await insertPulse(userAId);
 
@@ -81,7 +87,7 @@ test.describe('03 — Dashboard Pulse Flow @smoke', () => {
     await expect(wisdomCard).toBeHidden({ timeout: 10_000 });
   });
 
-  test('streak card is visible', async ({ page }) => {
+  test("streak card is visible", async ({ page }) => {
     const dashboard = new DashboardPage(page);
     await dashboard.gotoBrowser();
 
@@ -89,7 +95,7 @@ test.describe('03 — Dashboard Pulse Flow @smoke', () => {
     await expect(page.getByText(/days?$/i).first()).toBeVisible();
   });
 
-  test('seat grid with empty seats is visible', async ({ page }) => {
+  test("seat grid with empty seats is visible", async ({ page }) => {
     const dashboard = new DashboardPage(page);
     await dashboard.gotoBrowser();
 
