@@ -225,7 +225,8 @@
     "sendPulse": "Send Pulse",
     "sending": "Sending...",
     "sent": "Pulse sent!",
-    "alreadySent": "You've already pulsed today"
+    "alreadySent": "You've already pulsed today",
+    "sendingOverlay": "Sending your pulse..."
   },
   "landing": {
     "heroSubtitle": "A simple daily check-in that keeps your closest connections at ease.",
