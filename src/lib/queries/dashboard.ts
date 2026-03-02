@@ -10,6 +10,10 @@ import {
   getStartOfPulseDay,
   getTodayPulseDay,
 } from "@/lib/utils/streak";
+import {
+  fetchConnectionsWithPulseStatus,
+  toDashboardConnection,
+} from "./connections";
 import { fetchSeatsWithConnections } from "./seats";
 
 export interface DashboardData {
@@ -65,26 +69,40 @@ export async function fetchDashboardData(
   try {
     await supabase.rpc("enforce_seat_expirations", { p_user_id: userId });
 
-    seats = await fetchSeatsWithConnections(supabase, userId);
+    const [ownSeats, allConnections] = await Promise.all([
+      fetchSeatsWithConnections(supabase, userId),
+      fetchConnectionsWithPulseStatus(supabase, userId),
+    ]);
 
-    connections = seats
-      .filter(
-        (s): s is typeof s & { connection: NonNullable<typeof s.connection> } =>
-          s.state === "occupied" && s.connection != null,
-      )
-      .map((s) => ({
-        id: s.connection.id,
-        userId: s.connection.userId,
-        avatar: s.connection.avatar,
-        name: s.connection.name,
-        timezone: s.connection.timezone,
-        status: s.connection.pulseTime
-          ? ("active" as const)
-          : ("waiting" as const),
-        pulseTime: s.connection.pulseTime,
-        currentStreak: s.connection.currentStreak,
-        longestStreak: 0,
+    // Connection IDs already represented by the user's own seats
+    const seatedConnectionIds = new Set(
+      ownSeats
+        .filter((s) => s.state === "occupied" && s.connection != null)
+        .map((s) => s.connection!.id),
+    );
+
+    // Create synthetic seats for received connections (not already in a seat)
+    const syntheticSeats: DashboardSeat[] = allConnections
+      .filter((conn) => !seatedConnectionIds.has(conn.id))
+      .map((conn) => ({
+        id: `received-${conn.id}`,
+        seatNumber: 0,
+        state: "occupied" as const,
+        expiresAt: new Date("9999-12-31"),
+        connection: {
+          id: conn.id,
+          userId: conn.user_id,
+          name: conn.display_name,
+          avatar: conn.avatar_url,
+          timezone: conn.timezone,
+          status: "active" as const,
+          pulseTime: conn.last_pulse ? new Date(conn.last_pulse) : null,
+          currentStreak: conn.current_streak,
+        },
       }));
+
+    seats = [...ownSeats, ...syntheticSeats];
+    connections = allConnections.map(toDashboardConnection);
   } catch {
     // Seat system not yet available (migrations pending) — continue with empty seats
   }
