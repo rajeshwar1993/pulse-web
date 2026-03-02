@@ -148,6 +148,10 @@
       "shareText": "Join me on Pulse! Use code: {code}\nOr click: {url}",
       "linkCopied": "Invite link copied!",
       "generateError": "Failed to generate invite code",
+      "sendError": "Failed to send request. Please try again.",
+      "alreadyConnected": "You're already connected with this person",
+      "alreadyPending": "A request to this person is already pending",
+      "seatUnavailable": "This seat is no longer available",
       "close": "Close"
     },
     "requests": {

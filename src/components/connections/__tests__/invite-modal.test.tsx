@@ -24,6 +24,11 @@ vi.mock("next-intl", () => ({
       shareTitle: "Join Pulse",
       linkCopied: "Invite link copied!",
       generateError: "Failed to generate invite code",
+      sendError: "Failed to send request. Please try again.",
+      alreadyConnected: "You're already connected with this person",
+      alreadyPending: "A request to this person is already pending",
+      seatUnavailable: "This seat is no longer available",
+      selfEmailError: "You can't send a request to yourself",
       close: "Close",
     };
     if (key === "shareText" && params) {
@@ -172,6 +177,46 @@ describe("InviteModal", () => {
       "Invite link copied!",
       "success",
     );
+  });
+
+  it("should show specific error when already connected", async () => {
+    mockSendRequest.mockRejectedValue({
+      message: "Already connected with this user",
+      code: "P0001",
+    });
+
+    render(<InviteModal onClose={onClose} />);
+
+    const emailInput = screen.getByPlaceholderText("friend@example.com");
+    await userEvent.type(emailInput, "friend@example.com");
+    await userEvent.click(screen.getByText("Send"));
+
+    await waitFor(() => {
+      expect(mockShowToast).toHaveBeenCalledWith(
+        "You're already connected with this person",
+        "error",
+      );
+    });
+  });
+
+  it("should show specific error when request already pending", async () => {
+    mockSendRequest.mockRejectedValue({
+      message: "A pending connection request already exists",
+      code: "P0001",
+    });
+
+    render(<InviteModal onClose={onClose} />);
+
+    const emailInput = screen.getByPlaceholderText("friend@example.com");
+    await userEvent.type(emailInput, "friend@example.com");
+    await userEvent.click(screen.getByText("Send"));
+
+    await waitFor(() => {
+      expect(mockShowToast).toHaveBeenCalledWith(
+        "A request to this person is already pending",
+        "error",
+      );
+    });
   });
 
   it("should show error toast when share code generation fails", async () => {

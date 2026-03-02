@@ -14,6 +14,15 @@ import { SeatService } from "@/lib/services/seat-service";
 import type { InviteCode } from "@/lib/types/connection";
 import { logger } from "@/lib/utils/logger";
 
+/** Map known RPC error messages to user-facing translation keys. */
+function mapRpcError(msg: string, t: (key: string) => string): string {
+  if (msg.includes("Already connected")) return t("alreadyConnected");
+  if (msg.includes("request to yourself")) return t("selfEmailError");
+  if (msg.includes("pending connection request")) return t("alreadyPending");
+  if (msg.includes("Seat not available")) return t("seatUnavailable");
+  return t("sendError");
+}
+
 interface InviteModalProps {
   onClose: () => void;
   /** When provided, routes invite operations through the seat system */
@@ -92,9 +101,14 @@ export function InviteModal({ onClose, seatId }: InviteModalProps) {
       // Always show success toast regardless of whether user was found (privacy)
       showToast(t("inviteSent"), "success");
       setEmail("");
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : t("generateError");
+    } catch (error: unknown) {
+      const raw =
+        error instanceof Error
+          ? error.message
+          : typeof error === "object" && error !== null && "message" in error
+            ? String((error as { message: unknown }).message)
+            : "";
+      const message = mapRpcError(raw, t);
       showToast(message, "error");
       logger.error("Failed to send connection request", error);
     } finally {
