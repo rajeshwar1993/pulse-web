@@ -27,22 +27,20 @@ export default async function Dashboard() {
   const data = await fetchDashboardData(supabase, user.id, profile);
 
   return (
-    <div className="min-h-screen bg-[var(--off-white)] p-6">
-      <div className="max-w-4xl mx-auto">
-        <DashboardContent
-          displayName={data.displayName}
-          isActive={data.isActive}
-          pulseTime={data.pulseTime}
-          seats={data.seats}
-          connections={data.connections}
-          missedPulseDate={data.missedPulseDate}
-          pendingRequests={data.pendingRequests}
-          currentStreak={data.currentStreak}
-          pulsedDates={data.pulsedDates}
-          totalDays={data.totalDays}
-          todayPulseDay={data.todayPulseDay}
-        />
-      </div>
+    <div className="max-w-4xl mx-auto">
+      <DashboardContent
+        displayName={data.displayName}
+        isActive={data.isActive}
+        pulseTime={data.pulseTime}
+        seats={data.seats}
+        connections={data.connections}
+        missedPulseDate={data.missedPulseDate}
+        pendingRequests={data.pendingRequests}
+        currentStreak={data.currentStreak}
+        pulsedDates={data.pulsedDates}
+        totalDays={data.totalDays}
+        todayPulseDay={data.todayPulseDay}
+      />
     </div>
   );
 }

@@ -39,17 +39,15 @@ export default async function AppviewActivityPage() {
   const pulsedDates: string[] = pulseCalendarData ?? [];
 
   return (
-    <div className="min-h-screen bg-[var(--off-white)] p-6">
-      <div className="max-w-4xl mx-auto">
-        <ActivityContent
-          currentStreak={currentStreak}
-          longestStreak={longestStreak}
-          pulsedDates={pulsedDates}
-          memberSince={profile.created_at}
-          totalPulses={profile.total_pulse_count ?? 0}
-          todayPulseDay={todayPulseDay}
-        />
-      </div>
+    <div className="max-w-4xl mx-auto">
+      <ActivityContent
+        currentStreak={currentStreak}
+        longestStreak={longestStreak}
+        pulsedDates={pulsedDates}
+        memberSince={profile.created_at}
+        totalPulses={profile.total_pulse_count ?? 0}
+        todayPulseDay={todayPulseDay}
+      />
     </div>
   );
 }

@@ -3,8 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function DashboardLoading() {
   return (
-    <div className="min-h-screen bg-[var(--off-white)] p-6">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
         {/* Header skeleton */}
         <div className="flex items-start justify-between">
           <div>
@@ -44,6 +43,5 @@ export default function DashboardLoading() {
           </div>
         </div>
       </div>
-    </div>
   );
 }

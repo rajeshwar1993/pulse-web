@@ -9,7 +9,7 @@ export default async function AuthError() {
   const tCommon = await getTranslations("common");
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--off-white)] px-4">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="max-w-md w-full text-center">
         <div className="mb-8">
           <IconBadge color="rose" size="lg" className="mx-auto mb-4">

@@ -145,8 +145,7 @@ export default function ProfileSetup() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--off-white)] p-6">
-      <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto">
         <Heading as="h1" size="lg" className="text-[var(--teal)] mb-8">
           {isEditMode ? t("editTitle") : t("title")}
         </Heading>
@@ -249,6 +248,5 @@ export default function ProfileSetup() {
           </form>
         )}
       </div>
-    </div>
   );
 }

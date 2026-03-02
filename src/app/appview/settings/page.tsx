@@ -17,10 +17,8 @@ export default async function Settings() {
   const { locale, profile } = await fetchSettingsData(supabase, user.id);
 
   return (
-    <div className="min-h-screen bg-[var(--off-white)] p-6">
-      <div className="max-w-4xl mx-auto">
-        <SettingsPage currentLocale={locale} profile={profile} />
-      </div>
+    <div className="max-w-4xl mx-auto">
+      <SettingsPage currentLocale={locale} profile={profile} />
     </div>
   );
 }

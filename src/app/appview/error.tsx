@@ -12,7 +12,7 @@ export default function AppViewError({
   reset: () => void;
 }) {
   return (
-    <div className="min-h-screen bg-[var(--off-white)] flex items-center justify-center p-6">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="text-center max-w-md">
         <IconBadge color="rose" size="md" className="mx-auto mb-6">
           <svg

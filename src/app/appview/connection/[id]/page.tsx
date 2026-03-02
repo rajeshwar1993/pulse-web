@@ -36,14 +36,12 @@ export default async function AppviewConnectionDetailPage({
   }
 
   return (
-    <div className="min-h-screen bg-[var(--off-white)] p-6">
-      <div className="max-w-4xl mx-auto">
-        <ConnectionDetailContent
-          stats={stats}
-          connectionId={id}
-          routePrefix="/appview"
-        />
-      </div>
+    <div className="max-w-4xl mx-auto">
+      <ConnectionDetailContent
+        stats={stats}
+        connectionId={id}
+        routePrefix="/appview"
+      />
     </div>
   );
 }

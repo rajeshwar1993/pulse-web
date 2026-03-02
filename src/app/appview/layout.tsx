@@ -17,7 +17,7 @@ export default function AppViewLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="safe-area-inset pb-20">
+    <div className="min-h-screen bg-[var(--off-white)] safe-area-inset-top px-4 pb-24">
       <FlutterBridgeListener />
       <ToastProvider>{children}</ToastProvider>
       <BottomNav />
