@@ -27,6 +27,9 @@ export default defineConfig({
       {
         extends: true,
         plugins: [storybookTest()],
+        optimizeDeps: {
+          include: ["next/cache"],
+        },
         test: {
           name: "storybook",
           setupFiles: ["./.storybook/vitest.setup.ts"],

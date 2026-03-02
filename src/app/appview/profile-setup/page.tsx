@@ -8,6 +8,7 @@ import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { FormInput } from "@/components/ui/form-input";
 import { Heading } from "@/components/ui/heading";
+import { revalidateProfilePages } from "@/lib/actions/profile";
 import { supabase } from "@/lib/supabase/client";
 import { logger } from "@/lib/utils/logger";
 import {
@@ -116,6 +117,7 @@ export default function ProfileSetup() {
           .eq("id", user.id);
 
         if (updateError) throw updateError;
+        await revalidateProfilePages();
         router.push("/appview/settings");
       } else {
         const { error: insertError } = await supabase.from("profiles").insert({
@@ -127,6 +129,7 @@ export default function ProfileSetup() {
         });
 
         if (insertError) throw insertError;
+        await revalidateProfilePages();
         router.push("/appview/dashboard");
       }
     } catch (err) {

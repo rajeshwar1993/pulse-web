@@ -82,6 +82,11 @@ vi.mock("@/lib/utils/logger", () => ({
   },
 }));
 
+// Mock server action
+vi.mock("@/lib/actions/profile", () => ({
+  revalidateProfilePages: vi.fn().mockResolvedValue(undefined),
+}));
+
 const mockUser = { id: "user-123", email: "test@example.com" };
 
 describe("ProfileSetup (appview)", () => {

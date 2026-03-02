@@ -102,6 +102,10 @@ vi.mock("@/lib/utils/logger", () => ({
   logger: { error: vi.fn() },
 }));
 
+vi.mock("@/lib/actions/profile", () => ({
+  revalidateProfilePages: vi.fn().mockResolvedValue(undefined),
+}));
+
 // --- Test data ---
 
 const mockProfile = {
