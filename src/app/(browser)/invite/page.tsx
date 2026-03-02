@@ -21,6 +21,18 @@ function isMobileDevice(): boolean {
   );
 }
 
+/** Map known accept_invite RPC errors to user-facing translation keys. */
+function mapAcceptError(
+  msg: string,
+  t: (key: string) => string,
+  tErrors: (key: string) => string,
+): string {
+  if (msg.includes("already exists")) return t("alreadyConnected");
+  if (msg.includes("connect to yourself")) return t("selfInviteError");
+  if (msg.includes("Invalid or expired")) return t("invalidCode");
+  return tErrors("generic");
+}
+
 function InviteContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -65,9 +77,15 @@ function InviteContent() {
       await ConnectionService.acceptInviteCode(code);
       showToast("Connection added!", "success");
       router.push("/connections");
-    } catch (err) {
+    } catch (err: unknown) {
       logger.error("Failed to accept invite", err);
-      setError(tErrors("generic"));
+      const raw =
+        err instanceof Error
+          ? err.message
+          : typeof err === "object" && err !== null && "message" in err
+            ? String((err as { message: unknown }).message)
+            : "";
+      setError(mapAcceptError(raw, t, tErrors));
       setAccepting(false);
     }
   }, [code, router, showToast, tErrors]);
@@ -115,10 +133,10 @@ function InviteContent() {
             className="flex-1"
             onClick={() => router.push("/dashboard")}
           >
-            Decline
+            {t("declineButton")}
           </Button>
           <Button className="flex-1" loading={accepting} onClick={handleAccept}>
-            Accept
+            {t("acceptButton")}
           </Button>
         </div>
       </Card>

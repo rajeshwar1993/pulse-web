@@ -5,7 +5,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Modal } from "@/components/ui/modal";
+import { useToast } from "@/components/providers/toast-provider";
+import { getInviteUrl } from "@/lib/constants";
 import { SeatService } from "@/lib/services/seat-service";
+import { logger } from "@/lib/utils/logger";
 import type { DashboardSeat } from "@/lib/types/seat";
 
 interface CancelInviteModalProps {
@@ -20,8 +23,47 @@ export function CancelInviteModal({
   onCancelled,
 }: CancelInviteModalProps) {
   const t = useTranslations("seats");
-  const tCommon = useTranslations("common");
+  const tInvite = useTranslations("connections.invite");
   const [loading, setLoading] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const { showToast } = useToast();
+
+  const isInviteCode = seat.pendingInfo?.type === "invite_code";
+
+  const handleShare = async () => {
+    if (!seat.pendingInfo?.label) return;
+    setSharing(true);
+    try {
+      const code = seat.pendingInfo.label;
+      const inviteUrl = getInviteUrl(code);
+      const shareText = tInvite("shareText", {
+        code,
+        url: inviteUrl,
+      });
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: tInvite("shareTitle"),
+            text: shareText,
+          });
+        } catch {
+          // User cancelled share — not an error
+        }
+      } else {
+        try {
+          await navigator.clipboard.writeText(inviteUrl);
+          showToast(tInvite("linkCopied"), "success");
+        } catch {
+          logger.warn("Clipboard write failed");
+        }
+      }
+    } catch (error) {
+      logger.error("Failed to share invite", error);
+    } finally {
+      setSharing(false);
+    }
+  };
 
   const handleCancel = async () => {
     setLoading(true);
@@ -43,23 +85,34 @@ export function CancelInviteModal({
       <p className="text-sm text-[var(--slate-600)] mb-6">
         {t("cancelDescription")}
       </p>
-      <div className="flex gap-3">
-        <Button
-          variant="secondary"
-          size="sm"
-          className="flex-1"
-          onClick={onClose}
-        >
-          {tCommon("cancel")}
-        </Button>
+      <div className="flex flex-col gap-3">
+        {isInviteCode && (
+          <Button
+            variant="primary"
+            size="sm"
+            className="w-full"
+            onClick={handleShare}
+            loading={sharing}
+          >
+            {t("shareInvite")}
+          </Button>
+        )}
         <Button
           variant="danger"
           size="sm"
-          className="flex-1"
+          className="w-full"
           onClick={handleCancel}
           loading={loading}
         >
           {t("cancelInviteButton")}
+        </Button>
+        <Button
+          variant="secondary"
+          size="sm"
+          className="w-full"
+          onClick={onClose}
+        >
+          {t("close")}
         </Button>
       </div>
     </Modal>

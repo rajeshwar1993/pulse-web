@@ -7,18 +7,26 @@ import { PendingSeatCard } from "../pending-seat-card";
 import { SeatCard } from "../seat-card";
 
 vi.mock("next-intl", () => ({
-  useTranslations: () => (key: string, params?: Record<string, unknown>) => {
-    const translations: Record<string, string> = {
-      addConnection: "Add Connection",
-      inviteCodeShared: "Invite code shared",
-      requestSent: "Request sent",
-      tapToCancel: "Tap to cancel",
-      seatLabel: "Seat {number}",
-      expired: "Expired",
-      tapToRenew: "Tap to renew",
-      gridTitle: "Your Connections ({count})",
+  useTranslations: (namespace?: string) => (key: string, params?: Record<string, unknown>) => {
+    const translations: Record<string, Record<string, string>> = {
+      seats: {
+        addConnection: "Add Connection",
+        inviteCodeShared: "Invite code shared",
+        requestSent: "Request sent",
+        tapToCancel: "Tap to cancel",
+        waitingForResponse: "Waiting for response",
+        clickToCopyCode: "Click to copy code",
+        seatLabel: "Seat {number}",
+        expired: "Expired",
+        tapToRenew: "Tap to renew",
+        gridTitle: "Your Connections ({count})",
+      },
+      common: {
+        cancel: "Cancel",
+      },
     };
-    let result = translations[key] || key;
+    const ns = namespace || "seats";
+    let result = translations[ns]?.[key] || translations.seats[key] || key;
     if (params) {
       for (const [k, v] of Object.entries(params)) {
         result = result.replace(`{${k}}`, String(v));
@@ -146,9 +154,20 @@ describe("PendingSeatCard", () => {
     expect(screen.getByText("mom@example.com")).toBeInTheDocument();
   });
 
-  it("shows tap to cancel hint", () => {
+  it("shows waiting for response and cancel", () => {
     render(<PendingSeatCard seat={pendingSeatInvite} onClick={vi.fn()} />);
-    expect(screen.getByText("Tap to cancel")).toBeInTheDocument();
+    expect(screen.getByText("Waiting for response")).toBeInTheDocument();
+    expect(screen.getByText("Cancel")).toBeInTheDocument();
+  });
+
+  it("shows click to copy code label for invite_code type", () => {
+    render(<PendingSeatCard seat={pendingSeatInvite} onClick={vi.fn()} />);
+    expect(screen.getByText("Click to copy code")).toBeInTheDocument();
+  });
+
+  it("does not show click to copy code label for connection_request type", () => {
+    render(<PendingSeatCard seat={pendingSeatRequest} onClick={vi.fn()} />);
+    expect(screen.queryByText("Click to copy code")).not.toBeInTheDocument();
   });
 
   it("calls onClick when clicked", () => {

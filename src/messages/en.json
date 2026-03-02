@@ -141,6 +141,9 @@
       "sendRequest": "Send",
       "inviteSent": "Invite sent!",
       "invalidEmail": "Please enter a valid email address",
+      "codeLabel": "Your invite code",
+      "acceptButton": "Accept",
+      "declineButton": "Decline",
       "selfEmailError": "You can't send a request to yourself",
       "shareButton": "Share using other apps",
       "shareSubtext": "Share with WhatsApp, Instagram, and more",
@@ -152,6 +155,8 @@
       "alreadyConnected": "You're already connected with this person",
       "alreadyPending": "A request to this person is already pending",
       "seatUnavailable": "This seat is no longer available",
+      "selfInviteError": "You can't accept your own invite",
+      "invalidCode": "This invite code is invalid or has expired",
       "close": "Close"
     },
     "requests": {
@@ -208,7 +213,11 @@
     "renewButton": "Renew",
     "cancelTitle": "Cancel Invite",
     "cancelDescription": "This will cancel the pending invite and free up this seat.",
-    "cancelInviteButton": "Cancel Invite"
+    "cancelInviteButton": "Cancel Invite",
+    "waitingForResponse": "Waiting for response",
+    "clickToCopyCode": "Click to copy code",
+    "shareInvite": "Share Invite",
+    "close": "Close"
   },
   "emptyConnections": {
     "title": "No connections yet",
