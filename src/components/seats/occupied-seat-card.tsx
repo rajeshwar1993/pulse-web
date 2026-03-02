@@ -35,13 +35,13 @@ export function OccupiedSeatCard({ seat, onClick }: OccupiedSeatCardProps) {
       onClick={onClick}
       className={`
         relative bg-white rounded-xl p-4 border transition-all duration-200 min-h-[120px]
-        ${onClick ? "cursor-pointer hover:shadow-md" : ""}
+        ${onClick ? "cursor-pointer hover:shadow-lg" : ""}
         ${
           isPaused
-            ? "border-[var(--slate-200)] opacity-50"
+            ? "border-[var(--slate-200)] shadow-sm opacity-50"
             : isActive
-              ? "border-[var(--teal)]/30 shadow-sm"
-              : "border-[var(--slate-200)] opacity-70"
+              ? "border-[var(--teal)]/30 shadow-md"
+              : "border-[var(--slate-200)] shadow-sm opacity-70"
         }
       `}
     >

@@ -33,7 +33,7 @@ export function StatusCard({ isActive, pulseTime }: StatusCardProps) {
   return (
     <div
       data-testid="status-card"
-      className={`rounded-xl p-6 shadow-sm bg-gradient-to-r ${
+      className={`rounded-xl p-6 shadow-md bg-gradient-to-r ${
         isActive ? "from-teal-400 to-teal-200" : "from-slate-400 to-slate-300"
       }`}
     >

@@ -64,11 +64,11 @@ export function ConnectionCard({
     <div
       className={`
         relative bg-white rounded-xl p-4 border
-        transition-all duration-200 hover:shadow-md
+        transition-all duration-200 hover:shadow-lg
         ${
           isActive
-            ? "border-[var(--teal)]/30 shadow-sm"
-            : "border-[var(--slate-200)] opacity-70"
+            ? "border-[var(--teal)]/30 shadow-md"
+            : "border-[var(--slate-200)] shadow-sm opacity-70"
         }
       `}
     >

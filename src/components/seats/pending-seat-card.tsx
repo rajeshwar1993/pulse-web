@@ -18,7 +18,7 @@ export function PendingSeatCard({ seat, onClick }: PendingSeatCardProps) {
     <button
       type="button"
       onClick={onClick}
-      className="w-full rounded-xl border border-[var(--pulse-purple)]/30 bg-[var(--pulse-purple)]/5 p-4 text-left hover:border-[var(--pulse-purple)]/50 transition-colors cursor-pointer min-h-[120px]"
+      className="w-full rounded-xl border border-[var(--pulse-purple)]/30 bg-[var(--pulse-purple)]/5 p-4 text-left shadow-sm hover:shadow-md hover:border-[var(--pulse-purple)]/50 transition-all cursor-pointer min-h-[120px]"
     >
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-full bg-[var(--pulse-purple)]/10 flex items-center justify-center flex-shrink-0">
