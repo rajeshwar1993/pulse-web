@@ -13,7 +13,7 @@ export function EmptySeatCard({ onClick }: EmptySeatCardProps) {
     <button
       type="button"
       onClick={onClick}
-      className="w-full rounded-xl border-2 border-dashed border-[var(--slate-300)] p-6 flex flex-col items-center justify-center gap-2 hover:border-[var(--teal)] hover:bg-[var(--teal)]/5 transition-colors cursor-pointer min-h-[120px]"
+      className="w-full rounded-xl border-2 border-dashed border-[var(--slate-300)] p-4 flex flex-col items-center justify-center gap-2 hover:border-[var(--teal)] hover:bg-[var(--teal)]/5 transition-colors cursor-pointer min-h-[120px]"
     >
       <svg
         className="w-8 h-8 text-[var(--slate-400)]"

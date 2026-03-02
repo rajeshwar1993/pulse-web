@@ -24,6 +24,13 @@ export function SeatGrid({
 
   const occupiedCount = seats.filter((s) => s.state === "occupied").length;
 
+  // Show occupied seats first, then the rest — preserve original order within each group
+  const sortedSeats = [...seats].sort((a, b) => {
+    const aOccupied = a.state === "occupied" ? 0 : 1;
+    const bOccupied = b.state === "occupied" ? 0 : 1;
+    return aOccupied - bOccupied;
+  });
+
   return (
     <div className="space-y-3">
       <Heading as="h2" size="sm">
@@ -31,7 +38,7 @@ export function SeatGrid({
       </Heading>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-        {seats.map((seat) => (
+        {sortedSeats.map((seat) => (
           <SeatCard
             key={seat.id}
             seat={seat}

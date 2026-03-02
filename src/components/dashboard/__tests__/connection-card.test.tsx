@@ -5,7 +5,7 @@ import { ConnectionCard } from "../connection-card";
 vi.mock("next-intl", () => ({
   useTranslations: () => (key: string, params?: Record<string, string>) => {
     const translations: Record<string, string> = {
-      active: "Active",
+      active: "Checked in",
       waiting: "Waiting...",
       earlyMorning: "Morning there",
     };
@@ -49,7 +49,7 @@ describe("ConnectionCard", () => {
       );
 
       expect(screen.getByText(mockName)).toBeInTheDocument();
-      expect(screen.getByText(/Active/)).toBeInTheDocument();
+      expect(screen.getByText(/Checked in/)).toBeInTheDocument();
       expect(screen.getByText(/30 minutes ago/)).toBeInTheDocument();
     });
 
@@ -177,6 +177,23 @@ describe("ConnectionCard", () => {
 
       expect(screen.getByText("10:00 PM for John Doe")).toBeInTheDocument();
     });
+
+    it("should have pulsing heart animation on active card", () => {
+      const pulseTime = new Date();
+
+      const { container } = render(
+        <ConnectionCard
+          avatar={mockAvatar}
+          name={mockName}
+          timezone={mockTimezone}
+          status="active"
+          pulseTime={pulseTime}
+        />,
+      );
+
+      const pulsingElement = container.querySelector(".animate-pulse-heart");
+      expect(pulsingElement).toBeInTheDocument();
+    });
   });
 
   describe("Waiting state", () => {
@@ -227,6 +244,21 @@ describe("ConnectionCard", () => {
       expect(pingElement).not.toBeInTheDocument();
     });
 
+    it("should not have pulsing heart animation on waiting card", () => {
+      const { container } = render(
+        <ConnectionCard
+          avatar={mockAvatar}
+          name={mockName}
+          timezone={mockTimezone}
+          status="waiting"
+          pulseTime={null}
+        />,
+      );
+
+      const pulsingElement = container.querySelector(".animate-pulse-heart");
+      expect(pulsingElement).not.toBeInTheDocument();
+    });
+
     it("should display grey status dot", () => {
       const { container } = render(
         <ConnectionCard
@@ -243,22 +275,6 @@ describe("ConnectionCard", () => {
         ".bg-\\[var\\(--slate-400\\)\\]",
       );
       expect(statusDot).toBeInTheDocument();
-    });
-
-    it("should show clock icon for waiting state", () => {
-      const { container } = render(
-        <ConnectionCard
-          avatar={mockAvatar}
-          name={mockName}
-          timezone={mockTimezone}
-          status="waiting"
-          pulseTime={null}
-        />,
-      );
-
-      // Check for clock SVG path (stroke instead of fill)
-      const clockIcon = container.querySelector('path[stroke-linecap="round"]');
-      expect(clockIcon).toBeInTheDocument();
     });
 
     it("should have reduced opacity for waiting card", () => {

@@ -82,7 +82,7 @@
       "title": "Your Connections ({count})"
     },
     "connectionCard": {
-      "active": "Active",
+      "active": "Checked in",
       "waiting": "Waiting...",
       "earlyMorning": "Morning there",
       "localTime": "{time} for {name}"

@@ -173,3 +173,18 @@ body {
 .animate-heartbeat {
   animation: heartbeat 1.2s ease-in-out infinite;
 }
+
+@keyframes pulse-heart {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+.animate-pulse-heart {
+  animation: pulse-heart 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse-heart {
+    animation: none;
+  }
+}
