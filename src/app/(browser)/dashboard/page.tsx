@@ -45,6 +45,7 @@ export default async function BrowserDashboard() {
       pulsedDates={data.pulsedDates}
       totalDays={data.totalDays}
       todayPulseDay={data.todayPulseDay}
+      wisdomPhrases={data.wisdomPhrases}
     />
   );
 }

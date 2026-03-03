@@ -1,17 +1,6 @@
 import { act, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("next-intl", () => ({
-  useTranslations: () => (key: string) => {
-    const translations: Record<string, string> = {
-      count: "60",
-      "phrases.0": "Test wisdom phrase",
-      "phrases.42": "Another wisdom phrase",
-    };
-    return translations[key] || key;
-  },
-}));
-
 vi.mock("@/lib/services/wisdom-service", () => ({
   getRandomWisdomIndex: () => 0,
 }));
@@ -54,6 +43,8 @@ vi.mock("framer-motion", () => ({
 
 import { PulseOverlay } from "../pulse-overlay";
 
+const testPhrases = ["Test wisdom phrase", "Another wisdom phrase"];
+
 describe("PulseOverlay", () => {
   beforeEach(() => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
@@ -71,6 +62,7 @@ describe("PulseOverlay", () => {
         isOpen={true}
         onComplete={vi.fn()}
         pulseResult={null}
+        wisdomPhrases={testPhrases}
       />,
     );
 
@@ -84,6 +76,7 @@ describe("PulseOverlay", () => {
         isOpen={false}
         onComplete={vi.fn()}
         pulseResult={null}
+        wisdomPhrases={testPhrases}
       />,
     );
 
@@ -96,6 +89,7 @@ describe("PulseOverlay", () => {
         isOpen={true}
         onComplete={vi.fn()}
         pulseResult={null}
+        wisdomPhrases={testPhrases}
       />,
     );
 
@@ -109,6 +103,7 @@ describe("PulseOverlay", () => {
         isOpen={true}
         onComplete={vi.fn()}
         pulseResult={null}
+        wisdomPhrases={testPhrases}
       />,
     );
 
@@ -126,6 +121,7 @@ describe("PulseOverlay", () => {
         isOpen={true}
         onComplete={vi.fn()}
         pulseResult={pulseResult}
+        wisdomPhrases={testPhrases}
       />,
     );
 
@@ -151,6 +147,7 @@ describe("PulseOverlay", () => {
         isOpen={true}
         onComplete={vi.fn()}
         pulseResult={pulseResult}
+        wisdomPhrases={testPhrases}
       />,
     );
 
@@ -174,6 +171,7 @@ describe("PulseOverlay", () => {
         isOpen={true}
         onComplete={vi.fn()}
         pulseResult={pulseResult}
+        wisdomPhrases={testPhrases}
       />,
     );
 
@@ -201,6 +199,7 @@ describe("PulseOverlay", () => {
         isOpen={true}
         onComplete={vi.fn()}
         pulseResult={pulseResult}
+        wisdomPhrases={testPhrases}
       />,
     );
 
@@ -229,6 +228,7 @@ describe("PulseOverlay", () => {
         isOpen={true}
         onComplete={onComplete}
         pulseResult={pulseResult}
+        wisdomPhrases={testPhrases}
       />,
     );
 
@@ -259,6 +259,7 @@ describe("PulseOverlay", () => {
         onComplete={vi.fn()}
         pulseResult={pulseResult}
         dashboardReady={false}
+        wisdomPhrases={testPhrases}
       />,
     );
 
@@ -281,6 +282,7 @@ describe("PulseOverlay", () => {
         onComplete={vi.fn()}
         pulseResult={pulseResult}
         dashboardReady={true}
+        wisdomPhrases={testPhrases}
       />,
     );
 
@@ -300,6 +302,7 @@ describe("PulseOverlay", () => {
         isOpen={true}
         onComplete={onComplete}
         pulseResult={pulseResult}
+        wisdomPhrases={testPhrases}
       />,
     );
 
@@ -316,5 +319,28 @@ describe("PulseOverlay", () => {
     });
 
     expect(onComplete).toHaveBeenCalledWith(false);
+  });
+
+  it("should skip wisdom when wisdomPhrases is empty", async () => {
+    const pulseResult = new Promise<boolean>((resolve) =>
+      setTimeout(() => resolve(true), 10000),
+    );
+
+    render(
+      <PulseOverlay
+        isOpen={true}
+        onComplete={vi.fn()}
+        pulseResult={pulseResult}
+        wisdomPhrases={[]}
+      />,
+    );
+
+    // Advance past 1.5s
+    await act(async () => {
+      vi.advanceTimersByTime(1600);
+    });
+
+    // No wisdom text should appear
+    expect(screen.queryByText(/\u201c/)).not.toBeInTheDocument();
   });
 });

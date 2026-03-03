@@ -22,8 +22,6 @@ vi.mock("next-intl", () => ({
       sending: "Sending...",
       sent: "Pulse sent!",
       alreadySent: "You've already pulsed today",
-      count: "60",
-      "phrases.0": "Test wisdom phrase",
     };
     return translations[key] || key;
   },
@@ -104,6 +102,8 @@ vi.mock("@/components/dashboard/dashboard-content", () => ({
   ),
 }));
 
+const testPhrases = ["Test wisdom phrase", "Another wisdom phrase"];
+
 const baseProps = {
   displayName: "Alice",
   isActive: false,
@@ -117,6 +117,7 @@ const baseProps = {
   pulsedDates: [] as string[],
   totalDays: 10,
   todayPulseDay: "2026-03-01",
+  wisdomPhrases: testPhrases,
 };
 
 describe("BrowserDashboardClient – pulse overlay", () => {

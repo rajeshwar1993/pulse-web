@@ -25,6 +25,7 @@ interface AppViewDashboardClientProps {
   pulsedDates: string[];
   totalDays: number;
   todayPulseDay: string;
+  wisdomPhrases: string[];
 }
 
 export function AppViewDashboardClient({
@@ -39,6 +40,7 @@ export function AppViewDashboardClient({
   pulsedDates,
   totalDays,
   todayPulseDay,
+  wisdomPhrases,
 }: AppViewDashboardClientProps) {
   const router = useRouter();
   const { showToast } = useToast();
@@ -97,6 +99,7 @@ export function AppViewDashboardClient({
         onComplete={handleOverlayComplete}
         pulseResult={pulseResultPromise}
         dashboardReady={dashboardReady}
+        wisdomPhrases={wisdomPhrases}
       />
       <DashboardContent
         displayName={displayName}

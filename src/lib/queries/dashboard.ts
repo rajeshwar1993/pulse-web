@@ -15,6 +15,7 @@ import {
   toDashboardConnection,
 } from "./connections";
 import { fetchSeatsWithConnections } from "./seats";
+import { fetchWisdomPhrases } from "./wisdom";
 
 export interface DashboardData {
   displayName: string;
@@ -28,6 +29,7 @@ export interface DashboardData {
   pulsedDates: string[];
   totalDays: number;
   todayPulseDay: string;
+  wisdomPhrases: string[];
 }
 
 /**
@@ -146,6 +148,9 @@ export async function fetchDashboardData(
     missedPulseDate = yStr;
   }
 
+  // --- Wisdom phrases ---
+  const wisdomPhrases = await fetchWisdomPhrases(supabase);
+
   // --- Fetch pending connection requests ---
   const { data: pendingRequestsData } = await supabase
     .from("connection_requests")
@@ -179,5 +184,6 @@ export async function fetchDashboardData(
     pulsedDates,
     totalDays,
     todayPulseDay,
+    wisdomPhrases,
   };
 }

@@ -1,6 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { WisdomCard } from "./wisdom-card";
 
+const samplePhrases = [
+  "A simple pulse is the highlight of a parent's morning.",
+  "Small gestures, big impact.",
+  "You just made someone's day a little brighter.",
+  "Connection doesn't require words, just presence.",
+  "Your check-in is their peace of mind.",
+];
+
 const meta = {
   title: "Dashboard/WisdomCard",
   component: WisdomCard,
@@ -19,6 +27,7 @@ const meta = {
   },
   args: {
     autoDismiss: false,
+    wisdomPhrases: samplePhrases,
   },
 } satisfies Meta<typeof WisdomCard>;
 

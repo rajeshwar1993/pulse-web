@@ -25,6 +25,7 @@ interface BrowserDashboardClientProps {
   pulsedDates: string[];
   totalDays: number;
   todayPulseDay: string;
+  wisdomPhrases: string[];
 }
 
 export function BrowserDashboardClient({
@@ -39,6 +40,7 @@ export function BrowserDashboardClient({
   pulsedDates,
   totalDays,
   todayPulseDay,
+  wisdomPhrases,
 }: BrowserDashboardClientProps) {
   const router = useRouter();
   const { showToast } = useToast();
@@ -97,6 +99,7 @@ export function BrowserDashboardClient({
         onComplete={handleOverlayComplete}
         pulseResult={pulseResultPromise}
         dashboardReady={dashboardReady}
+        wisdomPhrases={wisdomPhrases}
       />
       <DashboardContent
         displayName={displayName}

@@ -40,6 +40,7 @@ export default async function Dashboard() {
         pulsedDates={data.pulsedDates}
         totalDays={data.totalDays}
         todayPulseDay={data.todayPulseDay}
+        wisdomPhrases={data.wisdomPhrases}
       />
     </div>
   );

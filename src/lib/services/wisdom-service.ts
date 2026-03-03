@@ -4,20 +4,14 @@
  * Service for retrieving random wisdom phrase indices with smart logic
  * to prevent consecutive repetitions.
  *
- * Phrases are stored in the i18n system (next-intl) under "wisdom.phrases".
- * This service deals only with numeric indices, not phrase strings.
+ * Phrases are fetched from the `wisdom_phrases` Supabase table and passed
+ * as props. This service deals only with numeric indices, not phrase strings.
  */
 
 import { WISDOM_MAX_ATTEMPTS, WISDOM_SESSION_KEY } from "@/lib/constants";
 import { logger } from "@/lib/utils/logger";
 
 const LAST_WISDOM_KEY = WISDOM_SESSION_KEY;
-
-/**
- * The total number of wisdom phrases available in the i18n system.
- * Must match the "wisdom.count" value in the messages JSON.
- */
-export const WISDOM_PHRASE_COUNT = 60;
 
 /**
  * Get a random wisdom phrase index, ensuring it's different from the last one shown
@@ -28,12 +22,10 @@ export const WISDOM_PHRASE_COUNT = 60;
  * 3. Ensures the new index is different from the last one
  * 4. Stores the new index in sessionStorage for next time
  *
- * @param count - The total number of phrases available (defaults to WISDOM_PHRASE_COUNT)
+ * @param count - The total number of phrases available
  * @returns A random wisdom phrase index (0 to count-1)
  */
-export function getRandomWisdomIndex(
-  count: number = WISDOM_PHRASE_COUNT,
-): number {
+export function getRandomWisdomIndex(count: number): number {
   // Get the last shown wisdom index from session storage
   const lastIndex = getLastWisdomIndex();
 
@@ -119,12 +111,12 @@ export function clearLastWisdom(): void {
  * Get multiple random wisdom phrase indices (for pre-loading or variety)
  *
  * @param requestedCount Number of wisdom phrase indices to retrieve
- * @param totalCount The total number of phrases available (defaults to WISDOM_PHRASE_COUNT)
+ * @param totalCount The total number of phrases available
  * @returns Array of unique wisdom phrase indices
  */
 export function getMultipleWisdomIndices(
   requestedCount: number,
-  totalCount: number = WISDOM_PHRASE_COUNT,
+  totalCount: number,
 ): number[] {
   // Create an array of all indices and shuffle
   const allIndices = Array.from({ length: totalCount }, (_, i) => i);

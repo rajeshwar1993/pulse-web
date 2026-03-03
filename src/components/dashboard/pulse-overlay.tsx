@@ -1,7 +1,6 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { PulseLogo } from "@/components/ui/pulse-logo";
 import { getRandomWisdomIndex } from "@/lib/services/wisdom-service";
@@ -11,6 +10,7 @@ interface PulseOverlayProps {
   onComplete: (success: boolean) => void;
   pulseResult: Promise<boolean> | null;
   dashboardReady?: boolean;
+  wisdomPhrases?: string[];
 }
 
 export function PulseOverlay({
@@ -18,10 +18,10 @@ export function PulseOverlay({
   onComplete,
   pulseResult,
   dashboardReady,
+  wisdomPhrases,
 }: PulseOverlayProps) {
-  const tWisdom = useTranslations("wisdom");
-  const tWisdomRef = useRef(tWisdom);
-  tWisdomRef.current = tWisdom;
+  const wisdomPhrasesRef = useRef(wisdomPhrases ?? []);
+  wisdomPhrasesRef.current = wisdomPhrases ?? [];
   const dashboardReadyRef = useRef(dashboardReady ?? true);
   dashboardReadyRef.current = dashboardReady ?? true;
   const [wisdomText, setWisdomText] = useState<string | null>(null);
@@ -50,10 +50,11 @@ export function PulseOverlay({
     // Show wisdom at 1.5s (no dependency on pulseResult)
     const wisdomTimer = setTimeout(() => {
       if (cancelled) return;
-      const count = Number(tWisdomRef.current("count"));
-      const index = getRandomWisdomIndex(count);
-      const phrase = tWisdomRef.current(`phrases.${index}`);
-      setWisdomText(phrase);
+      const phrases = wisdomPhrasesRef.current;
+      if (phrases.length > 0) {
+        const index = getRandomWisdomIndex(phrases.length);
+        setWisdomText(phrases[index]);
+      }
     }, 1500);
 
     // Ready to exit at 4s, but only if sendPulse has resolved and dashboard is ready

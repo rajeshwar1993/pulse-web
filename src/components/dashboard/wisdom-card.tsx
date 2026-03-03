@@ -6,6 +6,10 @@ import { getRandomWisdomIndex } from "@/lib/services/wisdom-service";
 
 interface WisdomCardProps {
   /**
+   * Array of wisdom phrase strings fetched from the database
+   */
+  wisdomPhrases?: string[];
+  /**
    * Whether to auto-dismiss the card after a delay
    * @default true
    */
@@ -32,26 +36,28 @@ interface WisdomCardProps {
  * - Glassmorph styling
  */
 export function WisdomCard({
+  wisdomPhrases,
   autoDismiss = true,
   dismissDelay = 3000,
   onDismiss,
 }: WisdomCardProps) {
   const t = useTranslations("common");
   const tWisdom = useTranslations("dashboard.wisdomCard");
-  const tPhrases = useTranslations("wisdom");
-  const [wisdomIndex, setWisdomIndex] = useState<number | null>(null);
+  const [wisdomText, setWisdomText] = useState<string | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [shouldRender, setShouldRender] = useState(true);
 
   // Load wisdom on mount
   useEffect(() => {
-    const count = Number(tPhrases("count"));
-    const selectedIndex = getRandomWisdomIndex(count);
-    setWisdomIndex(selectedIndex);
+    const phrases = wisdomPhrases ?? [];
+    if (phrases.length === 0) return;
+
+    const index = getRandomWisdomIndex(phrases.length);
+    setWisdomText(phrases[index]);
 
     // Trigger fade-in animation after a brief delay
     setTimeout(() => setIsVisible(true), 100);
-  }, [tPhrases]);
+  }, [wisdomPhrases]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: handleDismiss is stable — only depends on setState calls
   useEffect(() => {
@@ -75,11 +81,9 @@ export function WisdomCard({
     }, 300); // Match CSS transition duration
   };
 
-  if (!shouldRender || wisdomIndex === null) {
+  if (!shouldRender || wisdomText === null) {
     return null;
   }
-
-  const wisdom = tPhrases(`phrases.${wisdomIndex}`);
 
   return (
     <button
@@ -107,7 +111,7 @@ export function WisdomCard({
 
       {/* Wisdom text */}
       <p className="text-center text-[var(--slate-700)] text-lg leading-relaxed font-medium">
-        "{wisdom}"
+        "{wisdomText}"
       </p>
 
       {/* Dismiss hint */}

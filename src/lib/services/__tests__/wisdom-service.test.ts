@@ -3,8 +3,9 @@ import {
   clearLastWisdom,
   getMultipleWisdomIndices,
   getRandomWisdomIndex,
-  WISDOM_PHRASE_COUNT,
 } from "../wisdom-service";
+
+const PHRASE_COUNT = 60;
 
 describe("wisdom-service", () => {
   beforeEach(() => {
@@ -12,27 +13,21 @@ describe("wisdom-service", () => {
     clearLastWisdom();
   });
 
-  describe("WISDOM_PHRASE_COUNT", () => {
-    it("should be 60", () => {
-      expect(WISDOM_PHRASE_COUNT).toBe(60);
-    });
-  });
-
   describe("getRandomWisdomIndex", () => {
     it("should return a number", () => {
-      const index = getRandomWisdomIndex();
+      const index = getRandomWisdomIndex(PHRASE_COUNT);
       expect(typeof index).toBe("number");
     });
 
     it("should return an index within the valid range", () => {
-      const index = getRandomWisdomIndex();
+      const index = getRandomWisdomIndex(PHRASE_COUNT);
       expect(index).toBeGreaterThanOrEqual(0);
-      expect(index).toBeLessThan(WISDOM_PHRASE_COUNT);
+      expect(index).toBeLessThan(PHRASE_COUNT);
     });
 
     it("should not return the same index twice consecutively", () => {
-      const firstIndex = getRandomWisdomIndex();
-      const secondIndex = getRandomWisdomIndex();
+      const firstIndex = getRandomWisdomIndex(PHRASE_COUNT);
+      const secondIndex = getRandomWisdomIndex(PHRASE_COUNT);
 
       // With 60 phrases, it's extremely unlikely to get the same index twice
       // if the no-repeat logic is working correctly
@@ -44,7 +39,7 @@ describe("wisdom-service", () => {
 
       // Call 10 times and collect unique values
       for (let i = 0; i < 10; i++) {
-        indices.add(getRandomWisdomIndex());
+        indices.add(getRandomWisdomIndex(PHRASE_COUNT));
       }
 
       // Should have gotten at least 5 unique indices (statistically very likely)
@@ -54,7 +49,7 @@ describe("wisdom-service", () => {
     it("should handle consecutive calls without errors", () => {
       expect(() => {
         for (let i = 0; i < 20; i++) {
-          getRandomWisdomIndex();
+          getRandomWisdomIndex(PHRASE_COUNT);
         }
       }).not.toThrow();
     });
@@ -75,39 +70,39 @@ describe("wisdom-service", () => {
   describe("clearLastWisdom", () => {
     it("should clear the last wisdom index from storage", () => {
       // Set a wisdom index
-      getRandomWisdomIndex();
+      getRandomWisdomIndex(PHRASE_COUNT);
 
       // Clear it
       clearLastWisdom();
 
       // Next call should work without issues
-      const index = getRandomWisdomIndex();
+      const index = getRandomWisdomIndex(PHRASE_COUNT);
       expect(typeof index).toBe("number");
     });
   });
 
   describe("getMultipleWisdomIndices", () => {
     it("should return requested number of wisdom indices", () => {
-      const indices = getMultipleWisdomIndices(5);
+      const indices = getMultipleWisdomIndices(5, PHRASE_COUNT);
       expect(indices).toHaveLength(5);
     });
 
     it("should return unique wisdom indices", () => {
-      const indices = getMultipleWisdomIndices(10);
+      const indices = getMultipleWisdomIndices(10, PHRASE_COUNT);
       const uniqueIndices = new Set(indices);
       expect(uniqueIndices.size).toBe(10);
     });
 
     it("should not exceed total count", () => {
-      const indices = getMultipleWisdomIndices(1000);
-      expect(indices.length).toBeLessThanOrEqual(WISDOM_PHRASE_COUNT);
+      const indices = getMultipleWisdomIndices(1000, PHRASE_COUNT);
+      expect(indices.length).toBeLessThanOrEqual(PHRASE_COUNT);
     });
 
     it("should return valid indices within range", () => {
-      const indices = getMultipleWisdomIndices(10);
+      const indices = getMultipleWisdomIndices(10, PHRASE_COUNT);
       for (const index of indices) {
         expect(index).toBeGreaterThanOrEqual(0);
-        expect(index).toBeLessThan(WISDOM_PHRASE_COUNT);
+        expect(index).toBeLessThan(PHRASE_COUNT);
       }
     });
 
