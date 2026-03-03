@@ -149,7 +149,7 @@ export default function ProfileSetup() {
 
   return (
     <div className="max-w-2xl mx-auto">
-        <Heading as="h1" size="lg" className="text-[var(--teal)] mb-8">
+        <Heading as="h1" size="lg" className="text-black mb-8">
           {isEditMode ? t("editTitle") : t("title")}
         </Heading>
 

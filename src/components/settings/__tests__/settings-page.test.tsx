@@ -59,12 +59,20 @@ describe("SettingsPage", () => {
     expect(screen.getByText("Language")).toBeInTheDocument();
   });
 
-  it("should render a back link to the dashboard", () => {
+  it("should not render a back link when dashboardHref is omitted", () => {
     render(<SettingsPage currentLocale="en" />);
+
+    expect(
+      screen.queryByRole("link", { name: /back to dashboard/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("should render a back link when dashboardHref is provided", () => {
+    render(<SettingsPage currentLocale="en" dashboardHref="/dashboard" />);
 
     const backLink = screen.getByRole("link", { name: /back to dashboard/i });
     expect(backLink).toBeInTheDocument();
-    expect(backLink).toHaveAttribute("href", "/appview/dashboard");
+    expect(backLink).toHaveAttribute("href", "/dashboard");
   });
 
   it("should render the LanguageSelector component", () => {

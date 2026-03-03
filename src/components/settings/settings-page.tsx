@@ -20,7 +20,7 @@ interface SettingsPageProps {
 
 export function SettingsPage({
   currentLocale,
-  dashboardHref = "/appview/dashboard",
+  dashboardHref,
   profile,
   profileSetupHref = "/appview/profile-setup?mode=edit",
 }: SettingsPageProps) {
@@ -47,32 +47,38 @@ export function SettingsPage({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <Link
-          href={dashboardHref}
-          className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-[var(--slate-100)] transition-colors"
-          aria-label={t("backToDashboard")}
-        >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="text-[var(--slate-700)]"
-            aria-hidden="true"
+      {dashboardHref ? (
+        <div className="flex items-center gap-3">
+          <Link
+            href={dashboardHref}
+            className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-[var(--slate-100)] transition-colors"
+            aria-label={t("backToDashboard")}
           >
-            <path d="M19 12H5" />
-            <path d="m12 19-7-7 7-7" />
-          </svg>
-        </Link>
-        <Heading as="h1" size="md">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-[var(--slate-700)]"
+              aria-hidden="true"
+            >
+              <path d="M19 12H5" />
+              <path d="m12 19-7-7 7-7" />
+            </svg>
+          </Link>
+          <Heading as="h1" size="md">
+            {t("title")}
+          </Heading>
+        </div>
+      ) : (
+        <Heading as="h1" size="lg" className="text-black">
           {t("title")}
         </Heading>
-      </div>
+      )}
 
       {/* Profile Section */}
       {profile && (

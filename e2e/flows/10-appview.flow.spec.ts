@@ -41,7 +41,7 @@ test.describe("10 — AppView Flow", () => {
     expect(locale).toBe("en");
   });
 
-  test("navigation: dashboard → settings → back", async ({
+  test("navigation: dashboard → settings → dashboard via bottom nav", async ({
     page,
     flutterBridge,
   }) => {
@@ -55,7 +55,7 @@ test.describe("10 — AppView Flow", () => {
     const settings = new SettingsPage(page);
     await expect(settings.title).toBeVisible();
 
-    await settings.navigateBack();
+    await settings.navigateBackViaBottomNav();
     await page.waitForURL("**/appview/dashboard", { timeout: 10_000 });
   });
 

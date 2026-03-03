@@ -46,6 +46,7 @@ export default async function BrowserConnectionDetailPage({
       stats={stats}
       connectionId={id}
       routePrefix=""
+      showBackButton
     />
   );
 }

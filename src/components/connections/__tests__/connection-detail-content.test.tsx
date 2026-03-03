@@ -210,7 +210,19 @@ describe("ConnectionDetailContent", () => {
     expect(mockRemoveConnection).toHaveBeenCalledWith("conn-1");
   });
 
-  it("navigates back to dashboard on back button click", async () => {
+  it("does not render back button by default", () => {
+    render(
+      <ConnectionDetailContent
+        stats={baseStats}
+        connectionId="conn-1"
+        routePrefix="/appview"
+      />,
+    );
+
+    expect(screen.queryByText("Back")).not.toBeInTheDocument();
+  });
+
+  it("navigates back to dashboard on back button click when showBackButton is true", async () => {
     const user = userEvent.setup();
 
     render(
@@ -218,6 +230,7 @@ describe("ConnectionDetailContent", () => {
         stats={baseStats}
         connectionId="conn-1"
         routePrefix="/appview"
+        showBackButton
       />,
     );
 

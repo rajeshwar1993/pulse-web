@@ -18,12 +18,14 @@ interface ConnectionDetailContentProps {
   stats: ConnectionStats;
   connectionId: string;
   routePrefix: string;
+  showBackButton?: boolean;
 }
 
 export function ConnectionDetailContent({
   stats,
   connectionId,
   routePrefix,
+  showBackButton = false,
 }: ConnectionDetailContentProps) {
   const t = useTranslations("connectionDetail");
   const tCommon = useTranslations("common");
@@ -59,30 +61,32 @@ export function ConnectionDetailContent({
 
   return (
     <div className="space-y-6">
-      {/* Back link */}
-      <button
-        type="button"
-        onClick={() => router.push(`${routePrefix}/dashboard`)}
-        className="flex items-center gap-1 text-[var(--slate-600)] hover:text-[var(--slate-900)] transition-colors text-sm font-medium"
-      >
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="none"
-          className="flex-shrink-0"
-          aria-hidden="true"
+      {/* Back link (browser only) */}
+      {showBackButton && (
+        <button
+          type="button"
+          onClick={() => router.push(`${routePrefix}/dashboard`)}
+          className="flex items-center gap-1 text-[var(--slate-600)] hover:text-[var(--slate-900)] transition-colors text-sm font-medium"
         >
-          <path
-            d="M10 12L6 8L10 4"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-        {t("back")}
-      </button>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            className="flex-shrink-0"
+            aria-hidden="true"
+          >
+            <path
+              d="M10 12L6 8L10 4"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          {t("back")}
+        </button>
+      )}
 
       {/* Profile header */}
       <div className="flex items-center gap-4">

@@ -42,7 +42,7 @@ export function ActivityContent({
 
   return (
     <div className="space-y-6">
-      <Heading as="h1" size="lg" className="text-teal-300">
+      <Heading as="h1" size="lg" className="text-black">
         {t("title")}
       </Heading>
 

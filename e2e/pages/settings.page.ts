@@ -10,6 +10,7 @@ export class SettingsPage {
   readonly profileCard: Locator;
   readonly profileName: Locator;
   readonly editProfileLink: Locator;
+  readonly bottomNavDashboard: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -23,6 +24,9 @@ export class SettingsPage {
       .filter({ hasText: /profile/i });
     this.profileName = page.locator("p.truncate");
     this.editProfileLink = page.getByRole("link", { name: /edit profile/i });
+    this.bottomNavDashboard = page.locator(
+      'nav a[href="/appview/dashboard"]',
+    );
   }
 
   async goto() {
@@ -33,8 +37,14 @@ export class SettingsPage {
     await this.page.goto("/settings");
   }
 
+  /** Browser settings: click the back arrow link */
   async navigateBack() {
     await this.backLink.click();
+  }
+
+  /** Appview settings: tap dashboard in bottom nav */
+  async navigateBackViaBottomNav() {
+    await this.bottomNavDashboard.click();
   }
 
   async navigateToEditProfile() {
