@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { fetchDashboardData } from "@/lib/queries/dashboard";
+import { AppViewDashboardClient } from "./page-client";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function Dashboard() {
@@ -28,7 +28,7 @@ export default async function Dashboard() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <DashboardContent
+      <AppViewDashboardClient
         displayName={data.displayName}
         isActive={data.isActive}
         pulseTime={data.pulseTime}
