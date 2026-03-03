@@ -8,7 +8,14 @@ import { Button } from "@/components/ui/button";
 import { FormInput } from "@/components/ui/form-input";
 import { supabase } from "@/lib/supabase/client";
 
-export function ResetPasswordForm() {
+interface ResetPasswordFormProps {
+  /** Route prefix: "" for browser, "/appview" for WebView */
+  routePrefix?: string;
+}
+
+export function ResetPasswordForm({
+  routePrefix = "",
+}: ResetPasswordFormProps) {
   const t = useTranslations("auth.resetPassword");
   const tSignup = useTranslations("auth.signup");
   const router = useRouter();
@@ -43,7 +50,7 @@ export function ResetPasswordForm() {
       return;
     }
 
-    router.push("/auth/login");
+    router.push(`${routePrefix}/auth/login`);
   };
 
   return (

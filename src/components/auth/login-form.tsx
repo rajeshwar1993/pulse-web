@@ -9,7 +9,12 @@ import { Button } from "@/components/ui/button";
 import { FormInput } from "@/components/ui/form-input";
 import { supabase } from "@/lib/supabase/client";
 
-export function LoginForm() {
+interface LoginFormProps {
+  /** Route prefix: "" for browser, "/appview" for WebView */
+  routePrefix?: string;
+}
+
+export function LoginForm({ routePrefix = "" }: LoginFormProps) {
   const t = useTranslations("auth.login");
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -22,15 +27,31 @@ export function LoginForm() {
     setError(null);
     setLoading(true);
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { error: signInError, data } = await supabase.auth.signInWithPassword(
+      {
+        email,
+        password,
+      },
+    );
 
     if (signInError) {
       setError(signInError.message);
       setLoading(false);
       return;
+    }
+
+    // In appview, notify Flutter of the new session
+    if (routePrefix === "/appview" && data.session) {
+      window.FlutterBridge?.postMessage(
+        JSON.stringify({
+          type: "AUTH_COMPLETED",
+          payload: {
+            accessToken: data.session.access_token,
+            refreshToken: data.session.refresh_token,
+            expiresAt: data.session.expires_at,
+          },
+        }),
+      );
     }
 
     // Check if profile exists
@@ -44,9 +65,11 @@ export function LoginForm() {
         .eq("id", user.id)
         .maybeSingle();
 
-      router.push(profile ? "/dashboard" : "/profile-setup");
+      router.push(
+        profile ? `${routePrefix}/dashboard` : `${routePrefix}/profile-setup`,
+      );
     } else {
-      router.push("/dashboard");
+      router.push(`${routePrefix}/dashboard`);
     }
   };
 
@@ -79,7 +102,7 @@ export function LoginForm() {
 
       <div className="text-right">
         <Link
-          href="/auth/forgot-password"
+          href={`${routePrefix}/auth/forgot-password`}
           className="text-sm text-[var(--teal)] hover:text-[var(--teal-400)] transition-colors"
         >
           {t("forgotPassword")}
@@ -93,7 +116,7 @@ export function LoginForm() {
       <p className="text-center text-sm text-[var(--slate-500)]">
         {t("noAccount")}{" "}
         <Link
-          href="/auth/signup"
+          href={`${routePrefix}/auth/signup`}
           className="text-[var(--teal)] hover:text-[var(--teal-400)] font-medium transition-colors"
         >
           {t("signUpLink")}

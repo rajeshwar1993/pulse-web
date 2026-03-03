@@ -8,7 +8,12 @@ import { Button } from "@/components/ui/button";
 import { FormInput } from "@/components/ui/form-input";
 import { supabase } from "@/lib/supabase/client";
 
-export function SignupForm() {
+interface SignupFormProps {
+  /** Route prefix: "" for browser, "/appview" for WebView */
+  routePrefix?: string;
+}
+
+export function SignupForm({ routePrefix = "" }: SignupFormProps) {
   const t = useTranslations("auth.signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,7 +42,7 @@ export function SignupForm() {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `${window.location.origin}${routePrefix}/auth/callback`,
       },
     });
 
@@ -76,7 +81,7 @@ export function SignupForm() {
         <p className="text-sm text-[var(--slate-500)]">
           {t("hasAccount")}{" "}
           <Link
-            href="/auth/login"
+            href={`${routePrefix}/auth/login`}
             className="text-[var(--teal)] hover:text-[var(--teal-400)] font-medium transition-colors"
           >
             {t("logInLink")}

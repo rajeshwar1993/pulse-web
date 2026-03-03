@@ -8,7 +8,14 @@ import { Button } from "@/components/ui/button";
 import { FormInput } from "@/components/ui/form-input";
 import { supabase } from "@/lib/supabase/client";
 
-export function ForgotPasswordForm() {
+interface ForgotPasswordFormProps {
+  /** Route prefix: "" for browser, "/appview" for WebView */
+  routePrefix?: string;
+}
+
+export function ForgotPasswordForm({
+  routePrefix = "",
+}: ForgotPasswordFormProps) {
   const t = useTranslations("auth.forgotPassword");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,7 +29,9 @@ export function ForgotPasswordForm() {
 
     const { error: resetError } = await supabase.auth.resetPasswordForEmail(
       email,
-      { redirectTo: `${window.location.origin}/reset-password` },
+      {
+        redirectTo: `${window.location.origin}${routePrefix}/auth/reset-password`,
+      },
     );
 
     if (resetError) {
@@ -58,7 +67,7 @@ export function ForgotPasswordForm() {
           {t("successMessage")}
         </p>
         <Link
-          href="/auth/login"
+          href={`${routePrefix}/auth/login`}
           className="inline-block text-sm text-[var(--teal)] hover:text-[var(--teal-400)] font-medium transition-colors"
         >
           {t("backToLogin")}
@@ -89,7 +98,7 @@ export function ForgotPasswordForm() {
 
       <p className="text-center">
         <Link
-          href="/auth/login"
+          href={`${routePrefix}/auth/login`}
           className="text-sm text-[var(--teal)] hover:text-[var(--teal-400)] font-medium transition-colors"
         >
           {t("backToLogin")}
