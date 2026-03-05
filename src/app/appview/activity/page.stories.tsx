@@ -1,10 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect } from "storybook/test";
 import { ActivityContent } from "@/components/activity/activity-content";
-import {
-  mockCalendarScattered,
-  mockCalendarStreak,
-} from "@/stories/mock-data";
+import { mockCalendarScattered, mockCalendarStreak } from "@/stories/mock-data";
 
 function todayStr(): string {
   const d = new Date();

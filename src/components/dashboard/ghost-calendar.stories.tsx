@@ -99,8 +99,12 @@ export const NewUser: Story = {
         `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
       // Joined 3 days ago, pulsed first 2 days
       return [
-        fmt(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 2)),
-        fmt(new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)),
+        fmt(
+          new Date(today.getFullYear(), today.getMonth(), today.getDate() - 2),
+        ),
+        fmt(
+          new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1),
+        ),
       ];
     })(),
     memberSince: (() => {

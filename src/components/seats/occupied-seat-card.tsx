@@ -86,17 +86,13 @@ export function OccupiedSeatCard({ seat, onClick }: OccupiedSeatCardProps) {
               <>
                 {" "}
                 •{" "}
-                <span className="text-[var(--slate-500)]">
-                  {formattedTime}
-                </span>
+                <span className="text-[var(--slate-500)]">{formattedTime}</span>
               </>
             )}
           </>
         ) : (
           <span className="text-[var(--slate-500)]">
-            {waitingContext === "morning"
-              ? t("earlyMorning")
-              : t("waiting")}
+            {waitingContext === "morning" ? t("earlyMorning") : t("waiting")}
           </span>
         )}
       </p>

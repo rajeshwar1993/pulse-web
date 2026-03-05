@@ -3,9 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { GhostCalendar } from "../ghost-calendar";
 
 vi.mock("@/components/ui/card", () => ({
-  Card: ({
-    children,
-  }: { children: React.ReactNode }) => (
+  Card: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="card">{children}</div>
   ),
 }));
@@ -88,7 +86,13 @@ describe("GhostCalendar", () => {
     const headers = screen.getAllByTestId("weekday-header");
     expect(headers).toHaveLength(7);
     expect(headers.map((h) => h.textContent)).toEqual([
-      "S", "M", "T", "W", "T", "F", "S",
+      "S",
+      "M",
+      "T",
+      "W",
+      "T",
+      "F",
+      "S",
     ]);
   });
 

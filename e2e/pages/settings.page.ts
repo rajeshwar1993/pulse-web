@@ -24,9 +24,7 @@ export class SettingsPage {
       .filter({ hasText: /profile/i });
     this.profileName = page.locator("p.truncate");
     this.editProfileLink = page.getByRole("link", { name: /edit profile/i });
-    this.bottomNavDashboard = page.locator(
-      'nav a[href="/appview/dashboard"]',
-    );
+    this.bottomNavDashboard = page.locator('nav a[href="/appview/dashboard"]');
   }
 
   async goto() {

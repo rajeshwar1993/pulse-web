@@ -80,7 +80,9 @@ describe("PulseOverlay", () => {
       />,
     );
 
-    expect(container.querySelector(".animate-heartbeat")).not.toBeInTheDocument();
+    expect(
+      container.querySelector(".animate-heartbeat"),
+    ).not.toBeInTheDocument();
   });
 
   it("should apply heartbeat animation class to logo wrapper", () => {
@@ -216,7 +218,9 @@ describe("PulseOverlay", () => {
       await pulseResult;
     });
 
-    expect(container.querySelector(".animate-heartbeat")).not.toBeInTheDocument();
+    expect(
+      container.querySelector(".animate-heartbeat"),
+    ).not.toBeInTheDocument();
   });
 
   it("should call onComplete with success=true when pulse succeeds", async () => {
@@ -290,7 +294,9 @@ describe("PulseOverlay", () => {
       await Promise.resolve();
     });
 
-    expect(container.querySelector(".animate-heartbeat")).not.toBeInTheDocument();
+    expect(
+      container.querySelector(".animate-heartbeat"),
+    ).not.toBeInTheDocument();
   });
 
   it("should call onComplete with success=false when pulse fails", async () => {

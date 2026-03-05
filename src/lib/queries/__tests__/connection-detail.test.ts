@@ -5,10 +5,13 @@ vi.mock("@/lib/utils/streak", () => ({
   getEffectiveStreak: (streak: number) => streak,
 }));
 
-function mockClient(data: Record<string, unknown>[] | null, error: unknown = null) {
+function mockClient(
+  data: Record<string, unknown>[] | null,
+  error: unknown = null,
+) {
   return {
     rpc: vi.fn().mockResolvedValue({ data, error }),
-  // biome-ignore lint/suspicious/noExplicitAny: mock client
+    // biome-ignore lint/suspicious/noExplicitAny: mock client
   } as any;
 }
 

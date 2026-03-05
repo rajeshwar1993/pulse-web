@@ -46,10 +46,7 @@ vi.mock("react", async (importOriginal) => {
   return {
     ...actual,
     useTransition: () =>
-      [false, stableStartTransition] as [
-        boolean,
-        (fn: () => void) => void,
-      ],
+      [false, stableStartTransition] as [boolean, (fn: () => void) => void],
   };
 });
 
@@ -136,7 +133,9 @@ describe("BrowserDashboardClient – pulse overlay", () => {
 
     const { container } = render(<BrowserDashboardClient {...baseProps} />);
 
-    expect(container.querySelector(".animate-heartbeat")).not.toBeInTheDocument();
+    expect(
+      container.querySelector(".animate-heartbeat"),
+    ).not.toBeInTheDocument();
 
     await act(async () => {
       screen.getByTestId("pulse-btn").click();

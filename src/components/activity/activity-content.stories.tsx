@@ -55,7 +55,9 @@ export const WithStreak: Story = {
     await step("Verify stats", async () => {
       await expect(canvas.getByText("142")).toBeVisible();
       await expect(canvas.getByText("Member Since")).toBeVisible();
-      await expect(canvas.getAllByText("Total Pulses").length).toBeGreaterThanOrEqual(1);
+      await expect(
+        canvas.getAllByText("Total Pulses").length,
+      ).toBeGreaterThanOrEqual(1);
     });
 
     await step("Verify pulse rate is visible", async () => {

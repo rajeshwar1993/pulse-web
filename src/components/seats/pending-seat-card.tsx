@@ -59,20 +59,21 @@ export function PendingSeatCard({ seat, onClick }: PendingSeatCardProps) {
           <p className="text-sm font-semibold text-[var(--pulse-purple)]">
             {label}
           </p>
-          {seat.pendingInfo && (
-            isInviteCode ? (
+          {seat.pendingInfo &&
+            (isInviteCode ? (
               <>
                 <span className="inline-block mt-1 bg-[var(--pulse-purple)]/10 rounded-md px-3 py-1 font-mono text-base font-bold text-[var(--pulse-purple)]">
                   {seat.pendingInfo.label}
                 </span>
-                <p className="text-xs text-[var(--slate-400)] mt-1">{t("clickToCopyCode")}</p>
+                <p className="text-xs text-[var(--slate-400)] mt-1">
+                  {t("clickToCopyCode")}
+                </p>
               </>
             ) : (
               <p className="text-sm text-[var(--slate-500)] truncate mt-0.5">
                 {seat.pendingInfo.label}
               </p>
-            )
-          )}
+            ))}
         </div>
       </div>
       <div className="flex items-center justify-between mt-3">

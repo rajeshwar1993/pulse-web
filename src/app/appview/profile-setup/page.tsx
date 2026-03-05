@@ -149,107 +149,107 @@ export default function ProfileSetup() {
 
   return (
     <div className="max-w-2xl mx-auto">
-        <Heading as="h1" size="lg" className="text-black mb-8">
-          {isEditMode ? t("editTitle") : t("title")}
-        </Heading>
+      <Heading as="h1" size="lg" className="text-black mb-8">
+        {isEditMode ? t("editTitle") : t("title")}
+      </Heading>
 
-        {isLoadingProfile ? (
-          <div className="text-center py-8 text-[var(--slate-500)]">
-            {tCommon("loading")}
+      {isLoadingProfile ? (
+        <div className="text-center py-8 text-[var(--slate-500)]">
+          {tCommon("loading")}
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          {/* Error Message */}
+          {error && (
+            <Alert variant="error" className="mb-6">
+              {error}
+            </Alert>
+          )}
+
+          {/* Display Name */}
+          <div className="mb-6">
+            <FormInput
+              label={t("displayNameLabel")}
+              htmlFor="display-name"
+              type="text"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              maxLength={DISPLAY_NAME_MAX_LENGTH}
+              placeholder={t("displayNamePlaceholder")}
+              disabled={isLoading}
+            />
+            <div className="text-sm text-[var(--slate-500)] mt-1">
+              {t("displayNameCount", { count: displayName.length })}
+            </div>
           </div>
-        ) : (
-          <form onSubmit={handleSubmit}>
-            {/* Error Message */}
-            {error && (
-              <Alert variant="error" className="mb-6">
-                {error}
-              </Alert>
-            )}
 
-            {/* Display Name */}
-            <div className="mb-6">
-              <FormInput
-                label={t("displayNameLabel")}
-                htmlFor="display-name"
-                type="text"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                maxLength={DISPLAY_NAME_MAX_LENGTH}
-                placeholder={t("displayNamePlaceholder")}
-                disabled={isLoading}
-              />
-              <div className="text-sm text-[var(--slate-500)] mt-1">
-                {t("displayNameCount", { count: displayName.length })}
-              </div>
-            </div>
-
-            {/* Avatar Gallery */}
-            <div className="mb-6">
-              {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes the avatar gallery grid, not a single control */}
-              <label className="block text-[var(--slate-700)] font-semibold mb-2">
-                {t("chooseAvatar")}
-              </label>
-              <div className="grid grid-cols-5 gap-3">
-                {avatarUrls.map((url) => (
-                  <button
-                    key={url}
-                    type="button"
-                    onClick={() => setSelectedAvatar(url)}
-                    disabled={isLoading}
-                    className={`aspect-square rounded-lg border-2 overflow-hidden transition-all ${
-                      selectedAvatar === url
-                        ? "border-[var(--teal)] ring-2 ring-[var(--teal)] ring-opacity-50"
-                        : "border-[var(--slate-200)] hover:border-[var(--slate-400)]"
-                    }`}
-                  >
-                    <Image
-                      src={url}
-                      alt={t("avatarAlt")}
-                      width={100}
-                      height={100}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Selected Avatar Preview */}
-            {selectedAvatar && (
-              <div className="mb-6">
-                {/* biome-ignore lint/a11y/noLabelWithoutControl: presentational label for avatar preview */}
-                <label className="block text-[var(--slate-700)] font-semibold mb-2">
-                  {t("selectedAvatar")}
-                </label>
-                <div className="w-32 h-32 mx-auto border-4 border-[var(--teal)] rounded-xl overflow-hidden">
+          {/* Avatar Gallery */}
+          <div className="mb-6">
+            {/* biome-ignore lint/a11y/noLabelWithoutControl: label describes the avatar gallery grid, not a single control */}
+            <label className="block text-[var(--slate-700)] font-semibold mb-2">
+              {t("chooseAvatar")}
+            </label>
+            <div className="grid grid-cols-5 gap-3">
+              {avatarUrls.map((url) => (
+                <button
+                  key={url}
+                  type="button"
+                  onClick={() => setSelectedAvatar(url)}
+                  disabled={isLoading}
+                  className={`aspect-square rounded-lg border-2 overflow-hidden transition-all ${
+                    selectedAvatar === url
+                      ? "border-[var(--teal)] ring-2 ring-[var(--teal)] ring-opacity-50"
+                      : "border-[var(--slate-200)] hover:border-[var(--slate-400)]"
+                  }`}
+                >
                   <Image
-                    src={selectedAvatar}
-                    alt={t("selectedAlt")}
-                    width={128}
-                    height={128}
+                    src={url}
+                    alt={t("avatarAlt")}
+                    width={100}
+                    height={100}
                     className="w-full h-full object-cover"
                   />
-                </div>
-              </div>
-            )}
+                </button>
+              ))}
+            </div>
+          </div>
 
-            {/* Submit Button */}
-            <Button
-              type="submit"
-              size="lg"
-              loading={isLoading}
-              disabled={!isValid || isLoading}
-            >
-              {isLoading
-                ? isEditMode
-                  ? t("saving")
-                  : t("creating")
-                : isEditMode
-                  ? tCommon("save")
-                  : t("continue")}
-            </Button>
-          </form>
-        )}
-      </div>
+          {/* Selected Avatar Preview */}
+          {selectedAvatar && (
+            <div className="mb-6">
+              {/* biome-ignore lint/a11y/noLabelWithoutControl: presentational label for avatar preview */}
+              <label className="block text-[var(--slate-700)] font-semibold mb-2">
+                {t("selectedAvatar")}
+              </label>
+              <div className="w-32 h-32 mx-auto border-4 border-[var(--teal)] rounded-xl overflow-hidden">
+                <Image
+                  src={selectedAvatar}
+                  alt={t("selectedAlt")}
+                  width={128}
+                  height={128}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Submit Button */}
+          <Button
+            type="submit"
+            size="lg"
+            loading={isLoading}
+            disabled={!isValid || isLoading}
+          >
+            {isLoading
+              ? isEditMode
+                ? t("saving")
+                : t("creating")
+              : isEditMode
+                ? tCommon("save")
+                : t("continue")}
+          </Button>
+        </form>
+      )}
+    </div>
   );
 }

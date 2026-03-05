@@ -60,10 +60,7 @@ function getTestId(status: DayStatus): string {
 }
 
 /** Find runs of 7+ consecutive pulsed days and return a Set of dates in those runs. */
-function findStreakDates(
-  dates: string[],
-  pulsedSet: Set<string>,
-): Set<string> {
+function findStreakDates(dates: string[], pulsedSet: Set<string>): Set<string> {
   const streakDates = new Set<string>();
   let runStart = -1;
 
@@ -180,7 +177,8 @@ export function GhostCalendar({
           const col = gridIndex % COLUMNS;
           const dayIndex = dates.indexOf(date);
           const isStreakStart =
-            isInStreak && (dayIndex === 0 || !streakDates.has(dates[dayIndex - 1]));
+            isInStreak &&
+            (dayIndex === 0 || !streakDates.has(dates[dayIndex - 1]));
           const isStreakEnd =
             isInStreak &&
             (dayIndex === dates.length - 1 ||
@@ -198,7 +196,10 @@ export function GhostCalendar({
             .join(" ");
 
           return (
-            <div key={date} className="flex items-center justify-center relative h-8">
+            <div
+              key={date}
+              className="flex items-center justify-center relative h-8"
+            >
               {isInStreak && (
                 <div
                   data-testid="streak-bg"

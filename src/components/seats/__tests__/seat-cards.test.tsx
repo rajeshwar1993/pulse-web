@@ -7,33 +7,34 @@ import { PendingSeatCard } from "../pending-seat-card";
 import { SeatCard } from "../seat-card";
 
 vi.mock("next-intl", () => ({
-  useTranslations: (namespace?: string) => (key: string, params?: Record<string, unknown>) => {
-    const translations: Record<string, Record<string, string>> = {
-      seats: {
-        addConnection: "Add Connection",
-        inviteCodeShared: "Invite code shared",
-        requestSent: "Request sent",
-        tapToCancel: "Tap to cancel",
-        waitingForResponse: "Waiting for response",
-        clickToCopyCode: "Click to copy code",
-        seatLabel: "Seat {number}",
-        expired: "Expired",
-        tapToRenew: "Tap to renew",
-        gridTitle: "Your Connections ({count})",
-      },
-      common: {
-        cancel: "Cancel",
-      },
-    };
-    const ns = namespace || "seats";
-    let result = translations[ns]?.[key] || translations.seats[key] || key;
-    if (params) {
-      for (const [k, v] of Object.entries(params)) {
-        result = result.replace(`{${k}}`, String(v));
+  useTranslations:
+    (namespace?: string) => (key: string, params?: Record<string, unknown>) => {
+      const translations: Record<string, Record<string, string>> = {
+        seats: {
+          addConnection: "Add Connection",
+          inviteCodeShared: "Invite code shared",
+          requestSent: "Request sent",
+          tapToCancel: "Tap to cancel",
+          waitingForResponse: "Waiting for response",
+          clickToCopyCode: "Click to copy code",
+          seatLabel: "Seat {number}",
+          expired: "Expired",
+          tapToRenew: "Tap to renew",
+          gridTitle: "Your Connections ({count})",
+        },
+        common: {
+          cancel: "Cancel",
+        },
+      };
+      const ns = namespace || "seats";
+      let result = translations[ns]?.[key] || translations.seats[key] || key;
+      if (params) {
+        for (const [k, v] of Object.entries(params)) {
+          result = result.replace(`{${k}}`, String(v));
+        }
       }
-    }
-    return result;
-  },
+      return result;
+    },
   useLocale: () => "en",
 }));
 

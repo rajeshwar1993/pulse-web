@@ -7,9 +7,24 @@ const sizeStyles: Record<
   AvatarSize,
   { container: string; image: number; dot: string; heartDot: string }
 > = {
-  sm: { container: "w-10 h-10", image: 40, dot: "w-3 h-3", heartDot: "w-3.5 h-3.5" },
-  md: { container: "w-12 h-12", image: 48, dot: "w-4 h-4", heartDot: "w-4 h-4" },
-  lg: { container: "w-16 h-16", image: 64, dot: "w-4 h-4", heartDot: "w-4.5 h-4.5" },
+  sm: {
+    container: "w-10 h-10",
+    image: 40,
+    dot: "w-3 h-3",
+    heartDot: "w-3.5 h-3.5",
+  },
+  md: {
+    container: "w-12 h-12",
+    image: 48,
+    dot: "w-4 h-4",
+    heartDot: "w-4 h-4",
+  },
+  lg: {
+    container: "w-16 h-16",
+    image: 64,
+    dot: "w-4 h-4",
+    heartDot: "w-4.5 h-4.5",
+  },
 };
 
 const ringStyles: Record<AvatarStatus, string> = {
