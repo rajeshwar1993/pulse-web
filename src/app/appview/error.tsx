@@ -1,16 +1,22 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { IconBadge } from "@/components/ui/icon-badge";
 
 export default function AppViewError({
-  error: _error,
+  error,
   reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    Sentry.captureException(error);
+  }, [error]);
+
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center max-w-md">

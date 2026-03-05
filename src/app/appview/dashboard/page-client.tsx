@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import posthog from "posthog-js";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { PulseOverlay } from "@/components/dashboard/pulse-overlay";
@@ -67,6 +68,7 @@ export function AppViewDashboardClient({
     let cancelled = false;
     pulseResultPromise.then((success) => {
       if (cancelled) return;
+      posthog.capture("auto_pulse_web", { success });
       setRefreshStarted(true);
       if (success) {
         startTransition(() => {

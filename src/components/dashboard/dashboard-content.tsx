@@ -2,14 +2,16 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import posthog from "posthog-js";
 import { useCallback, useEffect, useState } from "react";
-import { CancelInviteModal } from "@/components/seats/cancel-invite-modal";
 import { InviteModal } from "@/components/connections/invite-modal";
+import { CancelInviteModal } from "@/components/seats/cancel-invite-modal";
 import { RenewSeatModal } from "@/components/seats/renew-seat-modal";
 import { SeatGrid } from "@/components/seats/seat-grid";
 import { Heading } from "@/components/ui/heading";
-import { FLUTTER_READY_SIGNAL_DELAY_MS } from "@/lib/constants";
+import { usePosthogIdentify } from "@/hooks/use-posthog-identify";
 import { useSeenReceipts } from "@/hooks/use-seen-receipts";
+import { FLUTTER_READY_SIGNAL_DELAY_MS } from "@/lib/constants";
 import type {
   ConnectionRequestWithProfile,
   DashboardConnection,
@@ -64,6 +66,7 @@ export function DashboardContent({
   const router = useRouter();
   const pathname = usePathname();
   useSeenReceipts(connections);
+  usePosthogIdentify();
   const [showMissedPulseSurvey, setShowMissedPulseSurvey] = useState(
     !!missedPulseDate,
   );
@@ -109,6 +112,16 @@ export function DashboardContent({
     const timer = setTimeout(sendReadySignal, FLUTTER_READY_SIGNAL_DELAY_MS);
 
     return () => clearTimeout(timer);
+  }, []);
+
+  // Track dashboard load in PostHog (fire once on mount, not on prop changes)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: intentional mount-only
+  useEffect(() => {
+    posthog.capture("dashboard_loaded", {
+      is_active: isActive,
+      connection_count: connections.length,
+      current_streak: currentStreak,
+    });
   }, []);
 
   // Get greeting based on time of day
@@ -208,7 +221,6 @@ export function DashboardContent({
           }}
         />
       )}
-
     </div>
   );
 }

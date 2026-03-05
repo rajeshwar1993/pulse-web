@@ -1,17 +1,23 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import Link from "next/link";
+import { useEffect } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { IconBadge } from "@/components/ui/icon-badge";
 
 export default function BrowserError({
-  error: _error,
+  error,
   reset,
 }: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  useEffect(() => {
+    Sentry.captureException(error);
+  }, [error]);
+
   return (
     <div className="text-center max-w-md mx-auto py-16">
       <IconBadge color="rose" size="md" className="mx-auto mb-6">
