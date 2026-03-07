@@ -1,10 +1,10 @@
-import { test, expect } from "@playwright/test";
-import { TEST_USER_A } from "../config";
-import { SettingsPage } from "../pages/settings.page";
-import { ProfileSetupPage } from "../pages/profile-setup.page";
+import { expect, test } from "@playwright/test";
 import { getUserIdByEmail } from "../admin/auth";
 import { getProfile, updateProfile } from "../admin/profiles";
 import { verifyProfileField } from "../admin/verify";
+import { TEST_USER_A } from "../config";
+import { ProfileSetupPage } from "../pages/profile-setup.page";
+import { SettingsPage } from "../pages/settings.page";
 
 test.describe("07 — Profile & Settings Flow", () => {
   test.describe.configure({ mode: "serial" });

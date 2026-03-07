@@ -1,9 +1,9 @@
-import { test, expect } from "@playwright/test";
-import { TEST_USER_A } from "../config";
-import { DashboardPage } from "../pages/dashboard.page";
+import { expect, test } from "@playwright/test";
 import { getUserIdByEmail } from "../admin/auth";
 import { deleteUserPulses, insertPulse } from "../admin/pulses";
-import { verifyPulseExists, verifyNoPulseToday } from "../admin/verify";
+import { verifyNoPulseToday, verifyPulseExists } from "../admin/verify";
+import { TEST_USER_A } from "../config";
+import { DashboardPage } from "../pages/dashboard.page";
 
 test.describe("03 — Dashboard Pulse Flow @smoke", () => {
   test.describe.configure({ mode: "serial" });

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { DashboardConnection } from "@/lib/types/connection";
 import { recordSeenReceipts } from "@/lib/services/seen-receipt-service";
+import type { DashboardConnection } from "@/lib/types/connection";
 import { getTodayPulseDay } from "@/lib/utils/streak";
 
 /**

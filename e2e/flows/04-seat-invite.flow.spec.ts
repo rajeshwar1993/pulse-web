@@ -1,9 +1,9 @@
-import { test, expect } from "@playwright/test";
-import { TEST_USER_A } from "../config";
-import { DashboardPage } from "../pages/dashboard.page";
+import { expect, test } from "@playwright/test";
 import { getUserIdByEmail } from "../admin/auth";
 import { deleteUserConnections } from "../admin/connections";
 import { deleteUserInviteCodes } from "../admin/invites";
+import { TEST_USER_A } from "../config";
+import { DashboardPage } from "../pages/dashboard.page";
 
 test.describe("04 — Seat Invite Flow", () => {
   test.describe.configure({ mode: "serial" });

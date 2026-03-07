@@ -4,9 +4,9 @@ import { useLocale, useTranslations } from "next-intl";
 import { Avatar } from "@/components/ui/avatar";
 
 import { usePartnerTime } from "@/hooks/use-partner-time";
+import type { DashboardSeat } from "@/lib/types/seat";
 import { formatRelativeTime } from "@/lib/utils/format-date";
 import { getWaitingContext } from "@/lib/utils/timezone";
-import type { DashboardSeat } from "@/lib/types/seat";
 
 interface OccupiedSeatCardProps {
   seat: DashboardSeat;
@@ -17,11 +17,12 @@ export function OccupiedSeatCard({ seat, onClick }: OccupiedSeatCardProps) {
   const t = useTranslations("dashboard.connectionCard");
   const locale = useLocale();
   const conn = seat.connection;
+  const partnerTime = usePartnerTime(conn?.timezone ?? "UTC", locale);
+
   if (!conn) return null;
 
   const isPaused = conn.status === "paused";
   const isActive = conn.pulseTime != null && !isPaused;
-  const partnerTime = usePartnerTime(conn.timezone, locale);
   const waitingContext = getWaitingContext(conn.timezone);
 
   const formattedTime =
@@ -31,6 +32,7 @@ export function OccupiedSeatCard({ seat, onClick }: OccupiedSeatCardProps) {
 
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: card click handled by parent
+    // biome-ignore lint/a11y/noStaticElementInteractions: card interaction handled by parent
     <div
       onClick={onClick}
       className={`

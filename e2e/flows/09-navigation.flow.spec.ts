@@ -1,11 +1,11 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { NavPage } from "../pages/nav.page";
 
 test.describe("09 — Navigation Flow", () => {
   test.describe.configure({ mode: "serial" });
 
   test.describe("Desktop navigation", () => {
-    test.beforeEach(async ({}, testInfo) => {
+    test.beforeEach(async (_fixtures, testInfo) => {
       test.skip(
         testInfo.project.name === "mobile-chrome",
         "Desktop navigation — chromium only",
@@ -72,7 +72,7 @@ test.describe("09 — Navigation Flow", () => {
   test.describe("Mobile navigation", () => {
     test.use({ viewport: { width: 375, height: 812 } });
 
-    test.beforeEach(async ({}, testInfo) => {
+    test.beforeEach(async (_fixtures, testInfo) => {
       test.skip(
         testInfo.project.name === "chromium",
         "Mobile navigation — mobile-chrome only",

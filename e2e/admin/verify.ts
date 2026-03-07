@@ -5,11 +5,11 @@
  * throws a descriptive error if the assertion fails.
  */
 import { expect } from "@playwright/test";
-import { getTodayPulses } from "./pulses";
-import { getActiveConnections } from "./connections";
-import { getProfile } from "./profiles";
-import { getInviteCodes } from "./invites";
 import { getPendingRequests } from "./connection-requests";
+import { getActiveConnections } from "./connections";
+import { getInviteCodes } from "./invites";
+import { getProfile } from "./profiles";
+import { getTodayPulses } from "./pulses";
 
 /**
  * Verify that a pulse exists for the user today.

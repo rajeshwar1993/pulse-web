@@ -1,14 +1,14 @@
-import { test, expect } from "@playwright/test";
-import { TEST_USER_A, TEST_USER_B } from "../config";
-import { DashboardPage } from "../pages/dashboard.page";
+import { expect, test } from "@playwright/test";
 import { getUserIdByEmail } from "../admin/auth";
+import { getAdmin } from "../admin/client";
 import {
   createConnection,
   deleteUserConnections,
   getActiveConnections,
 } from "../admin/connections";
 import { verifyConnectionCount } from "../admin/verify";
-import { getAdmin } from "../admin/client";
+import { TEST_USER_A, TEST_USER_B } from "../config";
+import { DashboardPage } from "../pages/dashboard.page";
 
 /**
  * Create a connection AND a seat so the connection appears in the seat grid.

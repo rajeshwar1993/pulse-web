@@ -1,23 +1,23 @@
-import { test, expect } from "@playwright/test";
-import { TEST_USER_C } from "../config";
-import { SignupPage } from "../pages/auth/signup.page";
-import { LoginPage } from "../pages/auth/login.page";
-import { ProfileSetupPage } from "../pages/profile-setup.page";
+import { expect, test } from "@playwright/test";
 import {
-  ensureAuthUser,
   deleteAuthUser,
+  ensureAuthUser,
   getUserIdByEmail,
 } from "../admin/auth";
 import { getProfile } from "../admin/profiles";
+import { TEST_USER_C } from "../config";
+import { LoginPage } from "../pages/auth/login.page";
+import { SignupPage } from "../pages/auth/signup.page";
+import { ProfileSetupPage } from "../pages/profile-setup.page";
 
 test.describe("02 — New User Signup Flow", () => {
   test.describe.configure({ mode: "serial" });
 
-  let userCId: string;
+  let _userCId: string;
 
   test.beforeAll(async () => {
     // Create USER_C via admin (auth only, NO profile, email confirmed)
-    userCId = await ensureAuthUser(
+    _userCId = await ensureAuthUser(
       TEST_USER_C.email,
       TEST_USER_C.password,
       TEST_USER_C.displayName,

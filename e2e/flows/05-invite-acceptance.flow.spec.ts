@@ -1,13 +1,12 @@
-import { test, expect } from "@playwright/test";
-import { TEST_USER_A, TEST_USER_B, AUTH_STATE_USER_B } from "../config";
-import { InvitePage } from "../pages/invite.page";
+import { expect, test } from "@playwright/test";
 import { getUserIdByEmail } from "../admin/auth";
 import {
   deleteUserConnections,
   getActiveConnections,
 } from "../admin/connections";
-import { deleteUserInviteCodes, createInviteCode } from "../admin/invites";
+import { createInviteCode, deleteUserInviteCodes } from "../admin/invites";
 import { verifyConnectionCount } from "../admin/verify";
+import { AUTH_STATE_USER_B, TEST_USER_A, TEST_USER_B } from "../config";
 
 test.describe("05 — Invite Acceptance Flow @smoke", () => {
   test.describe.configure({ mode: "serial" });

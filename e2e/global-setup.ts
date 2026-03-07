@@ -6,10 +6,10 @@
  */
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { TEST_USER_A, TEST_USER_B } from "./config";
 import { ensureAuthUser } from "./admin/auth";
 import { ensureProfile } from "./admin/profiles";
 import { wipeAllData } from "./admin/wipe";
+import { TEST_USER_A, TEST_USER_B } from "./config";
 
 /**
  * Load env vars from .env.local for the global-setup process.

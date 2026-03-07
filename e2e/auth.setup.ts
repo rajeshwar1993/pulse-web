@@ -1,9 +1,9 @@
-import { test as setup, expect } from "@playwright/test";
+import { expect, test as setup } from "@playwright/test";
 import {
-  TEST_USER_A,
-  TEST_USER_B,
   AUTH_STATE_USER_A,
   AUTH_STATE_USER_B,
+  TEST_USER_A,
+  TEST_USER_B,
 } from "./config";
 
 /**

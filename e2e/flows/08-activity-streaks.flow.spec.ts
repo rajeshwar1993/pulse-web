@@ -1,8 +1,8 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+import { getUserIdByEmail } from "../admin/auth";
+import { deleteUserPulses, insertPulseAt } from "../admin/pulses";
 import { TEST_USER_A } from "../config";
 import { ActivityPage } from "../pages/activity.page";
-import { getUserIdByEmail } from "../admin/auth";
-import { insertPulseAt, deleteUserPulses } from "../admin/pulses";
 
 test.describe("08 — Activity & Streaks Flow", () => {
   test.describe.configure({ mode: "serial" });

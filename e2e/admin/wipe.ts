@@ -12,16 +12,17 @@
  * 8. profiles (FK → auth.users)
  * 9. auth.users (via Admin API)
  */
+
+import { deleteAllAuthUsers } from "./auth";
 import { getAdmin } from "./client";
+import { deleteAllConnectionRequests } from "./connection-requests";
+import { deleteAllConnections } from "./connections";
+import { deleteAllInviteCodes } from "./invites";
+import { deleteAllProfiles } from "./profiles";
+import { deleteAllPulses } from "./pulses";
+import { deleteAllSeats } from "./seats";
 import { deleteAllSeenReceipts } from "./seen-receipts";
 import { deleteAllSurveys } from "./surveys";
-import { deleteAllPulses } from "./pulses";
-import { deleteAllConnectionRequests } from "./connection-requests";
-import { deleteAllInviteCodes } from "./invites";
-import { deleteAllConnections } from "./connections";
-import { deleteAllSeats } from "./seats";
-import { deleteAllProfiles } from "./profiles";
-import { deleteAllAuthUsers } from "./auth";
 
 async function deleteAllConnectionHistory(): Promise<void> {
   const { error } = await getAdmin()

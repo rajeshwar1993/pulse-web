@@ -2,14 +2,14 @@
 
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { useToast } from "@/components/providers/toast-provider";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Modal } from "@/components/ui/modal";
-import { useToast } from "@/components/providers/toast-provider";
 import { getInviteUrl } from "@/lib/constants";
 import { SeatService } from "@/lib/services/seat-service";
-import { logger } from "@/lib/utils/logger";
 import type { DashboardSeat } from "@/lib/types/seat";
+import { logger } from "@/lib/utils/logger";
 
 interface CancelInviteModalProps {
   seat: DashboardSeat;

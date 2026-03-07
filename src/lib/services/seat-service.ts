@@ -1,7 +1,7 @@
 import { fetchSeatsWithConnections } from "@/lib/queries/seats";
 import { supabase } from "@/lib/supabase/client";
-import type { DashboardSeat } from "@/lib/types/seat";
 import type { InviteCode } from "@/lib/types/connection";
+import type { DashboardSeat } from "@/lib/types/seat";
 
 // biome-ignore lint/complexity/noStaticOnlyClass: service pattern groups related methods under a namespace
 export class SeatService {

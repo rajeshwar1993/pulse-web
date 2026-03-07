@@ -1,7 +1,7 @@
 "use client";
 
-import type React from "react";
 import { useTranslations } from "next-intl";
+import type React from "react";
 import { Card } from "@/components/ui/card";
 import { getTodayPulseDay } from "@/lib/utils/streak";
 

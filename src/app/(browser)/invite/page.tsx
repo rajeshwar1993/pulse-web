@@ -88,7 +88,7 @@ function InviteContent() {
       setError(mapAcceptError(raw, t, tErrors));
       setAccepting(false);
     }
-  }, [code, router, showToast, tErrors]);
+  }, [code, router, showToast, tErrors, t]);
 
   if (!code) {
     return (

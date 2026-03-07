@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { fetchDashboardData } from "@/lib/queries/dashboard";
-import { AppViewDashboardClient } from "./page-client";
 import { createClient } from "@/lib/supabase/server";
+import { AppViewDashboardClient } from "./page-client";
 
 export default async function Dashboard() {
   const supabase = await createClient();

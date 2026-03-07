@@ -214,7 +214,7 @@ describe("PulseOverlay", () => {
 
     // Now resolve sendPulse — overlay should exit
     await act(async () => {
-      resolvePromise!(true);
+      resolvePromise?.(true);
       await pulseResult;
     });
 

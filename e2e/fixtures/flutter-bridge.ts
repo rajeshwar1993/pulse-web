@@ -1,4 +1,4 @@
-import { type Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 export interface FlutterBridgeMessage {
   type: string;
@@ -24,14 +24,19 @@ export class FlutterBridgeMock {
    */
   async install(): Promise<void> {
     await this.page.addInitScript(() => {
-      (window as any).__flutterBridgeMessages = [];
-      (window as any).FlutterBridge = {
+      (window as unknown as Record<string, unknown>).__flutterBridgeMessages =
+        [];
+      (window as unknown as Record<string, unknown>).FlutterBridge = {
         postMessage(message: string) {
           try {
             const parsed = JSON.parse(message);
-            (window as any).__flutterBridgeMessages.push(parsed);
+            (
+              window as unknown as Record<string, unknown>
+            ).__flutterBridgeMessages.push(parsed);
           } catch {
-            (window as any).__flutterBridgeMessages.push({ raw: message });
+            (
+              window as unknown as Record<string, unknown>
+            ).__flutterBridgeMessages.push({ raw: message });
           }
         },
       };
@@ -43,7 +48,9 @@ export class FlutterBridgeMock {
    */
   async getMessages(): Promise<FlutterBridgeMessage[]> {
     return this.page.evaluate(
-      () => (window as any).__flutterBridgeMessages || [],
+      () =>
+        (window as unknown as Record<string, unknown>)
+          .__flutterBridgeMessages || [],
     );
   }
 
@@ -56,8 +63,10 @@ export class FlutterBridgeMock {
   ): Promise<FlutterBridgeMessage> {
     return this.page.waitForFunction(
       (t) => {
-        const msgs = (window as any).__flutterBridgeMessages || [];
-        return msgs.find((m: any) => m.type === t);
+        const msgs =
+          (window as unknown as Record<string, unknown>)
+            .__flutterBridgeMessages || [];
+        return msgs.find((m: Record<string, unknown>) => m.type === t);
       },
       type,
       { timeout },

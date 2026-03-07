@@ -6,7 +6,6 @@ import { useToast } from "@/components/providers/toast-provider";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Modal } from "@/components/ui/modal";
-import { Spinner } from "@/components/ui/spinner";
 import { getInviteUrl } from "@/lib/constants";
 import { ConnectionRequestService } from "@/lib/services/connection-request-service";
 import { ConnectionService } from "@/lib/services/connection-service";

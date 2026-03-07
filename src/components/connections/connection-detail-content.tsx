@@ -3,16 +3,16 @@
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { useToast } from "@/components/providers/toast-provider";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Modal } from "@/components/ui/modal";
-import { useToast } from "@/components/providers/toast-provider";
 import { usePartnerTime } from "@/hooks/use-partner-time";
 import { ConnectionService } from "@/lib/services/connection-service";
-import { getEffectiveStreak } from "@/lib/utils/streak";
 import type { ConnectionStats } from "@/lib/types/connection-detail";
 import { logger } from "@/lib/utils/logger";
+import { getEffectiveStreak } from "@/lib/utils/streak";
 
 interface ConnectionDetailContentProps {
   stats: ConnectionStats;

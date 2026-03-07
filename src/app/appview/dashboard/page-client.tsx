@@ -79,7 +79,7 @@ export function AppViewDashboardClient({
     return () => {
       cancelled = true;
     };
-  }, [pulseResultPromise, router, startTransition]);
+  }, [pulseResultPromise, router]);
 
   const dashboardReady = refreshStarted && !isPending;
 

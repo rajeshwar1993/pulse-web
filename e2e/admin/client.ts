@@ -7,7 +7,7 @@
  * - Clean up test data between tests
  */
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY } from "../config";
+import { SUPABASE_SERVICE_ROLE_KEY, SUPABASE_URL } from "../config";
 
 function createAdminClient(): SupabaseClient {
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {

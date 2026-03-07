@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { beforeAll, afterEach, afterAll, vi } from "vitest";
+import { afterEach, beforeAll, vi } from "vitest";
 
 // Mock next/image to render a plain <img> tag in tests
 vi.mock("next/image", () => {
@@ -7,12 +7,12 @@ vi.mock("next/image", () => {
   return {
     default: (props: Record<string, unknown>) => {
       const {
-        fill,
-        priority,
-        quality,
-        loader,
-        placeholder,
-        blurDataURL,
+        fill: _fill,
+        priority: _priority,
+        quality: _quality,
+        loader: _loader,
+        placeholder: _placeholder,
+        blurDataURL: _blurDataURL,
         ...rest
       } = props;
       return createElement("img", rest);

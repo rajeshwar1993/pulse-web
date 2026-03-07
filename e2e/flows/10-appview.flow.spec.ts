@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/base";
+import { expect, test } from "../fixtures/base";
 import { DashboardPage } from "../pages/dashboard.page";
 import { SettingsPage } from "../pages/settings.page";
 

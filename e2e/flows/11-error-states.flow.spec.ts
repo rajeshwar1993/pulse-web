@@ -1,6 +1,6 @@
-import { test, expect } from "@playwright/test";
-import { LoginPage } from "../pages/auth/login.page";
+import { expect, test } from "@playwright/test";
 import { ForgotPasswordPage } from "../pages/auth/forgot-password.page";
+import { LoginPage } from "../pages/auth/login.page";
 
 test.describe("11 — Error States Flow", () => {
   test.describe.configure({ mode: "serial" });

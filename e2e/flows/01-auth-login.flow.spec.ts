@@ -1,9 +1,9 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+import { getUserIdByEmail } from "../admin/auth";
+import { getProfile } from "../admin/profiles";
 import { TEST_USER_A, TEST_USER_B } from "../config";
 import { LoginPage } from "../pages/auth/login.page";
 import { DashboardPage } from "../pages/dashboard.page";
-import { getUserIdByEmail } from "../admin/auth";
-import { getProfile } from "../admin/profiles";
 
 test.describe("01 — Auth Login Flow @smoke", () => {
   test.describe.configure({ mode: "serial" });

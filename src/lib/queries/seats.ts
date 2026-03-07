@@ -54,7 +54,7 @@ export async function fetchSeatsWithConnections(
 
   // 3. Batch fetch connections with profiles
   // biome-ignore lint/suspicious/noExplicitAny: Supabase join query returns dynamic shape
-  let connectionsMap = new Map<string, any>();
+  const connectionsMap = new Map<string, any>();
   if (connectionIds.length > 0) {
     const { data: connectionsData, error: connError } = await client
       .from("connections")
@@ -115,7 +115,7 @@ export async function fetchSeatsWithConnections(
 
   // 4. Batch fetch invite codes
   // biome-ignore lint/suspicious/noExplicitAny: Supabase returns dynamic shape
-  let inviteCodesMap = new Map<string, any>();
+  const inviteCodesMap = new Map<string, any>();
   if (inviteCodeIds.length > 0) {
     const { data: invitesData, error: invError } = await client
       .from("invite_codes")
@@ -131,7 +131,7 @@ export async function fetchSeatsWithConnections(
 
   // 5. Batch fetch connection requests
   // biome-ignore lint/suspicious/noExplicitAny: Supabase returns dynamic shape
-  let requestsMap = new Map<string, any>();
+  const requestsMap = new Map<string, any>();
   if (connectionRequestIds.length > 0) {
     const { data: requestsData, error: reqError } = await client
       .from("connection_requests")

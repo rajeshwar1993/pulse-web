@@ -80,7 +80,7 @@ export async function fetchDashboardData(
     const seatedConnectionIds = new Set(
       ownSeats
         .filter((s) => s.state === "occupied" && s.connection != null)
-        .map((s) => s.connection!.id),
+        .map((s) => s.connection?.id),
     );
 
     // Create synthetic seats for received connections (not already in a seat)
