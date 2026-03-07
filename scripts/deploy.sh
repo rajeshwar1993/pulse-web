@@ -49,9 +49,34 @@ done
 
 cd "$PROJECT_DIR"
 
-# --- Version bump (production only) ---
-PKG_JSON="$PROJECT_DIR/package.json"
+# --- Branch validation ---
+CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
+if [[ "$ENV" == "production" ]]; then
+  EXPECTED_BRANCH="main"
+  ENV_FILE=".env.production"
+  BUILD_CMD="vercel build --prod"
+  DEPLOY_CMD="vercel deploy --prebuilt --prod"
+else
+  EXPECTED_BRANCH="preview"
+  ENV_FILE=".env.preview"
+  BUILD_CMD="vercel build"
+  DEPLOY_CMD="vercel deploy --prebuilt"
+fi
+
+if [[ "$CURRENT_BRANCH" != "$EXPECTED_BRANCH" ]]; then
+  red "Error: $ENV deploys must be run from the '$EXPECTED_BRANCH' branch."
+  red "Current branch: $CURRENT_BRANCH"
+  exit 1
+fi
+
+# --- Clean working tree ---
+if [[ -n "$(git status --porcelain)" ]]; then
+  red "Error: Working tree has uncommitted changes. Commit or stash them first."
+  exit 1
+fi
+
+# --- Version bump (production only) ---
 bump_version() {
   local current
   current=$(node -p "require('./package.json').version")
@@ -92,33 +117,6 @@ if [[ "$ENV" == "production" ]]; then
 else
   VERSION_STRING=$(node -p "require('./package.json').version")
   bold "Preview deploy — skipping version bump (current: $VERSION_STRING)"
-fi
-
-# --- Branch validation ---
-CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
-
-if [[ "$ENV" == "production" ]]; then
-  EXPECTED_BRANCH="main"
-  ENV_FILE=".env.production"
-  BUILD_CMD="vercel build --prod"
-  DEPLOY_CMD="vercel deploy --prebuilt --prod"
-else
-  EXPECTED_BRANCH="preview"
-  ENV_FILE=".env.preview"
-  BUILD_CMD="vercel build"
-  DEPLOY_CMD="vercel deploy --prebuilt"
-fi
-
-if [[ "$CURRENT_BRANCH" != "$EXPECTED_BRANCH" ]]; then
-  red "Error: $ENV deploys must be run from the '$EXPECTED_BRANCH' branch."
-  red "Current branch: $CURRENT_BRANCH"
-  exit 1
-fi
-
-# --- Clean working tree ---
-if [[ -n "$(git status --porcelain)" ]]; then
-  red "Error: Working tree has uncommitted changes. Commit or stash them first."
-  exit 1
 fi
 
 # --- Env file check ---
