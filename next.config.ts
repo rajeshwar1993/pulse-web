@@ -1,10 +1,16 @@
+import { readFileSync } from "node:fs";
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
+const { version } = JSON.parse(readFileSync("./package.json", "utf-8"));
+
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
+  env: {
+    NEXT_PUBLIC_APP_VERSION: version,
+  },
   reactCompiler: true,
   images: {
     dangerouslyAllowSVG: true,
