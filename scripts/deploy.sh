@@ -5,8 +5,17 @@ set -euo pipefail
 # deploy.sh — Build locally and deploy to Vercel
 #
 # Usage:
-#   ./scripts/deploy.sh production   (from main branch)
-#   ./scripts/deploy.sh preview      (from preview branch)
+#   ./scripts/deploy.sh production [--patch|--minor|--major]
+#   ./scripts/deploy.sh preview
+#
+# Production deploys auto-bump the version (minor by default).
+# Preview deploys do not change the version.
+#
+# Examples:
+#   ./scripts/deploy.sh production              # 0.1.0 → 0.2.0
+#   ./scripts/deploy.sh production --patch      # 0.2.0 → 0.2.1
+#   ./scripts/deploy.sh production --major      # 0.2.1 → 1.0.0
+#   ./scripts/deploy.sh preview                 # no version change
 # ------------------------------------------------------------------
 
 ENV="${1:-}"
@@ -20,11 +29,70 @@ bold()  { printf '\033[1m%s\033[0m\n' "$*"; }
 
 # --- Validate argument ---
 if [[ "$ENV" != "production" && "$ENV" != "preview" ]]; then
-  red "Usage: $0 <production|preview>"
+  red "Usage: $0 <production|preview> [--patch|--minor|--major]"
   exit 1
 fi
 
+# --- Parse optional semver flags ---
+shift
+BUMP_LEVEL="minor"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --patch) BUMP_LEVEL="patch" ;;
+    --minor) BUMP_LEVEL="minor" ;;
+    --major) BUMP_LEVEL="major" ;;
+    *)       red "Unknown flag: $1"; exit 1 ;;
+  esac
+  shift
+done
+
 cd "$PROJECT_DIR"
+
+# --- Version bump (production only) ---
+PKG_JSON="$PROJECT_DIR/package.json"
+
+bump_version() {
+  local current
+  current=$(node -p "require('./package.json').version")
+
+  local major minor patch
+  IFS='.' read -r major minor patch <<< "$current"
+
+  case "$BUMP_LEVEL" in
+    major)
+      major=$((major + 1))
+      minor=0
+      patch=0
+      ;;
+    minor)
+      minor=$((minor + 1))
+      patch=0
+      ;;
+    patch)
+      patch=$((patch + 1))
+      ;;
+  esac
+
+  local new_version="${major}.${minor}.${patch}"
+  # Use node to update package.json (preserves formatting)
+  node -e "
+    const fs = require('fs');
+    const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+    pkg.version = '${new_version}';
+    fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+  "
+
+  green "Version bumped: $current → $new_version ($BUMP_LEVEL)"
+  VERSION_STRING="$new_version"
+}
+
+if [[ "$ENV" == "production" ]]; then
+  bump_version
+else
+  VERSION_STRING=$(node -p "require('./package.json').version")
+  bold "Preview deploy — skipping version bump (current: $VERSION_STRING)"
+fi
 
 # --- Branch validation ---
 CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
@@ -96,12 +164,12 @@ bold "Running type check..."
 npx tsc --noEmit
 
 # --- Build ---
-bold "Building for $ENV..."
+bold "Building for $ENV (v$VERSION_STRING)..."
 $BUILD_CMD
 
 # --- Deploy ---
 bold "Deploying to Vercel ($ENV)..."
 DEPLOY_OUTPUT=$($DEPLOY_CMD)
 
-green "Deploy complete!"
+green "Deploy complete! (v$VERSION_STRING)"
 bold "URL: $DEPLOY_OUTPUT"
