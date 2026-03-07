@@ -9,7 +9,7 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   env: {
-    NEXT_PUBLIC_APP_VERSION: version,
+    NEXT_PUBLIC_WEB_VERSION: version,
   },
   reactCompiler: true,
   images: {

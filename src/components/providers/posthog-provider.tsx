@@ -15,8 +15,8 @@ function PostHogInit() {
       capture_pageview: true,
       capture_pageleave: true,
       loaded: (ph) => {
-        if (process.env.NEXT_PUBLIC_APP_VERSION) {
-          ph.register({ app_version: process.env.NEXT_PUBLIC_APP_VERSION });
+        if (process.env.NEXT_PUBLIC_WEB_VERSION) {
+          ph.register({ web_version: process.env.NEXT_PUBLIC_WEB_VERSION });
         }
         if (process.env.NODE_ENV === "development") {
           ph.debug();
