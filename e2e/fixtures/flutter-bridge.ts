@@ -5,6 +5,11 @@ export interface FlutterBridgeMessage {
   [key: string]: unknown;
 }
 
+interface FlutterBridgeWindow {
+  __flutterBridgeMessages: FlutterBridgeMessage[];
+  FlutterBridge: { postMessage(message: string): void };
+}
+
 /**
  * Mock for `window.FlutterBridge` used in the WebView.
  * Captures messages sent from the web app to Flutter and
@@ -24,19 +29,18 @@ export class FlutterBridgeMock {
    */
   async install(): Promise<void> {
     await this.page.addInitScript(() => {
-      (window as unknown as Record<string, unknown>).__flutterBridgeMessages =
-        [];
-      (window as unknown as Record<string, unknown>).FlutterBridge = {
+      const w = window as unknown as FlutterBridgeWindow;
+      w.__flutterBridgeMessages = [];
+      w.FlutterBridge = {
         postMessage(message: string) {
           try {
             const parsed = JSON.parse(message);
-            (
-              window as unknown as Record<string, unknown>
-            ).__flutterBridgeMessages.push(parsed);
+            w.__flutterBridgeMessages.push(parsed);
           } catch {
-            (
-              window as unknown as Record<string, unknown>
-            ).__flutterBridgeMessages.push({ raw: message });
+            w.__flutterBridgeMessages.push({
+              type: "unknown",
+              raw: message,
+            });
           }
         },
       };
@@ -49,8 +53,8 @@ export class FlutterBridgeMock {
   async getMessages(): Promise<FlutterBridgeMessage[]> {
     return this.page.evaluate(
       () =>
-        (window as unknown as Record<string, unknown>)
-          .__flutterBridgeMessages || [],
+        (window as unknown as FlutterBridgeWindow).__flutterBridgeMessages ||
+        [],
     );
   }
 
@@ -64,9 +68,9 @@ export class FlutterBridgeMock {
     return this.page.waitForFunction(
       (t) => {
         const msgs =
-          (window as unknown as Record<string, unknown>)
-            .__flutterBridgeMessages || [];
-        return msgs.find((m: Record<string, unknown>) => m.type === t);
+          (window as unknown as FlutterBridgeWindow).__flutterBridgeMessages ||
+          [];
+        return msgs.find((m) => m.type === t);
       },
       type,
       { timeout },
